@@ -17,7 +17,7 @@
   <meta name="description" content="">
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
-  <title>学习的日子 - Hexo</title>
+  <title>链接、装载与库——计算机组成 - Hexo</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -152,8 +152,8 @@
               
   <div class="mt-3 post-meta">
     <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-    <time datetime="2020-06-26 18:45">
-      2020年6月26日 晚上
+    <time datetime="2020-06-27 20:19">
+      2020年6月27日 晚上
     </time>
   </div>
 
@@ -163,7 +163,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      351 字
+      1.6k 字
     </span>
   
 
@@ -173,7 +173,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      3
+      16
        分钟
     </span>
   
@@ -218,11 +218,52 @@
               </p>
             
             <article class="markdown-body">
-              <h3 id="学习的日子"><a href="#学习的日子" class="headerlink" title="学习的日子"></a>学习的日子</h3><p>学习，是一个漫长的经历。期间的快乐和苦痛只有自己感受最深。</p>
-<p>学习的路程——道阻且长，但在这路上最大的动力就是内心的信念和兴趣了。</p>
-<p>学习也有一段时间了，其实内心一直反感诸如此类的博客，认为有这时间不如多看看几页书、多想想项目方案。但前天施老师的一句话让我重新思考了这个问题。没错，人也是一种遵循自然法则的生物。到了一定年龄，其实各机能就会到达顶峰，随后而来的就是下滑。这其中最可怕的就是记忆力下滑。换个说法，说哲学点儿，我追不上时间。时光匆匆，白驹过隙，时间的流逝不留下一丝痕迹，表象能确认的可能就是那钟表滴答滴答的声音了吧。但我有时间没有的能力，我可以将一切经历记录下来，让时间留在这些记录中。</p>
-<p>路虽弥,不行不至；事虽小,不做不成。未来的路还很长，做最好的自己，尽最大的能力，不让自己后悔就好。</p>
-<p>第一次写blog，没个主题，也不知道写了些什么，最后还是送给自己一句话吧：桃李不言，下自成蹊。</p>
+              <p><strong>* <em>从这篇开始连续记录我的读书笔记，将书中重要的知识点总结，方便自己以后快速回忆与阅读。那就先从《程序员的自我修养——装载、链接与库》第一章开始喽。</em> *</strong></p>
+<h1 id="第一章-温故而知新"><a href="#第一章-温故而知新" class="headerlink" title="第一章 温故而知新"></a><strong>第一章 温故而知新</strong></h1><h2 id="1-1-从Hello-World-说起"><a href="#1-1-从Hello-World-说起" class="headerlink" title="1.1 从Hello World 说起"></a><strong>1.1 从Hello World 说起</strong></h2><p>无</p>
+<h2 id="1-2-万变不离其宗"><a href="#1-2-万变不离其宗" class="headerlink" title="1.2 万变不离其宗"></a><strong>1.2 万变不离其宗</strong></h2><p>1.计算机中有三个最为关键的部件，分别为<strong>中央处理器CPU</strong>、<strong>内存</strong>和<strong>I/O控制芯片</strong>。</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzE1MTkzMjQ5MjE5?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="早期计算机硬件结构"></p>
+<p>早期的CPU的核心频率与内存一样，所以直接连接在<strong>同一个总线（Bus）上</strong>。但为了协调I/O设备与总线之间的速度，<strong>一般每个设备都会有一个相应的I/O控制器</strong>。</p>
+<p>2.由于CPU核心频率的提升，且远远快于内存的速度，于是产生了与<strong>内存频率相一致的系统总线</strong>，而CPU采用<strong>倍频的方式与系统总线进行通信</strong>。</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzE1MTk0NDE4MDIx?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="硬件结构框架"></p>
+<p>为了协调CPU、内存和高速的图形设备，专门设计了一个<strong>高速的北桥芯片</strong>，以便它们之间能够高速地交换数据。但如果相对低速的设备全部连接在北桥上，北桥同时处理不同速度的设备，设计会十分复杂。于是设计了<strong>专门处理低速设备的南桥（Southbridge）芯片</strong>,将低速设备都连接在南桥上，由南桥汇总后连接到北桥上。90年代时，PC在系统总线上采用PCI结构，在低速设备上采用ISA总线。</p>
+<p>3.<strong>多对称处理器（SMP，Symmetry Multi-Processing）</strong>，每个CPU在系统中所处地位和所发挥的功能一样，是相互对称的。<strong>多核处理器（Multi-core Processor）</strong>实际上就是SMP的简化版，它们之间的区别很小，逻辑上来看它们是完全相同的。区别在于多核和SMP在<strong>缓存共享</strong>等方面有细微的差别，使得程序在优化上可以有针对性地处理。</p>
+<h2 id="1-3-站得高，望得远"><a href="#1-3-站得高，望得远" class="headerlink" title="1.3 站得高，望得远"></a><strong>1.3 站得高，望得远</strong></h2><p>1.计算机系统软件体系结构采用一种层的结构。</p>
+<blockquote>
+<p>“计算机科学领域的任何问题都可以通过增加一个间接的中间层来解决。”</p>
+</blockquote>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzE1MjAxMTI3OTI1?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="计算机软件体系结构"></p>
+<ul>
+<li><p>每个层次之间都需要相互通信，一般将通信的协议成为<strong>接口（Interface）</strong>，接口的下层是接口提供者，由它定义接口；接口的上层是接口的使用者，它使用接口来实现所需功能。</p>
+</li>
+<li><p>从整体层次结构上来看，开发工具与应用程序是是属于同一个层次的，都使用操作系统<strong>应用程序编程接口（Application Programming Interface）</strong>。应用程序接口的提供者运行库，什么样的运行库提供什么样的API。运行库使用操作系统提供的<strong>系统调用接口（System call Interface）</strong>,系统调用接口在实现中往往以<strong>软件中断（Software Interrupt）</strong>的方式提供。</p>
+</li>
+</ul>
+<h2 id="1-4-操作系统做什么"><a href="#1-4-操作系统做什么" class="headerlink" title="1.4 操作系统做什么"></a><strong>1.4 操作系统做什么</strong></h2><blockquote>
+<p><strong>操作系统的一个功能是提供抽象的接口，另外一个主要功能是管理硬件资源。</strong></p>
+</blockquote>
+<h3 id="1-4-1-不要让CPU打盹"><a href="#1-4-1-不要让CPU打盹" class="headerlink" title="1.4.1 不要让CPU打盹"></a><strong>1.4.1 不要让CPU打盹</strong></h3><p>1.如何高效、充分的利用CPU？</p>
+<ul>
+<li><p>计算机发展早期，为了充分利用CPU资源，编写了一个监控程序，当某个程序暂时无需使用CPU时，监控程序就把另外正在等待CPU资源的程序启动，使<strong>CPU充分利用</strong>。这种方法被称为<strong>多道程序（Multiprogramming）</strong>。其最大的问题是程序之间的调度太粗糙，程序之间不分轻重缓急。</p>
+</li>
+<li><p>经过改进，程序运行模式变成一种协作模式，即每个程序运行一段时间后都主动让出CPU给其他程序，使得一段时间内每个程序都有机会运行一小段时间。这种程序协作模式叫做<strong>分时系统（Time-Sharing System）</strong>。但如果一个程序一直霸占CPU，那么其他程序都得等着。</p>
+</li>
+<li><p><strong>多任务（Multi-tasking）系统</strong>，操作系统接管了所有的硬件资源，并且本身运行在一个手硬件保护的级别。所有的应用程序都以<strong>进程（Process）</strong>的方式运行在比操作系统权限更低的级别，<strong>每个进程都有自己独立的地址空间，使得进程之间的地址空间相互隔离。</strong></p>
+</li>
+<li><p>CPU由操作系统统一进行分配，<strong>每个进程根据进程优先级的高低都有机会得到CPU</strong>，如果运行时间超出了一定时间，操作系统会暂停该进程，将CPU资源分配给其他等待运行的进程。这种分配方式即<strong>抢占式（Preemptive）</strong>，<strong>操作系统可以强制剥夺并且分配给它认为目前最需要的进程。</strong></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzE1MjEzNzQ3MzQ4?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="进程转换流程"></p>
+</li>
+</ul>
+<h3 id="1-4-2-设备驱动"><a href="#1-4-2-设备驱动" class="headerlink" title="1.4.2 设备驱动"></a><strong>1.4.2 设备驱动</strong></h3><p>1.当成熟的操作系统出现以后，硬件逐渐被抽象成了一系列概念。在UNIX中，硬件设备的访问跟访问普通文件一样。从硬件细节中解放，将繁琐的的硬件细节全交给操作系统中的<strong>硬件驱动（Device Driver）程序</strong>来完成。</p>
+<p>2.文件系统是操作系统中最重要的部分之一，文件系统管理者磁盘中文件的存储方式。</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzE1MjE1MzM1NTM1?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="文件在磁盘中的结构"></p>
+<p>硬盘的结构介绍：</p>
+<ul>
+<li><p>硬盘基本存储单位为<strong>扇区（Sector）</strong>，每个扇区一般为512字节。一个磁盘往往有多个盘片，每个盘片分两面，每面按照同心圆划分为若干个磁道，每个磁道划分为若干个扇区。</p>
+</li>
+<li><p>如果按照每个磁道都拥有相同的数量的扇区，那么靠近盘面外围的磁道密度肯定比内圈更加稀疏。但如果不同的磁道扇区数又不同，计算起来就十分麻烦。现代硬盘为了屏蔽这些复杂的硬件细节，普遍使用<strong>LBA（Logical Block Address）</strong>的方式，即整个硬盘中所有的扇区从0开始编号，一直到最后一个扇区，这个扇区编号叫做<strong>逻辑扇区号</strong>。</p>
+</li>
+</ul>
+<p><strong>* <em>下次的读书笔记将总结第一章剩下的内容，主要为内存及其分配机制、线程相关等内容。</em> *</strong></p>
 
             </article>
             <hr>
@@ -232,7 +273,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/Life/">Life</a>
+                      <a class="hover-with-bg" href="/categories/Linux/">Linux</a>
                     
                   </div>
                 
@@ -240,7 +281,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/%E6%84%9F%E6%83%B3%E9%9A%8F%E7%AC%94/">感想随笔</a>
+                      <a class="hover-with-bg" href="/tags/%E9%93%BE%E6%8E%A5%E3%80%81%E8%A3%85%E8%BD%BD%E4%B8%8E%E5%BA%93/">链接、装载与库</a>
                     
                   </div>
                 
@@ -253,15 +294,21 @@
                   <div class="post-prev col-6">
                     
                     
-                      <a href="/2020/06/27/computer-composition/">
+                      <a href="/2020/06/27/virtual-address-space/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">链接、装载与库——计算机组成</span>
+                        <span class="hidden-mobile">链接、装载与库——虚拟地址空间</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
                   </div>
                   <div class="post-next col-6">
                     
+                    
+                      <a href="/2020/06/26/hello-world/">
+                        <span class="hidden-mobile">学习的日子</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
                     
                   </div>
                 </div>
@@ -423,7 +470,7 @@
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "学习的日子&nbsp;",
+        "链接、装载与库——计算机组成&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,

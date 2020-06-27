@@ -17,7 +17,7 @@
   <meta name="description" content="">
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
-  <title>学习的日子 - Hexo</title>
+  <title>链接、装载与库——虚拟地址空间 - Hexo</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -152,8 +152,8 @@
               
   <div class="mt-3 post-meta">
     <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-    <time datetime="2020-06-26 18:45">
-      2020年6月26日 晚上
+    <time datetime="2020-06-27 20:42">
+      2020年6月27日 晚上
     </time>
   </div>
 
@@ -163,7 +163,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      351 字
+      1.3k 字
     </span>
   
 
@@ -173,7 +173,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      3
+      13
        分钟
     </span>
   
@@ -218,11 +218,32 @@
               </p>
             
             <article class="markdown-body">
-              <h3 id="学习的日子"><a href="#学习的日子" class="headerlink" title="学习的日子"></a>学习的日子</h3><p>学习，是一个漫长的经历。期间的快乐和苦痛只有自己感受最深。</p>
-<p>学习的路程——道阻且长，但在这路上最大的动力就是内心的信念和兴趣了。</p>
-<p>学习也有一段时间了，其实内心一直反感诸如此类的博客，认为有这时间不如多看看几页书、多想想项目方案。但前天施老师的一句话让我重新思考了这个问题。没错，人也是一种遵循自然法则的生物。到了一定年龄，其实各机能就会到达顶峰，随后而来的就是下滑。这其中最可怕的就是记忆力下滑。换个说法，说哲学点儿，我追不上时间。时光匆匆，白驹过隙，时间的流逝不留下一丝痕迹，表象能确认的可能就是那钟表滴答滴答的声音了吧。但我有时间没有的能力，我可以将一切经历记录下来，让时间留在这些记录中。</p>
-<p>路虽弥,不行不至；事虽小,不做不成。未来的路还很长，做最好的自己，尽最大的能力，不让自己后悔就好。</p>
-<p>第一次写blog，没个主题，也不知道写了些什么，最后还是送给自己一句话吧：桃李不言，下自成蹊。</p>
+              <p><strong>* <em>接着第一章继续，part.2。。。</em> *</strong></p>
+<h1 id="第一章-温故而知新"><a href="#第一章-温故而知新" class="headerlink" title="第一章 温故而知新"></a><strong>第一章 温故而知新</strong></h1><h2 id="1-5-内存不够怎么办"><a href="#1-5-内存不够怎么办" class="headerlink" title="1.5 内存不够怎么办"></a><strong>1.5 内存不够怎么办</strong></h2><p>1.早期的计算机中，程序直接运行在物理内存上，即程序在运行时所访问的地址都是物理地址。计算机将有限的物理内存分配给多个程序使用。这种简单的内存分配策略有很多问题。</p>
+<ul>
+<li><p><strong>地址空间不隔离</strong><br>所有程序直接访问物理地址，程序所使用的内存空间不是相互隔离的。恶意程序可以很容易改写其他程序的内存数据。</p>
+</li>
+<li><p><strong>内存使用效率低</strong><br>一个程序执行时，监控程序直接将整个程序装入内存中然后开始执行。如果要运行一个需要内存非常大的程序，此时剩余可用的内存已经不够了，此时可以将其他程序的数据暂时写入磁盘，等到要用时再读回来。整个过程中有大量的数据在换入换出，导致效率十分低下。</p>
+</li>
+<li><p><strong>程序运行的地址不确定</strong><br>程序每次装入运行时，需要给它从内存中分配一块足够大的空闲区域，此时空闲区域的位置是不确定的。这样影响了之后访问数据和指令跳转时的目标地址，涉及程序的重定位（PS:在后面的链接部分有讲，看了之后真是恍然大悟。。。）。</p>
+</li>
+</ul>
+<p>解决这些问题的法宝：增加中间层，即使用一种间接的地址访问方法。把程序给出的地址看作一种<strong>虚拟地址（Virtual Address）</strong>，通过某些<strong>映射方法</strong>，将<strong>虚拟地址转换成实际的物理地址</strong>。只要能妥善地控制这个虚拟地址到物理地址的映射过程，就可以保证任意一个程序所能访问的物理内存跟另一个程序相互不重叠，达到地址空间隔离的效果。</p>
+<h3 id="1-5-1-关于隔离"><a href="#1-5-1-关于隔离" class="headerlink" title="1.5.1 关于隔离"></a><strong>1.5.1 关于隔离</strong></h3><p>1.所谓地址空间可以想象成一个很大的数组，每个数组的元素都是一个字节，这个数组的大小由地址空间的地址长度决定。地址空间分为两种：<strong>虚拟地址空间（Virtual Address Space）</strong>和<strong>物理地址空间（Physical Address Space）</strong>。物理地址空间是实实在在存在的。虚拟地址空间是指虚拟的、人们想象出来的地址空间，其实它并不存在，<strong>每个进程都有自己独立的虚拟空间，而且每个进程只能访问自己的地址空间</strong>，有效地做到了进程的隔离。</p>
+<h3 id="1-5-2-分段（Segmentation）"><a href="#1-5-2-分段（Segmentation）" class="headerlink" title="1.5.2 分段（Segmentation）"></a><strong>1.5.2 分段（Segmentation）</strong></h3><p>1.最开始使用<strong>分段（Segmentation）</strong>的方法，基本思路是把一段与程序所需要的内存空间大小的虚拟空间映射到某个地址空间。把这两块相同大小的地址空间一一映射。即<strong>虚拟空间中的每个字节相对应于物理空间中的每个字节</strong>。映射过程由软件来设置。</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzE2MjI1MTMwNTY5?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="段映射机制"></p>
+<p>分段的方法解决了第一个和第三个问题。做到了<strong>地址隔离</strong>、<strong>程序不再需要重定位</strong>。但依旧没有解决内存使用效率的问题。分段对内存区域的映射以程序为单位，还是会将整个程序换入换出到磁盘。</p>
+<h3 id="1-5-3-分页（Paging）"><a href="#1-5-3-分页（Paging）" class="headerlink" title="1.5.3 分页（Paging）"></a><strong>1.5.3 分页（Paging）</strong></h3><p>1.根据程序的<strong>局部性原理</strong>，<strong>当一个程序在运行时，在某个时间段内，它只是频繁地用到了一小部分数据</strong>。使用更小粒度的内存分割和映射的方法，使程序的局部性原理得到充分利用。</p>
+<p>2.<strong>分页是将地址空间人为地等分为固定大小的页</strong>，每一页的大小由硬件决定，或硬件支持多种大小的页，操作系统决定页的大小。但在<strong>同一时刻只能选择一种大小</strong>。目前几乎所有的PC上的操作系统都使用<strong>4KB</strong>大小的页。</p>
+<p>3.<strong>当进程的虚拟地址空间按页分割时，把常用的的数据和代码页装载到内存中，把不常用的代码和数据保存在磁盘里，当需要用的时候从磁盘中读取</strong>。</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzE2MjMxMjQ5NjE1?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="进程虚拟空间、物理空间和磁盘之间的页映射关系"></p>
+<p>虚拟空间的页叫做<strong>虚拟页（VP，Virtual Page）</strong>，物理内存中的页叫做<strong>物理页（PP，Physical Page）</strong>，磁盘中的页叫做<strong>磁盘页（DP，Disk Page）</strong>。有些虚拟空间的页被映射到同一个物理页，实现了<strong>内存共享</strong>。</p>
+<p>4.当进程所需的页不在内存中时，硬件会捕获此消息，即<strong>页错误（Page Fault）</strong>，操作系统接管进程，将需要的页从磁盘中读出并装入内存，之后建立映射关系。</p>
+<p>5.保护也是页映射的目的之一，每个页可以设置权限属性。</p>
+<p>6.虚拟存储的实现需要依靠硬件的支持。几乎所有的硬件都采用<strong>MMU（Memory Management Unit）</strong>部件进行页映射。</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzE2MjMyNTA5NDc2?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="虚拟地址到物理地址的转换"></p>
+<p>在页映射模式下，CPU发出Virtual Address，即虚拟地址。经过MMU转换变成Physical Address。</p>
+<p><strong>* <em>下次继续线程相关吧。。。</em> *</strong></p>
 
             </article>
             <hr>
@@ -232,7 +253,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/Life/">Life</a>
+                      <a class="hover-with-bg" href="/categories/Linux/">Linux</a>
                     
                   </div>
                 
@@ -240,7 +261,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/%E6%84%9F%E6%83%B3%E9%9A%8F%E7%AC%94/">感想随笔</a>
+                      <a class="hover-with-bg" href="/tags/%E9%93%BE%E6%8E%A5%E3%80%81%E8%A3%85%E8%BD%BD%E4%B8%8E%E5%BA%93/">链接、装载与库</a>
                     
                   </div>
                 
@@ -253,15 +274,21 @@
                   <div class="post-prev col-6">
                     
                     
-                      <a href="/2020/06/27/computer-composition/">
+                      <a href="/2020/06/27/processes-and-threads/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">链接、装载与库——计算机组成</span>
+                        <span class="hidden-mobile">链接、装载与库——进程与线程</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
                   </div>
                   <div class="post-next col-6">
                     
+                    
+                      <a href="/2020/06/27/computer-composition/">
+                        <span class="hidden-mobile">链接、装载与库——计算机组成</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
                     
                   </div>
                 </div>
@@ -423,7 +450,7 @@
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "学习的日子&nbsp;",
+        "链接、装载与库——虚拟地址空间&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,

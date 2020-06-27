@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>链接、装载与库——进程与线程 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>kongkong</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-06-27 20:45">
+      2020年6月27日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.4k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      36
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2020年6月27日 晚上
+                
+              </p>
+            
+            <article class="markdown-body">
+              <p><strong>* <em>第一章最后一部分，part.3。。。</em> *</strong></p>
+<h1 id="第一章-温故而知新"><a href="#第一章-温故而知新" class="headerlink" title="第一章 温故而知新"></a><strong>第一章 温故而知新</strong></h1><h2 id="1-6-众人拾柴火焰高"><a href="#1-6-众人拾柴火焰高" class="headerlink" title="1.6 众人拾柴火焰高"></a><strong>1.6 众人拾柴火焰高</strong></h2><h3 id="1-6-1-线程基础"><a href="#1-6-1-线程基础" class="headerlink" title="1.6.1 线程基础"></a><strong>1.6.1 线程基础</strong></h3><p>1.<strong>线程（Thread）</strong>，也称<strong>轻量级进程（Lightweight Process，LWP）</strong>，是<strong>程序执行流的最小单元</strong>。一个标准线程由线程ID，当前指令指针（PC），寄存器集合和堆栈组成。进程由一个或多个线程组成，各线程之间共享（全局变量）代码段、数据段、堆、打开文件描述符、信号等。</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzE5MTM0MDM3Mzg5?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="进程内的线程"></p>
+<p>2.线程拥有的私有空间</p>
+<ul>
+<li><p><strong>线程栈</strong></p>
+</li>
+<li><p><strong>线程局部存储（Thread Local Storage，TLS）</strong>，某些操作系统为线程单独提供有限容量的私有空间。</p>
+</li>
+<li><p><strong>寄存器（包括PC寄存器）</strong>，是执行流的的基本数据，为线程私有。</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>线程私有</th>
+<th>线程共享（进程所有）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>局部变量</td>
+<td>全局变量</td>
+</tr>
+<tr>
+<td>函数的参数</td>
+<td>堆数据</td>
+</tr>
+<tr>
+<td>TLS数据</td>
+<td>函数中的静态变量</td>
+</tr>
+<tr>
+<td></td>
+<td>程序代码</td>
+</tr>
+<tr>
+<td></td>
+<td>打开的文件，A线程打开的文件，B线程可以读写</td>
+</tr>
+</tbody></table>
+<p>3.当线程数量小于等于处理器数量时，才是真正的线程并发，不同线程运行在不同的处理器上。当单处理器对应多线程时，并发是模拟出来的状态，操作系统让多线程程序轮流执行。一个不断在处理器上切换不同状态的线程的行为成为<strong>线程调度（Thread Schedule）</strong>。</p>
+<ul>
+<li><p><strong>运行（Running）</strong>：此时线程正在执行。</p>
+</li>
+<li><p><strong>就绪（Ready）</strong>：此时线程可以立刻运行，但CPU已被占用。</p>
+</li>
+<li><p><strong>等待（Waiting）</strong>：此时线程正在等待某一事件（比如I/O或同步）发生，无法执行。</p>
+</li>
+</ul>
+<p>处于运行中的线程拥有一段可以执行的时间，这段时间被称为<strong>时间片（Time Slice）</strong>。</p>
+<ul>
+<li><p><strong>如果时间片用尽时，该线程进入就绪状态。</strong></p>
+</li>
+<li><p><strong>如果在时间片用尽之前线程就开始等待某事件，该线程进入等待状态。</strong></p>
+</li>
+<li><p><strong>当一个线程离开运行状态时，调度系统选择一个就绪线程继续执行。</strong></p>
+</li>
+<li><p><strong>当处于等待状态的线程所等待的事件发生后，该线程进入就绪状态。</strong></p>
+</li>
+</ul>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzE5MTQzOTEzODY0?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="线程状态切换"></p>
+<p>4.线程调度的方法中都带有<strong>优先级调度（Priority Schedule）</strong>和<strong>轮转法（Round Robin）</strong>的痕迹。</p>
+<ul>
+<li><p>轮转法：各个线程轮流执行一小段时间。</p>
+</li>
+<li><p>优先级调度：线程拥有各自的<strong>线程优先级（Thread Priority）</strong>线程按照优先级顺序轮流执行。</p>
+</li>
+</ul>
+<blockquote>
+<p> CPU也喜欢先捏软柿子。</p>
+</blockquote>
+<p>系统会根据线程的表现自动调整优先级。频繁地进入等待状态（会放弃之后剩余的可占用时间份额）的线程（例如处理I/O的线程）称为<strong>IO密集型线程（IO Bound Thread）</strong>；频繁地进行大量运算，以至于每次都把时间片全部用尽的线程称为<strong>CPU密集型线程（CPU Bound Thread）</strong>。<strong>IO密集型线程总比CPU密集型线程容易得到优先级提升。</strong></p>
+<p>5.<strong>饿死（Starvation）</strong>现象：一个线程优先级较低，在它执行之前总是有优先级较高的线程要执行，因此这个低优先级线程始终无法执行。为了避免饿死现象，<strong>调度系统常常会逐步提升等待了过长时间得不到执行的线程的优先级</strong>。</p>
+<p>改变线程优先级一般的三种方式：</p>
+<ul>
+<li><p>用户指定优先级</p>
+</li>
+<li><p>根据进入等待状态的频繁程度而提升或降低优先级</p>
+</li>
+<li><p>长时间得不到执行而被提升优先级</p>
+</li>
+</ul>
+<p>6.线程在用尽时间片之后会被强制剥夺继续执行的权利，进入就绪状态，这个过程叫做<strong>抢占（Preemption）</strong>，即之后执行的别的线程抢占了当前线程。早期系统中线程是不可抢占的。线程必须手动发出放弃执行的命令，才能让其他线程得到执行。此时线程是主动进入就绪状态的，而不是靠时间片用尽被强制进入。若线程始终拒绝进入就绪状态也不进行等待，那么其他线程将永远无法执行。但此时线程调度的时机是确定的。</p>
+<p>在不可抢占线程中，线程主动放弃执行的情况：</p>
+<ul>
+<li><p>党线程试图等待某事件时（I/O等）</p>
+</li>
+<li><p>线程主动放弃时间片</p>
+</li>
+</ul>
+<p>7.Linux内核中并不存在正真意义上的线程概念。Linux将所有执行实体都称为<strong>任务（Task）</strong>，每一个任务概念上都类似于一个单线程，具有内存空间、执行实体、文件资源。共享同一个内存空间的多个任务构成了一个进程。</p>
+<table>
+<thead>
+<tr>
+<th>系统调用</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>fork</td>
+<td>复制当前进程</td>
+</tr>
+<tr>
+<td>exec</td>
+<td>使用新的可执行映像覆盖当前可执行映像</td>
+</tr>
+<tr>
+<td>clone</td>
+<td>创建子进程并从指定位置开始执行</td>
+</tr>
+</tbody></table>
+<p><strong>fork函数产生一个和当前进程完全一样的新进程，并和当前进程一同从fork函数返回。</strong></p>
+<pre><code class="hljs jboss-cli">pid_t pid;
+<span class="hljs-keyword">if</span><span class="hljs-params">(<span class="hljs-attr">pid</span> == fork()</span>)
+&#123;
+	<span class="hljs-string">...</span>
+&#125;</code></pre>
+
+<ul>
+<li><p>调用fork函数后，新的任务启动并和本任务一起从fork函数返回。<strong>本任务fork返回新任务的pid，新任务fork返回0</strong>。</p>
+</li>
+<li><p>fork不复制原任务的内存空间，而是和原任务一起共享一个<strong>写时复制/写时拷贝（Copy on Write，COW）</strong>的内存空间。写时复制指的是<strong>两个任务可以同时自由读取内存，但任意一个任务试图对内存进行修改时，内存就会复制一份提供给修改方单独使用，避免影响到其他任务使用。</strong></p>
+</li>
+<li><p><strong>exec可以用新的可执行映像替换当前的可执行影响</strong>，所以在fork产生一个新的任务之后，新任务调用exec来执行新的可执行文件。</p>
+</li>
+<li><p><strong>clone可以产生一个新任，从指定位置开始执行，可选共享当前进程的内存空间和文件等</strong>。</p>
+</li>
+</ul>
+<pre><code class="hljs oxygene">int clone(int <span class="hljs-comment">(*fn)(void*)</span>, void* child_stack, int <span class="hljs-keyword">flags</span>, void* arg);</code></pre>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzE5MTk0MDU1NTAx?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="写时复制"></p>
+<h3 id="1-6-2-线程安全"><a href="#1-6-2-线程安全" class="headerlink" title="1.6.2 线程安全"></a><strong>1.6.2 线程安全</strong></h3><p>1.在多线程环境中，可访问的全局变量和堆数据随时都可能被其他的线程改变。多线程程序在<strong>并发时数据的一致性</strong>非常重要。</p>
+<p>2.单指令的操作称为<strong>原子的（Atomic）</strong>，单条指令的执行是不会被打断的。例如自增（++）会被操作系统编译为汇编代码后不止一条指令，所以有可能执行一半就被调度系统打断，去执行别的代码，这不是线程安全的。</p>
+<table>
+<thead>
+<tr>
+<th>Windows API</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>InterlockedExchange</td>
+<td>原子地交换两个值</td>
+</tr>
+<tr>
+<td>InterlockedDecrement</td>
+<td>原子地减少一个值</td>
+</tr>
+<tr>
+<td>InterlockedIncrement</td>
+<td>原子地增加一个值</td>
+</tr>
+<tr>
+<td>InterlockedXor</td>
+<td>原子地进行异或操作</td>
+</tr>
+</tbody></table>
+<p>3.<strong>同步</strong>是指在一个线程访问数据未结束的时候。其他线程不得对同一个数据进行访问，如此对数据的访问被原子化了。</p>
+<p>4.同步最常用的方法是使用<strong>锁（Lock）</strong>。锁是一种非强制机制，每一个线程在访问数据资源之前需试图<strong>获取（Acquire）</strong>锁，并在访问结束之后<strong>释放（Release）</strong>锁。<strong>在锁已经被占用的时候试图获取锁，线程会等待，直到锁被重新可用。</strong></p>
+<p>5.<strong>二元信号量（Binary Semaphore）</strong>是最简单的锁，有<strong>占用与非占用</strong>两种状态。它适合只能被唯一一个线程独占访问的资源。对于允许多个线程并发访问的资源，多元信号量简称<strong>信号量（Semaphore）</strong>。<strong>一个初始值为N的信号量允许N个线程并发访问。</strong>线程访问资源的时候对信号量的操作步骤如下：</p>
+<ul>
+<li>将信号量的值减1</li>
+<li>如果信号量的值小于0，则进入等待状态，否则继续执行。访问完资源后，线程释放信号量</li>
+<li>将信号量的值加1</li>
+<li>如果信号量的值小于1，唤醒一个等待中的线程</li>
+</ul>
+<p>6.<strong>互斥量（Mutex）</strong>和二元信号量类似，资源同时允许一个线程访问。<strong>信号量在整个系统中可以被任意线程获取或释放</strong>，即同一个信号量可以被系统中的任意一个线程获取之后由另一个线程释放。<strong>互斥量要求哪个线程获取互斥量，哪个线程负责释放互斥量。</strong></p>
+<p>7.<strong>临界区（Critical Section）</strong>是比互斥量更加严格的同步手段。把临界区的锁获取称为进入临界区，锁的释放称为离开临界区。<strong>互斥量和信号量在系统的任何进程里都是可见的，即一个进程创建的互斥量或信号量，另一个进程试图去获取该锁是合法的。临界区作用范围仅限于本进程，其他进程无法获取该锁。</strong></p>
+<p>8.<strong>读写锁（Read-Write Lock）</strong>是一种特定的场合的同步。对于同一个锁，读写锁有<strong>共享的（Shard）</strong>或<strong>独占的（Exclusive）</strong>两种获取方式。</p>
+<ul>
+<li><p>当锁处于自由状态时，试图以任何一种方式获取锁都能成功，并将锁置于对应状态。</p>
+</li>
+<li><p>如果锁处于共享状态，其他线程以共享的方式获取锁仍会成功，此时锁分配给多个线程。</p>
+</li>
+<li><p>如果其他线程试图以独占的方式获取已经处于共享状态的锁，那么它必须等待锁被所有的线程释放。</p>
+</li>
+<li><p>处于独占的锁阻止任何其他线程获取该锁。</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>读写锁状态</th>
+<th>以共享方式获取</th>
+<th>以独占方式获取</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>自由</td>
+<td>成功</td>
+<td>成功</td>
+</tr>
+<tr>
+<td>共享</td>
+<td>成功</td>
+<td>等待</td>
+</tr>
+<tr>
+<td>独占</td>
+<td>等待</td>
+<td>等待</td>
+</tr>
+</tbody></table>
+<p>9.条件变量（Condition Variable）类似于一个栅栏。</p>
+<ul>
+<li><p>线程可以等待条件变量，一个条件变量可以可以被多个线程等待</p>
+</li>
+<li><p>线程可以唤醒条件变量，此时某个或所有等待此条件的变量的线程都会被唤醒并继续支持</p>
+</li>
+</ul>
+<p><strong><strong>未完待续，下次继续补在后面。。。</strong></strong></p>
+<p><strong><em>=================================================</em></strong></p>
+<p><strong><strong>继续。。。</strong></strong></p>
+<p>10.一个函数被重入，表示这个函数没有执行完成，由于外部因素或内部调用，又一次进入该函数执行。只有两种情况：</p>
+<ul>
+<li><strong>多个线程同时执行这个函数</strong></li>
+<li><strong>函数自身调用自身（递归调用）</strong></li>
+</ul>
+<p>一个函数是<strong>可重入的（Reentrant）</strong>，说明该函数被重入之后不会产生任何不良后果，可以在多线程环境中安全使用。如要成为可重入，需有以下特点：</p>
+<ul>
+<li>不使用任何<strong>（局部）静态</strong>或<strong>全局的非const变量</strong></li>
+<li>不返回任何<strong>（局部）静态</strong>或<strong>全局的非const变量的指针</strong></li>
+<li>仅依赖于调用方提供的参数</li>
+<li>不依赖于任何单个资源的锁（mutex等）</li>
+<li>不调用任何不可重入的函数</li>
+</ul>
+<p>11.过度优化：<strong>编译器进行优化时，有可能为了提高变量的访问速度，把变量放到某个寄存器中却不写回；也有可能为了效率而交换毫不相干的两条相邻指令。</strong></p>
+<p>使用<strong>volatile</strong>关键字试图阻止编译器过度优化。</p>
+<ul>
+<li>阻值编译器为了提高速度将一个变量缓存到寄存器内而不写回</li>
+<li>阻值编译器调整操作volatile变量的指令顺序</li>
+</ul>
+<p><strong>CPU进行动态调度时，在执行程序时为了提高效率可能交换指令的顺序。</strong></p>
+<pre><code class="hljs cpp"><span class="hljs-comment">/*</span>
+<span class="hljs-comment">C++中new包含两个步骤：(1)分配内存、(2)调用析构函数</span>
+<span class="hljs-comment">pInst = new T 包含三个步骤：(1)分配内存、(2)在内存的位置上调用构造函数、(3)将内存的地址赋值给pInst，(2)(3)顺序是可以颠倒的。</span>
+<span class="hljs-comment">*/</span>
+
+<span class="hljs-keyword">volatile</span> T *pInst = <span class="hljs-number">0</span>;
+<span class="hljs-function">T* <span class="hljs-title">GetInstance</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">if</span>(pInst == <span class="hljs-literal">NULL</span>)
+	&#123;
+		lock();
+		<span class="hljs-keyword">if</span>(pInst == <span class="hljs-literal">NULL</span>）
+			pInst = <span class="hljs-keyword">new</span> T;
+		unlock();
+	&#125;
+	<span class="hljs-keyword">return</span> pInst;
+&#125;</code></pre>
+
+<p>通常情况下调用CPU提供的一条指令，通常被称为<strong>barrier</strong>，一条barrier指令会阻值CPU将该指令之前的指令交换到barrier之后。</p>
+<pre><code class="hljs pgsql"><span class="hljs-keyword">if</span>(!pInst)
+&#123;
+	T *<span class="hljs-keyword">temp</span> = <span class="hljs-built_in">new</span> T;
+	barrier();
+	pInst = <span class="hljs-keyword">temp</span>;
+&#125;</code></pre>
+
+<h3 id="1-6-3-多线程内部情况"><a href="#1-6-3-多线程内部情况" class="headerlink" title="1.6.3 多线程内部情况"></a><strong>1.6.3 多线程内部情况</strong></h3><p>1.<strong>线程的并发执行是由多处理器或操作系统调度来实现的。</strong>用户实际使用的线程并不是内核线程，而是存在于用户态的用户线程。用户态线程并不一定在操作系统内核中对应同等数量的内核线程。</p>
+<ul>
+<li><strong>一对一模型</strong>：一个用户使用的线程唯一对应一个内核线程</li>
+</ul>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzIxMTcxMjQ3NzEz?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="一对一线程模型"></p>
+<p>优点：线程之间<strong>真正的并发</strong>，一个线程阻塞，其他线程执行不受影响。<br>缺点：<strong>操作系统限制了内核线程的数量</strong>，一对一模型的数量受到限制；<strong>线程调度时上下文切换开销大，导致用户线程执行效率低下。</strong></p>
+<ul>
+<li><strong>多对一模型</strong>：<strong>多个用户线程映射到一个内核线程上</strong>，线程之间的切换由用户态的代码决定。</li>
+</ul>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzIxMTcxODMyNjky?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="多对一线程模型"></p>
+<p>优点：<strong>高效的上下文切换和几乎无限制的线程数量。</strong><br>缺点：如果一个用户线程阻塞，那么所有线程都无法得到执行，内核线程也随之阻塞。</p>
+<ul>
+<li><strong>多对多模型</strong>：将多个用户线程映射到少数但不止一个内核线程上。</li>
+</ul>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzIxMTcyMzI2Nzg5?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="多对多线程模型"></p>
+<p>优点：一个用户线程阻塞不会使所有用户线程阻塞，因为此时还会有别的线程可以被调度执行。</p>
+<p><strong>* <em>终于完了。。。后面就不会跟着目录写了。。。</em> *</strong></p>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Linux/">Linux</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E9%93%BE%E6%8E%A5%E3%80%81%E8%A3%85%E8%BD%BD%E4%B8%8E%E5%BA%93/">链接、装载与库</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/06/27/compile-and-link/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">链接、装载与库——编译与链接</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/06/27/virtual-address-space/">
+                        <span class="hidden-mobile">链接、装载与库——虚拟地址空间</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "链接、装载与库——进程与线程&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

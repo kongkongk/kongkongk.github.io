@@ -17,7 +17,7 @@
   <meta name="description" content="">
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
-  <title>学习的日子 - Hexo</title>
+  <title>链接、装载与库——目标文件（3） - Hexo</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -152,8 +152,8 @@
               
   <div class="mt-3 post-meta">
     <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-    <time datetime="2020-06-26 18:45">
-      2020年6月26日 晚上
+    <time datetime="2020-06-27 21:03">
+      2020年6月27日 晚上
     </time>
   </div>
 
@@ -163,7 +163,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      351 字
+      1.2k 字
     </span>
   
 
@@ -173,7 +173,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      3
+      13
        分钟
     </span>
   
@@ -218,11 +218,75 @@
               </p>
             
             <article class="markdown-body">
-              <h3 id="学习的日子"><a href="#学习的日子" class="headerlink" title="学习的日子"></a>学习的日子</h3><p>学习，是一个漫长的经历。期间的快乐和苦痛只有自己感受最深。</p>
-<p>学习的路程——道阻且长，但在这路上最大的动力就是内心的信念和兴趣了。</p>
-<p>学习也有一段时间了，其实内心一直反感诸如此类的博客，认为有这时间不如多看看几页书、多想想项目方案。但前天施老师的一句话让我重新思考了这个问题。没错，人也是一种遵循自然法则的生物。到了一定年龄，其实各机能就会到达顶峰，随后而来的就是下滑。这其中最可怕的就是记忆力下滑。换个说法，说哲学点儿，我追不上时间。时光匆匆，白驹过隙，时间的流逝不留下一丝痕迹，表象能确认的可能就是那钟表滴答滴答的声音了吧。但我有时间没有的能力，我可以将一切经历记录下来，让时间留在这些记录中。</p>
-<p>路虽弥,不行不至；事虽小,不做不成。未来的路还很长，做最好的自己，尽最大的能力，不让自己后悔就好。</p>
-<p>第一次写blog，没个主题，也不知道写了些什么，最后还是送给自己一句话吧：桃李不言，下自成蹊。</p>
+              <p><strong>* <em>总结的速度，追不上看书的速度了。。。</em> *</strong></p>
+<h1 id="第三章-目标文件里面有什么"><a href="#第三章-目标文件里面有什么" class="headerlink" title="第三章 目标文件里面有什么"></a>第三章 目标文件里面有什么</h1><blockquote>
+<p><strong>ELF文件的基本结构是什么样子？</strong></p>
+</blockquote>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNDI2MTg0NTQzNzgx?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="图3.6 ELF文件结构"></p>
+<p>ELF目标文件的最前部是ELF <strong>文件头（ELF Header）</strong>，其包含<strong>描述整个文件的基本属性</strong>，如ELF文件版本、目标机器型号、程序入口地址等。接着是各段。之后为<strong>段表（Section Header Table）</strong>，该表<strong>描述了ELF文件包含的所有段的信息</strong>，如短的段名、段的长度、在文件中的偏移、读写权限及段的其他属性。</p>
+<ol>
+<li><p>ELF文件头中定义了<strong>ELF魔数</strong>、<strong>文件机器字节长度</strong>、<strong>数据存储方式</strong>、版本、运行平台、ABI版本、ELF重定位类型、硬件平台、硬件平台版本、<strong>入口地址</strong>、<strong>程序头入口和长度</strong>、<strong>段表的位置和长度及段的数量</strong>。ELF文件头结构及相关常数被定义在“<strong>/usr/include/elf.h</strong>”。</p>
+<pre><code class="hljs cpp"><span class="hljs-comment">//32位文件结构头</span>
+<span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span></span>
+<span class="hljs-class">&#123;</span>
+	 <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">char</span> e_ident[<span class="hljs-number">16</span>];<span class="hljs-comment">//魔数</span>
+	 ELF32_Half e_type;<span class="hljs-comment">//文件类型</span>
+	 ELF32_Half e_machine;<span class="hljs-comment">//平台属性</span>
+	 ELF32_Word e_version;<span class="hljs-comment">//版本号</span>
+	 ELF32_Addr e_entry;<span class="hljs-comment">//入口虚拟地址</span>
+	 ELF32_Off e_phoff;
+	 ELF32_Off e_shoff;<span class="hljs-comment">//段表在文件中的偏移</span>
+	 ELF32_Word e_flags;
+	 ELF32_Half e_ehsize;
+	 ELF32_Half e_phentsize;
+	 ELF32_Half e_phnum;
+	 ELF32_Half e_shentsize;<span class="hljs-comment">//段表描述符大小，一般为sizeof(Elf32_Shdr)</span>
+	 ELF32_Half e_shnum;<span class="hljs-comment">//段描述符数量，等于文件中拥有段的数量</span>
+	 <span class="hljs-comment">//Seciton header sting table index</span>
+	 ELF32_Half e_shstrndx;<span class="hljs-comment">//段表字符串表所在的段在段表中的下标</span>
+&#125;ELF32_Ehdr;</code></pre>
+</li>
+</ol>
+<ul>
+<li>ELF文件头最前面的“<strong>Magic</strong>”的16个字节对应“ELF32_Ehdr“的e_ident成员，用来标识ELF文件的平台属性。<br><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNDI3MTE0MDU2NzUy?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="ELF魔数"></li>
+<li>前四个字节为ELF文件<strong>统一标识码</strong>，为0x7F、0x45、0x4c、0x46.分别对应ASCII字符中的DEL控制符、E、L、F。第五个字节用来标识<strong>ELF文件类</strong>。第六个字节规定ELF文件<strong>大小端</strong>。第七个字节规定ELF文件主版本号。后九个未定义，填0。</li>
+</ul>
+<ol start="2">
+<li><p><strong>段表（Section Header Table）</strong>保存着段的基本属性的结构，它描述了各段的信息，如段的段名、段的长度、在文件中的偏、读写权限及段的其他属性。<strong>段结构由段表决定，编译器、连接器依靠段表定位和访问各段的属性。段表的位置由文件头的”e_shoff“决定。</strong></p>
+<pre><code class="hljs cpp"><span class="hljs-comment">//段描述符结构</span>
+<span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span></span>
+<span class="hljs-class">&#123;</span>	
+	<span class="hljs-comment">//段名是一个字符串，位于.shstrtab字符串表。sh_name是段名字符串在.shstrtab中的偏移</span>
+	Elf32_Word sh_name;
+	Elf32_Word sh_type;<span class="hljs-comment">//段的类型</span>
+	Elf32_Word sh_flags;<span class="hljs-comment">//段的标志位</span>
+	<span class="hljs-comment">//段虚拟地址，若该段可以被加载则sh_addr为该段被加载后在进程地址空间中的虚拟的地址；否则为0</span>
+	Elf32_Addr sh_addr;
+	<span class="hljs-comment">//段偏移，如果该段存在于文件中，则表示该段在文件中的偏移，否则无意义如.bss段</span>
+	Elf32_Off sh_offset;
+	Elf32_Word sh_size;<span class="hljs-comment">//段的长度</span>
+	Elf32_Word sh_link;<span class="hljs-comment">//段链接信息</span>
+	Elf32_Word sh_info;<span class="hljs-comment">//段链接信息</span>
+	<span class="hljs-comment">//段地址对齐，地址对齐的数量都是2的指数倍，sh_addralign表示地址对齐数量中的指数</span>
+	Elf32_Word sh_addralign;
+	<span class="hljs-comment">//项的长度，有些段包含固定大小的项，如符号表所包含的每个符号大小一样；若不包含固定大小的项，则为0</span>
+	Elf32_Word sh_entsize;
+&#125;Elf32_Shdr;</code></pre>
+<ul>
+<li>段表是一个以”<strong>Elf32_Shdr</strong>“ ——<strong>段描述符（Section Description）</strong>结构体为元素的<strong>数组</strong>。<strong>数组元素的个数等于段的个数</strong>，每个”Elf32_Shdr“结构体对应一个段。<strong>ELF段表的数组的第一个元素是无效的段描述符，其类型为NULL。</strong>Elf32_Shdr被定义在”/usr/include/elf.h“中</li>
+</ul>
+<p>更复杂的ELF文件结构：</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNDI3MTQ1MTQwOTg0?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="更复杂的ELF文件结构">    </p>
+</li>
+<li><p><strong>重定位表（Relocation Table）</strong>，类型（sh_type）为”<strong>SHT_REL</strong>“。链接器在处理目标文件时，须要对目标文件中的某些部位进行重定位，即代码段和数据段中对绝对地址引用的位置<strong>。重定位信息都记录在重定位表中，每个须要重定位的段都会有一个相应的重定位表。</strong>一个重定位表同时也是ELF的一个段。</p>
+</li>
+<li><p>因为字符串的长度是不固定的，所以常见的表示方法是<strong>把字符串集中起来存放到一个表，然后使用字符串在表中的偏移来引用字符串</strong>。在ELF文件中<strong>引用字符串只须给出一个数字下标即可，不用考虑字符串长度的问题</strong>。<br>一般字符串表在ELF文件中以段的形式保存，常见段<strong>字符串表（String Table）”.strtab“</strong>和<strong>段表字符串表（Section Header String Table）”.shstrtab“</strong>。字符串表保存<strong>普通的字符串</strong>，如<strong>符号的名字</strong>；段表字符串表保存<strong>段表中用到的字符串</strong>，如<strong>段名（sh_name）</strong>。</p>
+</li>
+</ol>
+<blockquote>
+<p><strong>分析ELF文件头，得到段表和段表字符串表的位置，继而解析整个ELF文件</strong></p>
+</blockquote>
+<p><strong>* <em>下次就是静态链接了。。。Link！</em> *</strong></p>
 
             </article>
             <hr>
@@ -232,7 +296,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/Life/">Life</a>
+                      <a class="hover-with-bg" href="/categories/Linux/">Linux</a>
                     
                   </div>
                 
@@ -240,7 +304,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/%E6%84%9F%E6%83%B3%E9%9A%8F%E7%AC%94/">感想随笔</a>
+                      <a class="hover-with-bg" href="/tags/%E9%93%BE%E6%8E%A5%E3%80%81%E8%A3%85%E8%BD%BD%E4%B8%8E%E5%BA%93/">链接、装载与库</a>
                     
                   </div>
                 
@@ -253,15 +317,21 @@
                   <div class="post-prev col-6">
                     
                     
-                      <a href="/2020/06/27/computer-composition/">
+                      <a href="/2020/06/27/endianness/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">链接、装载与库——计算机组成</span>
+                        <span class="hidden-mobile">字节序</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
                   </div>
                   <div class="post-next col-6">
                     
+                    
+                      <a href="/2020/06/27/object-file-2/">
+                        <span class="hidden-mobile">链接、装载与库——目标文件（2）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
                     
                   </div>
                 </div>
@@ -423,7 +493,7 @@
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "学习的日子&nbsp;",
+        "链接、装载与库——目标文件（3）&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,

@@ -4,13 +4,275 @@
   
   
   <entry>
-    <title>Hello World</title>
+    <title>剑指Offer——（2）替换空格</title>
+    <link href="/2020/06/27/replace-spaces/"/>
+    <url>/2020/06/27/replace-spaces/</url>
+    
+    <content type="html"><![CDATA[<p><strong>题目描述：</strong></p><blockquote><p><strong>请实现一个函数，将一个字符串中的空格替换成“%20”。例如，当字符串为We Are Happy.则经过替换之后的字符串为We%20Are%20Happy。在此字符串上完成替换，空间保证足够。</strong></p></blockquote><p><strong>实现如下：</strong></p><pre><code class="hljs hsp"><span class="hljs-comment">//"We Are Happy"</span><span class="hljs-comment">//" helloworld"</span><span class="hljs-comment">//""</span><span class="hljs-comment">//"  "</span>class Solution &#123;public:void replaceSpace(char *<span class="hljs-keyword">str</span>, <span class="hljs-keyword">int</span> <span class="hljs-keyword">length</span>) &#123;<span class="hljs-comment">//判断异常情况</span><span class="hljs-keyword">if</span> (<span class="hljs-keyword">str</span> == NULL || *<span class="hljs-keyword">str</span> == NULL || <span class="hljs-keyword">length</span> &lt; <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span><span class="hljs-comment">;</span><span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span><span class="hljs-comment">;</span><span class="hljs-keyword">int</span> num = <span class="hljs-number">0</span><span class="hljs-comment">;</span><span class="hljs-keyword">while</span> (i &lt; <span class="hljs-keyword">length</span>)<span class="hljs-comment">//遍历统计' '个数</span>&#123;<span class="hljs-keyword">if</span> (<span class="hljs-keyword">str</span>[i] == <span class="hljs-string">' '</span>) ++num<span class="hljs-comment">;</span>++i<span class="hljs-comment">;</span>&#125;i = <span class="hljs-keyword">length</span> - <span class="hljs-number">1</span><span class="hljs-comment">;//将i移动到str最后一个字符位置</span><span class="hljs-keyword">length</span> = <span class="hljs-keyword">length</span> + num * <span class="hljs-number">2</span> - <span class="hljs-number">1</span><span class="hljs-comment">;//将length移动到替换后最后一个字符位置</span><span class="hljs-keyword">while</span> (i &gt;= <span class="hljs-number">0</span>)&#123;<span class="hljs-keyword">if</span> (<span class="hljs-keyword">str</span>[i] != <span class="hljs-string">' '</span>)<span class="hljs-comment">//非' '时正常移动</span>&#123;<span class="hljs-keyword">str</span>[<span class="hljs-keyword">length</span>] = <span class="hljs-keyword">str</span>[i]<span class="hljs-comment">;</span>--<span class="hljs-keyword">length</span><span class="hljs-comment">;</span>&#125;<span class="hljs-keyword">else</span>&#123;<span class="hljs-keyword">length</span> -= <span class="hljs-number">3</span><span class="hljs-comment">;//否则将length先前移动三个字节完成替换</span><span class="hljs-keyword">str</span>[<span class="hljs-keyword">length</span> + <span class="hljs-number">1</span>] = <span class="hljs-string">'%'</span><span class="hljs-comment">;</span><span class="hljs-keyword">str</span>[<span class="hljs-keyword">length</span> + <span class="hljs-number">2</span>] = <span class="hljs-string">'2'</span><span class="hljs-comment">;</span><span class="hljs-keyword">str</span>[<span class="hljs-keyword">length</span> + <span class="hljs-number">3</span>] = <span class="hljs-string">'0'</span><span class="hljs-comment">;</span>&#125;--i<span class="hljs-comment">;</span>&#125;&#125;&#125;<span class="hljs-comment">;</span></code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Data Structures and Algorithms</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>剑指Offer</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>剑指Offer——（1）二维数组中的查找</title>
+    <link href="/2020/06/27/find-in-a-two-dimensional-array/"/>
+    <url>/2020/06/27/find-in-a-two-dimensional-array/</url>
+    
+    <content type="html"><![CDATA[<p><strong>题目描述：</strong></p><blockquote><p><strong>在一个二维数组中，每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。请完成一个函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。</strong></p></blockquote><p><strong>实现如下：</strong></p><pre><code class="hljs angelscript"><span class="hljs-comment">/*</span><span class="hljs-comment">1 2 8  9</span><span class="hljs-comment">2 4 9  12</span><span class="hljs-comment">4 7 10 13</span><span class="hljs-comment">6 8 11 15</span><span class="hljs-comment">*/</span><span class="hljs-comment">//从右上角或左下角突破，时间复杂度O(n)</span><span class="hljs-keyword">class</span> <span class="hljs-symbol">Solution</span>&#123;<span class="hljs-keyword">public</span>:<span class="hljs-built_in">bool</span> Find(<span class="hljs-built_in">int</span> target, vector&lt;vector&lt;<span class="hljs-built_in">int</span>&gt;&gt; <span class="hljs-built_in">array</span>)&#123;<span class="hljs-keyword">if</span> (<span class="hljs-built_in">array</span>.empty()) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<span class="hljs-comment">//为空结束</span><span class="hljs-comment">//获取行、列数</span><span class="hljs-built_in">int</span> row = <span class="hljs-built_in">array</span>.size();<span class="hljs-built_in">int</span> col = <span class="hljs-built_in">array</span>[<span class="hljs-number">0</span>].size()；<span class="hljs-built_in">int</span> i = <span class="hljs-number">0</span>;<span class="hljs-built_in">int</span> j = col - <span class="hljs-number">1</span>;<span class="hljs-keyword">while</span> ((i &gt;= <span class="hljs-number">0</span> &amp;&amp; i &lt; row) &amp;&amp; (j &gt;= <span class="hljs-number">0</span> &amp;&amp; j &lt; col))<span class="hljs-comment">//防止越界</span>&#123;<span class="hljs-comment">//说明array[i][y]此行右边和此列下方的数都大于target</span><span class="hljs-keyword">if</span> (<span class="hljs-built_in">array</span>[i][j] &gt; target)--j;<span class="hljs-comment">//找到返回true</span><span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-built_in">array</span>[i][j] == target) <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<span class="hljs-comment">//说明array[i][j]此行左边的数和此列上方的数都小于target</span><span class="hljs-keyword">else</span>++i;&#125;<span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<span class="hljs-comment">//没找到返回false</span>&#125;&#125;;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Data Structures and Algorithms</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>剑指Offer</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>字节序</title>
+    <link href="/2020/06/27/endianness/"/>
+    <url>/2020/06/27/endianness/</url>
+    
+    <content type="html"><![CDATA[<p><strong>* <em>字节序是何物。。。？</em> *</strong></p><blockquote><p><strong>小人国的内战源于吃水煮鸡蛋时究竟是从大头敲开还是从小头敲开，因此曾发生过6次叛乱，其中一个皇帝送了命，另一个丢了王位。</strong></p></blockquote><p>不同的计算机体系结构中，可能采用不同的存储和传输机制，通常采用的<strong>字节存储机制</strong>主要有两种：<strong>大端（Big-endian）</strong>和<strong>小端（Little-endian）</strong>。</p><ul><li><p><strong>最重要的位或最重要的字节（MSB，Most Significant Bit/Byte）</strong>，表明在一个bit序列或一个byte序列中对整个序列取值影响最大的那个bit/byte。</p></li><li><p><strong>最不重要的位或最不重要的字节（LSB，Least Significant Bit/Byte）</strong>，表明在一个bit序列或一个byte序列中对整个序列取值影响最小的那个bit/byte。</p></li></ul><p>Big-endian规定<strong>MSB在存储时放在低地址，在传输时MSB放在流的开始</strong>。<strong>LSB存储时放在高地址，在传输时放在流的末尾</strong>。目前的PowerPC系列处理器、<strong>TCP/IP网络</strong>及<strong>Java虚拟机</strong>的字节序为Big-endian。<br>Little-endian规定与之相反。目前的Intel的<strong>x86系列</strong>及衍生CPU的字节序为Little-endian。</p><pre><code class="hljs cpp"><span class="hljs-comment">//判断机器采用何种存储机制</span><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;iostream&gt;</span></span><span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><span class="hljs-function"></span>&#123;<span class="hljs-keyword">int</span> i = <span class="hljs-number">0x12345678</span>;<span class="hljs-keyword">if</span> (<span class="hljs-number">0x78</span> == (<span class="hljs-keyword">char</span>)i)<span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-string">"Little-endian"</span> &lt;&lt; <span class="hljs-built_in">endl</span>;<span class="hljs-keyword">else</span> <span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-string">"Big-endian"</span> &lt;&lt; <span class="hljs-built_in">endl</span>;<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;&#125;</code></pre><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNDI3MTkxNjA4OTUy?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="监视"></p><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNDI3MTkxNjQxNDM3?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="内存"></p><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNDI3MTkxNzA0OTYz?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="Little-endian"></p><p><strong>* <em>鉴定完毕。。。牙膏厂果然是Little-endian。。。</em> *</strong></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Linux</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>字节序</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>链接、装载与库——目标文件（3）</title>
+    <link href="/2020/06/27/object-file-3/"/>
+    <url>/2020/06/27/object-file-3/</url>
+    
+    <content type="html"><![CDATA[<p><strong>* <em>总结的速度，追不上看书的速度了。。。</em> *</strong></p><h1 id="第三章-目标文件里面有什么"><a href="#第三章-目标文件里面有什么" class="headerlink" title="第三章 目标文件里面有什么"></a>第三章 目标文件里面有什么</h1><blockquote><p><strong>ELF文件的基本结构是什么样子？</strong></p></blockquote><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNDI2MTg0NTQzNzgx?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="图3.6 ELF文件结构"></p><p>ELF目标文件的最前部是ELF <strong>文件头（ELF Header）</strong>，其包含<strong>描述整个文件的基本属性</strong>，如ELF文件版本、目标机器型号、程序入口地址等。接着是各段。之后为<strong>段表（Section Header Table）</strong>，该表<strong>描述了ELF文件包含的所有段的信息</strong>，如短的段名、段的长度、在文件中的偏移、读写权限及段的其他属性。</p><ol><li><p>ELF文件头中定义了<strong>ELF魔数</strong>、<strong>文件机器字节长度</strong>、<strong>数据存储方式</strong>、版本、运行平台、ABI版本、ELF重定位类型、硬件平台、硬件平台版本、<strong>入口地址</strong>、<strong>程序头入口和长度</strong>、<strong>段表的位置和长度及段的数量</strong>。ELF文件头结构及相关常数被定义在“<strong>/usr/include/elf.h</strong>”。</p><pre><code class="hljs cpp"><span class="hljs-comment">//32位文件结构头</span><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span></span><span class="hljs-class">&#123;</span> <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">char</span> e_ident[<span class="hljs-number">16</span>];<span class="hljs-comment">//魔数</span> ELF32_Half e_type;<span class="hljs-comment">//文件类型</span> ELF32_Half e_machine;<span class="hljs-comment">//平台属性</span> ELF32_Word e_version;<span class="hljs-comment">//版本号</span> ELF32_Addr e_entry;<span class="hljs-comment">//入口虚拟地址</span> ELF32_Off e_phoff; ELF32_Off e_shoff;<span class="hljs-comment">//段表在文件中的偏移</span> ELF32_Word e_flags; ELF32_Half e_ehsize; ELF32_Half e_phentsize; ELF32_Half e_phnum; ELF32_Half e_shentsize;<span class="hljs-comment">//段表描述符大小，一般为sizeof(Elf32_Shdr)</span> ELF32_Half e_shnum;<span class="hljs-comment">//段描述符数量，等于文件中拥有段的数量</span> <span class="hljs-comment">//Seciton header sting table index</span> ELF32_Half e_shstrndx;<span class="hljs-comment">//段表字符串表所在的段在段表中的下标</span>&#125;ELF32_Ehdr;</code></pre></li></ol><ul><li>ELF文件头最前面的“<strong>Magic</strong>”的16个字节对应“ELF32_Ehdr“的e_ident成员，用来标识ELF文件的平台属性。<br><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNDI3MTE0MDU2NzUy?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="ELF魔数"></li><li>前四个字节为ELF文件<strong>统一标识码</strong>，为0x7F、0x45、0x4c、0x46.分别对应ASCII字符中的DEL控制符、E、L、F。第五个字节用来标识<strong>ELF文件类</strong>。第六个字节规定ELF文件<strong>大小端</strong>。第七个字节规定ELF文件主版本号。后九个未定义，填0。</li></ul><ol start="2"><li><p><strong>段表（Section Header Table）</strong>保存着段的基本属性的结构，它描述了各段的信息，如段的段名、段的长度、在文件中的偏、读写权限及段的其他属性。<strong>段结构由段表决定，编译器、连接器依靠段表定位和访问各段的属性。段表的位置由文件头的”e_shoff“决定。</strong></p><pre><code class="hljs cpp"><span class="hljs-comment">//段描述符结构</span><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span></span><span class="hljs-class">&#123;</span><span class="hljs-comment">//段名是一个字符串，位于.shstrtab字符串表。sh_name是段名字符串在.shstrtab中的偏移</span>Elf32_Word sh_name;Elf32_Word sh_type;<span class="hljs-comment">//段的类型</span>Elf32_Word sh_flags;<span class="hljs-comment">//段的标志位</span><span class="hljs-comment">//段虚拟地址，若该段可以被加载则sh_addr为该段被加载后在进程地址空间中的虚拟的地址；否则为0</span>Elf32_Addr sh_addr;<span class="hljs-comment">//段偏移，如果该段存在于文件中，则表示该段在文件中的偏移，否则无意义如.bss段</span>Elf32_Off sh_offset;Elf32_Word sh_size;<span class="hljs-comment">//段的长度</span>Elf32_Word sh_link;<span class="hljs-comment">//段链接信息</span>Elf32_Word sh_info;<span class="hljs-comment">//段链接信息</span><span class="hljs-comment">//段地址对齐，地址对齐的数量都是2的指数倍，sh_addralign表示地址对齐数量中的指数</span>Elf32_Word sh_addralign;<span class="hljs-comment">//项的长度，有些段包含固定大小的项，如符号表所包含的每个符号大小一样；若不包含固定大小的项，则为0</span>Elf32_Word sh_entsize;&#125;Elf32_Shdr;</code></pre><ul><li>段表是一个以”<strong>Elf32_Shdr</strong>“ ——<strong>段描述符（Section Description）</strong>结构体为元素的<strong>数组</strong>。<strong>数组元素的个数等于段的个数</strong>，每个”Elf32_Shdr“结构体对应一个段。<strong>ELF段表的数组的第一个元素是无效的段描述符，其类型为NULL。</strong>Elf32_Shdr被定义在”/usr/include/elf.h“中</li></ul><p>更复杂的ELF文件结构：</p><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNDI3MTQ1MTQwOTg0?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="更复杂的ELF文件结构">    </p></li><li><p><strong>重定位表（Relocation Table）</strong>，类型（sh_type）为”<strong>SHT_REL</strong>“。链接器在处理目标文件时，须要对目标文件中的某些部位进行重定位，即代码段和数据段中对绝对地址引用的位置<strong>。重定位信息都记录在重定位表中，每个须要重定位的段都会有一个相应的重定位表。</strong>一个重定位表同时也是ELF的一个段。</p></li><li><p>因为字符串的长度是不固定的，所以常见的表示方法是<strong>把字符串集中起来存放到一个表，然后使用字符串在表中的偏移来引用字符串</strong>。在ELF文件中<strong>引用字符串只须给出一个数字下标即可，不用考虑字符串长度的问题</strong>。<br>一般字符串表在ELF文件中以段的形式保存，常见段<strong>字符串表（String Table）”.strtab“</strong>和<strong>段表字符串表（Section Header String Table）”.shstrtab“</strong>。字符串表保存<strong>普通的字符串</strong>，如<strong>符号的名字</strong>；段表字符串表保存<strong>段表中用到的字符串</strong>，如<strong>段名（sh_name）</strong>。</p></li></ol><blockquote><p><strong>分析ELF文件头，得到段表和段表字符串表的位置，继而解析整个ELF文件</strong></p></blockquote><p><strong>* <em>下次就是静态链接了。。。Link！</em> *</strong></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Linux</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>链接、装载与库</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>链接、装载与库——目标文件（2）</title>
+    <link href="/2020/06/27/object-file-2/"/>
+    <url>/2020/06/27/object-file-2/</url>
+    
+    <content type="html"><![CDATA[<p><strong>* <em>逐个分析各段。。。</em> *</strong></p><h1 id="第三章-目标文件里面有什么"><a href="#第三章-目标文件里面有什么" class="headerlink" title="第三章 目标文件里面有什么"></a>第三章 目标文件里面有什么</h1><blockquote><p><strong>真正了不起的程序员对自己的程序的每一个字节都了如指掌。</strong> </p></blockquote><pre><code class="hljs cpp"><span class="hljs-comment">//Test.c</span><span class="hljs-keyword">int</span> global_init_var = <span class="hljs-number">84</span>;<span class="hljs-keyword">int</span> global_uninit_var;<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">func1</span><span class="hljs-params">(<span class="hljs-keyword">int</span> i)</span></span><span class="hljs-function"></span>&#123;<span class="hljs-built_in">printf</span>(<span class="hljs-string">"%d\n"</span>, i);&#125;<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><span class="hljs-function"></span>&#123;<span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> static_var = <span class="hljs-number">85</span>;<span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> static_var2;<span class="hljs-keyword">int</span> a = <span class="hljs-number">1</span>;<span class="hljs-keyword">int</span> bfunc1(static_var + static_var2 + a + b);<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;&#125;</code></pre><p>示例程序中包括代码段、数据段、BSS段、只读数据段（.rodata）、注释信息段（.comment）。</p><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNDI2MTUwMzA1NzAw?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="图3.4 目标文件组成"></p><ol><li><p><strong>代码段</strong>：</p><ul><li><strong>.text</strong>段中存放的是Test.c中函数func()和main()的<strong>指令</strong>。</li></ul></li><li><p><strong>数据段</strong>和<strong>只读数据段</strong>：</p><ul><li><strong>.data</strong>段保存<strong>初始化了的全局变量和局部静态变量</strong>（上述代码中的global_init_var和static_var）。</li></ul></li></ol><ul><li><p><strong>.rodata</strong>段存放<strong>只读数据</strong>，一般是程序的<strong>只读变量（const修饰的变量）</strong>和<strong>字符串常量</strong>（上述代码中”<strong>%d\n</strong>“是一种只读数据）。单独设立.rodata段从<strong>语义上支持C++的const关键字</strong>，也在加载时<strong>将属性映射成只读</strong>，保证安全性。有时编译器会把字符串常量放到.data段，而不会单独放在.rodata段。</p><ol start="3"><li><strong>BSS段</strong>：</li></ol></li><li><p><strong>.bss</strong>段中存放的是<strong>未初始化的全局变量和局部静态变量</strong>（上述代码中的global_uninit_var和static_var2），准确的说是.bss段为他们<strong>预留了空间</strong>。</p></li><li><p>有些编译器将未初始化的全局变量存放在目标文件.bss段，有些不存放只是<strong>预留一个未定义的全局变量符号”COMMON 符号“，到最终链接成可执行文件的时候再在.bss段·分配空间。</strong></p></li><li><p>但编译单元<strong>内部可见的静态变量</strong>（如·global_uninit_var加上static修饰），是存放在.bss段。</p></li><li><p><strong><code>static int x1 = 0;</code></strong></p></li></ul><p><strong>x1被放在.bss段，因为可以认为是未初始化的，所以被优化放在.bss段。</strong></p><ul><li><strong><code>static int x2 = 1;</code></strong></li></ul><p><strong>x2被放在.data段，因为初始化值为1，所以放在.data段。</strong></p><ol start="4"><li><p>其他段：<br><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNDI2MTgwNzEzMzI0?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="图3.5 其他段"></p></li><li><p>自定义段：</p><ul><li><strong><code>_attribute_((section(&quot;FOO&quot;))) int global = 42;</code></strong></li></ul></li></ol><ul><li><strong><code>_attribute_((section(&quot;BAR&quot;))) void foo()</code></strong><br>在全局变量和函数之前加上<code>_attribute_((section(&quot;name&quot;)))</code>属性可以把相应的变量或函数放到以”name“作为的段中。</li></ul><p><strong>* <em>以上为主要段，下一次总结ELF文件结构，包括文件头、段表。。。</em> *</strong></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Linux</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>链接、装载与库</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>链接、装载与库——目标文件（1）</title>
+    <link href="/2020/06/27/object-file-1/"/>
+    <url>/2020/06/27/object-file-1/</url>
+    
+    <content type="html"><![CDATA[<p><strong>* <em>一直被催更。。。</em> *</strong></p><h1 id="第三章-目标文件里面有什么"><a href="#第三章-目标文件里面有什么" class="headerlink" title="第三章 目标文件里面有什么"></a>第三章 目标文件里面有什么</h1><blockquote><p>PC平台流行的<strong>可执行文件格式（Executable）</strong>主要为Windows下的<strong>PE（Portable</strong><br><strong>Executable）</strong>和Linux下的<strong>ELF（Executable Linkable</strong><br><strong>Format）</strong>，都是<strong>COFF（Common file format）</strong>格式的变种。</p></blockquote><p>编译器编译源代码后生成的目标文件，其结构已经是编译后的可执行文件格式，但还没有经过链接，有些符号或地址还未调整，所以一般跟可执行文件采用相同格式存储。<strong>在Windows下将它们统称为PE-COFF文件格式，在Linux下将它们统称为ELF文件。</strong></p><p> <strong>动态链接库（DLL，Dynamic Linking Library）</strong>（<strong>Windows的.dll和Linux的.so</strong>）、<strong>静态链接库（Static Linking Library）</strong>（<strong>Windows的.lib和Linux的.a</strong>）都按照可执行文件格式存储。<strong>静态链接库是把很多目标文件捆绑在一起形成一个文件再加上索引，简单理解为一个包含很多目标文件的文件包。</strong></p><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNDEyMTcxNTUxOTA0?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="图3.1 ELF格式文件（1）"><br><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNDEyMTcxNjE0NjI0?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="图3.2 ELF格式文件（2）"></p><p>1.目标文件文件中至少包含编译后的机器指令代码、数据、链接时所需信息（如符号表、调试信息、 字符串等）。一般目标文件将这些信息按不同属性以“<strong>节</strong>”<strong>（Section）</strong>的形式存储，有时也叫<strong>段（Segment）</strong>（其实这两个是不同的角度的定义，看到后面时才理解），<strong>一般情况下他们都表示一个一定长度的区域。</strong></p><ul><li><p>程序源代码编译后的<strong>机器指令</strong>保存在<strong>代码段（Code Section，常见名字.code或.text）</strong></p></li><li><p><strong>初始化的全局变量</strong>和<strong>局部静态变量</strong>保存在<strong>数据段（Data Section，常见名字.data）</strong></p></li><li><p><strong>未初始化的全局变量</strong>和<strong>局部静态变量</strong>保存在<strong>.bss section</strong></p></li><li><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNDEyMTczMjM4ODE4?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="图3.3 程序与目标文件"></p></li><li><p><strong>ELF文件的文件头描述了整个文件的属性</strong>，包括文件是否可执行、是静态链接还是动态链接及入口地址、目标硬件、目标操作系统等信息。文件头还包含一个<strong>段表（Section Table），段表是一个描述文件各段的数组，具有每个段的信息（各段在文件中的偏移位置和段的属性等）。</strong></p></li><li><p>未初始化的全局变量和局部静态变量<strong>默认值都为0</strong>，本可以存放在.data段，但是在.data存放数据0没有必要。程序运行时他们的确占内存空间，并且可执行文件必须记录它们的大小总和，为其预留位置，记为.bss段。但<strong>.bss段没有内容，在文件中不占空间（better save space）。</strong></p></li></ul><p>2.程序源代码被编译后主要分为两种段：<strong>程序指令</strong>和<strong>程序数据</strong>。区分好处如下：</p><ul><li><p>程序被装载后，数据和指令被分别映射到<strong>两个虚存空间</strong>，将其<strong>权限</strong>分别设置为<strong>可读写</strong>和<strong>只读</strong>。<strong>防止程序的指令被改写。</strong></p></li><li><p><strong>指令和数据分离有利于提高程序的局部性。</strong>现代计算机的CPU缓存一般都被设计成数据缓存和指令缓存分离，所以两者分离存放<strong>对CPU缓存命中率提高有好处。</strong></p></li><li><p>当系统中运行同一个程序的多个副本时，其指令都是一样的，所以内存中只须保存一份该程序的指令部分。<strong>共享指令可以大量节省内存</strong>，对其他的只读数据同理。</p></li></ul><p><strong>* <em>先大概了解目标文件里面有什么，下次再逐个深入。。。</em> *</strong></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Linux</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>链接、装载与库</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>链接、装载与库——编译与链接</title>
+    <link href="/2020/06/27/compile-and-link/"/>
+    <url>/2020/06/27/compile-and-link/</url>
+    
+    <content type="html"><![CDATA[<p><strong>* <em>从第二章开始不再按照目录的顺序总结，而是将大块知识点总结在一起。。。</em> *</strong></p><h1 id="第二章-编译和链接"><a href="#第二章-编译和链接" class="headerlink" title="第二章 编译和链接"></a><strong>第二章 编译和链接</strong></h1><blockquote><p><strong>集成开发环境（IDE）</strong>一般都将编译和链接的过程一步完成，此过程成为构建（Bulid）。但其掩盖了系统软件运行机制。</p></blockquote><pre><code class="hljs gams"><span class="hljs-meta"><span class="hljs-meta-keyword">$gcc</span> hello.c</span><span class="hljs-symbol">$</span>./a.out</code></pre><p>一个<strong>可执行文件的生成</strong>，可以分解成4个步骤：<strong>预处理（Prepressing）</strong>、<strong>编译（Compilation）</strong>、<strong>汇编（Assembly）</strong>和<strong>链接（Linking）</strong>。</p><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzIyMjA1MzA4MTUy?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="GCC编译过程分解"></p><p>1.<strong>预编译</strong>：C程序源代码文件和相关头文件被预编译器cpp预编译成 .i 文件。C++程序被预编译后的文件拓展名为 .ii 。</p><pre><code class="hljs stylus"><span class="hljs-comment">/* -E表示只进行预编译 */</span><span class="hljs-variable">$gcc</span> -E hello<span class="hljs-selector-class">.c</span> -o hello<span class="hljs-selector-class">.i</span> 或 <span class="hljs-variable">$cpp</span> hello<span class="hljs-selector-class">.c</span> &gt; hello.i</code></pre><p><strong>预编译过程主要处理源代码文件中以“#”开始的预编译指令。</strong></p><ul><li><p>将所有的“#define”删除，并展开所有宏定义</p></li><li><p>处理所有条件预编译指令，如“#if”、“#ifdef”、“#elif”、“#else”、“#endif”</p></li><li><p>处理“#include”预编译指令，将包含的文件插入到该预编译指令的位置。此过程是递归的。</p></li><li><p>删除所有的注释“//”和“/**/”</p></li><li><p>添加行号和文件标识，以便于编译时器编译器产生调试用的行号信息及编译时产生错误或警告的时显示行号</p></li><li><p>保留所有#pragma编译器指令，因为编译器需要使用它们</p></li></ul><p>2.<strong>编译</strong>：把预处理完的文件进行一系列<strong>词法分析</strong>、<strong>语法分析</strong>、<strong>语义分析</strong>及<strong>优化后生成相应的汇编代码文件</strong>。</p><pre><code class="hljs stylus"><span class="hljs-comment">/* -S表示只进行编译 */</span><span class="hljs-variable">$gcc</span> -S hello<span class="hljs-selector-class">.i</span> -o hello<span class="hljs-selector-class">.s</span> 或 <span class="hljs-variable">$gcc</span> -S hello<span class="hljs-selector-class">.c</span> -o hello.s</code></pre><p>现在版本的GCC将<strong>预编译和编译两个步骤合并在一个步骤中，由编译器完成</strong>。对于C语言代码使用cc1程序、C++语言使用cc1plus、Objective-C语言使用cc1obj、fortran语言使用f771、Java语言使用jc1。</p><blockquote><p><strong>实际上gcc命令只是后台程序的包装，其根据不同的参数调用预编译器cc1、汇编器as、链接器ld。</strong></p></blockquote><p><strong>编译器是将高级语言翻译成机器语言的一个工具</strong>，其编译过程一般分为6步：<strong>扫描</strong>、<strong>语法分析</strong>、<strong>语义分析</strong>、<strong>源代码优化</strong>、<strong>代码生成</strong>和<strong>目标代码优化</strong>。</p><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzIyMjEzMjE1MDMw?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="编译过程"></p><ul><li><strong>语法分析</strong>：源代码程序被输入到<strong>扫描机（Scanner）</strong>，运用一种类似于<strong>有限状态机（Finite State Machine）</strong>的算法，将源代码的字符序列分割成一系列<strong>记号（Token）</strong>。<br>词法分析产生的记号一般分为：关键字、标识符、字符量（包含数字、字符串等）和特殊符号（如加号、等号）。此过程中，扫描器也将标识符存放到符号表，将数字、字符串常量存放到文字表。<br><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzIyMjE0NTI4Nzcx?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="语法树"></li></ul><p> <strong>符号和数字是最小的表达式，它们不再由表达式来组成，它们通常作为整个语法树的叶节点。</strong>语法分析的同时运算符号的优先级和含义也被确定下来。如果出现了表达式不合法，比如括号不匹配、表达式中缺少操作符等，编译器会报告语法分析阶段的错误。</p><ul><li><p><strong>语义分析</strong>：<strong>语义分析器（Semantic Analyzer）</strong>判断语句是否正真的有意义。编译器能分析的是<strong>静态语义（Static Semantic）</strong>，是在<strong>编译期可以确定的</strong>语义，通常包括声明、类型的匹配、类型的转换。而<strong>动态语义（Dynamic Semantic）</strong>只有在运行期才能确定，比如0作为除数。<br>语义分析后，<strong>语法树的标识符都标识了类型</strong>，若有类型的隐式转换，语义分析器会在语法树中插入相应的转换结点。<br><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzIzMjMyNDI5NzQ0?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="这里写图片描述"></p></li><li><p><strong>中间语言生成</strong>：<strong>源代码优化器（Source Code Optimizer）</strong>在源代码级别进行优化。源代码优化器往往将整个语法树转换成<strong>中间代码（Intermediate Code）</strong>，它是<strong>语法树的顺序表示</strong>。<br>它与目标代码非常接近，但<strong>其跟目标机器和运行环境无关</strong>，<strong>不包含数据的大小</strong>、<strong>变量地址</strong>、<strong>寄存器名</strong>等。中间代码常见类型有：<strong>三地址码（Three-address Code）</strong>和<strong>P-代码（P-Code）</strong>。<br><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzI2MjAxNTUwMTk5?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="优化后的语法树"><br>上图语法树翻译成三地址码为：</p><pre><code class="hljs mipsasm"><span class="hljs-built_in">t1</span> = <span class="hljs-number">2</span> + <span class="hljs-number">6</span><span class="hljs-built_in">t2</span> = index + <span class="hljs-number">4</span><span class="hljs-built_in">t3</span> = <span class="hljs-built_in">t2</span> * <span class="hljs-built_in">t3</span>array[index] = <span class="hljs-built_in">t3</span><span class="hljs-comment">/*继续优化*/</span><span class="hljs-built_in">t2</span> = index + <span class="hljs-number">4</span><span class="hljs-built_in">t2</span> = <span class="hljs-built_in">t2</span> * <span class="hljs-number">8</span></code></pre><p><strong>中间代码使编译器分成前端和后端。编译器前端负责产生机器无关的中间代码，编译器后端将中间代码转换成目标机器代码。</strong></p></li><li><p><strong>目标代码优化与生成</strong>：编译器后端主要包括<strong>代码生成器（Code Generator）</strong>和<strong>目标代码优化器（Target Code Optimizer）</strong>。<br><strong>代码生成器将中间代码转换成目标机器代码，目标代码优化器对目标代码进行优化</strong>，比如选择合适的寻址方式、使用位移代替乘法运算、删除多余指令等。</p></li></ul><p>3.<strong>汇编</strong>：汇编器将<strong>汇编代码转化成机器可以执行的指令</strong>，每一个汇编语句几乎都对应一条机器指令。根据<strong>汇编指令和机器指令的对照表</strong>一一翻译。</p><pre><code class="hljs stylus"><span class="hljs-variable">$as</span> hello<span class="hljs-selector-class">.s</span> -o hello<span class="hljs-selector-class">.o</span> 或 <span class="hljs-variable">$gcc</span> -c hello<span class="hljs-selector-class">.s</span> -o hello<span class="hljs-selector-class">.o</span> 或 <span class="hljs-variable">$gcc</span> -c hello<span class="hljs-selector-class">.c</span> -o hello.o</code></pre><p>4.<strong>链接</strong>：重新计算各个目标地址的过程叫做<strong>重定位（Relocation）</strong>。<strong>符号（Symbol）</strong>用来表示一个地址，这个地址可能是函数或变量的起始地址。汇编器在每次汇编程序的时候重新计算符号的地址，把所有引用该符号的指令修正到这个正确的地址。</p><p>一个程序被分割成多个模块之后，模块之间的通信方式有<strong>模块间的函数调用</strong>和<strong>模块间的变量访问</strong>两种方式，归结为模块间符号的引用。</p><blockquote><p><strong>定义符号的模块多出一块区域，引用该符号的模块刚好少了那一块区域。两者的拼接过程即链接（Linking）。</strong></p></blockquote><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzI2MjEyOTE5MTUw?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="模块间拼接"></p><ul><li>模块拼接——<strong>静态链接</strong></li></ul><blockquote><p><strong>将每个源代码模块独立地编译，然后按照需要将它们组装起来，这个组装模块的过程就是链接（Linking）。</strong></p></blockquote><p>链接过程主要包括<strong>地址和空间分配（Address and Storage Allocation）</strong>、<strong>符号决议（Symbol Resolution）</strong>和<strong>重定位（Relocation）</strong>等。每个模块的源代码文件经过编译器编译成<strong>目标文件（Object File，一般拓展名为.o或.obj）</strong>，<strong>目标文件和库（Library）一起链接形成最终可执行文件</strong>。</p><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzI2MjEzODMzNzcy?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="连接过程"></p><p>每个模块都是单独编译，编译器编译a.c时并不知道引用的函数的地址，所以暂时把调用该函数的目标地址搁置，等待最后链接时由链接器将这些指令的目标地址修正。<strong>链接器在链接时根据所引用的符号，自动去相应的模块查找该符号的地址，然后将a.c模块中所有引用到该符号的指令重新修正，让其目标地址为真正的符号的地址。</strong><br>地址修正的过程叫做<strong>重定位（Relocation）</strong>，每个要被修正的地方叫一个<strong>重定位入口（Relacation Entry）。</strong></p><p><strong>* <em>下次想总结一下UDP/TCP相关。。。</em> *</strong></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Linux</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>链接、装载与库</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>链接、装载与库——进程与线程</title>
+    <link href="/2020/06/27/processes-and-threads/"/>
+    <url>/2020/06/27/processes-and-threads/</url>
+    
+    <content type="html"><![CDATA[<p><strong>* <em>第一章最后一部分，part.3。。。</em> *</strong></p><h1 id="第一章-温故而知新"><a href="#第一章-温故而知新" class="headerlink" title="第一章 温故而知新"></a><strong>第一章 温故而知新</strong></h1><h2 id="1-6-众人拾柴火焰高"><a href="#1-6-众人拾柴火焰高" class="headerlink" title="1.6 众人拾柴火焰高"></a><strong>1.6 众人拾柴火焰高</strong></h2><h3 id="1-6-1-线程基础"><a href="#1-6-1-线程基础" class="headerlink" title="1.6.1 线程基础"></a><strong>1.6.1 线程基础</strong></h3><p>1.<strong>线程（Thread）</strong>，也称<strong>轻量级进程（Lightweight Process，LWP）</strong>，是<strong>程序执行流的最小单元</strong>。一个标准线程由线程ID，当前指令指针（PC），寄存器集合和堆栈组成。进程由一个或多个线程组成，各线程之间共享（全局变量）代码段、数据段、堆、打开文件描述符、信号等。</p><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzE5MTM0MDM3Mzg5?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="进程内的线程"></p><p>2.线程拥有的私有空间</p><ul><li><p><strong>线程栈</strong></p></li><li><p><strong>线程局部存储（Thread Local Storage，TLS）</strong>，某些操作系统为线程单独提供有限容量的私有空间。</p></li><li><p><strong>寄存器（包括PC寄存器）</strong>，是执行流的的基本数据，为线程私有。</p></li></ul><table><thead><tr><th>线程私有</th><th>线程共享（进程所有）</th></tr></thead><tbody><tr><td>局部变量</td><td>全局变量</td></tr><tr><td>函数的参数</td><td>堆数据</td></tr><tr><td>TLS数据</td><td>函数中的静态变量</td></tr><tr><td></td><td>程序代码</td></tr><tr><td></td><td>打开的文件，A线程打开的文件，B线程可以读写</td></tr></tbody></table><p>3.当线程数量小于等于处理器数量时，才是真正的线程并发，不同线程运行在不同的处理器上。当单处理器对应多线程时，并发是模拟出来的状态，操作系统让多线程程序轮流执行。一个不断在处理器上切换不同状态的线程的行为成为<strong>线程调度（Thread Schedule）</strong>。</p><ul><li><p><strong>运行（Running）</strong>：此时线程正在执行。</p></li><li><p><strong>就绪（Ready）</strong>：此时线程可以立刻运行，但CPU已被占用。</p></li><li><p><strong>等待（Waiting）</strong>：此时线程正在等待某一事件（比如I/O或同步）发生，无法执行。</p></li></ul><p>处于运行中的线程拥有一段可以执行的时间，这段时间被称为<strong>时间片（Time Slice）</strong>。</p><ul><li><p><strong>如果时间片用尽时，该线程进入就绪状态。</strong></p></li><li><p><strong>如果在时间片用尽之前线程就开始等待某事件，该线程进入等待状态。</strong></p></li><li><p><strong>当一个线程离开运行状态时，调度系统选择一个就绪线程继续执行。</strong></p></li><li><p><strong>当处于等待状态的线程所等待的事件发生后，该线程进入就绪状态。</strong></p></li></ul><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzE5MTQzOTEzODY0?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="线程状态切换"></p><p>4.线程调度的方法中都带有<strong>优先级调度（Priority Schedule）</strong>和<strong>轮转法（Round Robin）</strong>的痕迹。</p><ul><li><p>轮转法：各个线程轮流执行一小段时间。</p></li><li><p>优先级调度：线程拥有各自的<strong>线程优先级（Thread Priority）</strong>线程按照优先级顺序轮流执行。</p></li></ul><blockquote><p> CPU也喜欢先捏软柿子。</p></blockquote><p>系统会根据线程的表现自动调整优先级。频繁地进入等待状态（会放弃之后剩余的可占用时间份额）的线程（例如处理I/O的线程）称为<strong>IO密集型线程（IO Bound Thread）</strong>；频繁地进行大量运算，以至于每次都把时间片全部用尽的线程称为<strong>CPU密集型线程（CPU Bound Thread）</strong>。<strong>IO密集型线程总比CPU密集型线程容易得到优先级提升。</strong></p><p>5.<strong>饿死（Starvation）</strong>现象：一个线程优先级较低，在它执行之前总是有优先级较高的线程要执行，因此这个低优先级线程始终无法执行。为了避免饿死现象，<strong>调度系统常常会逐步提升等待了过长时间得不到执行的线程的优先级</strong>。</p><p>改变线程优先级一般的三种方式：</p><ul><li><p>用户指定优先级</p></li><li><p>根据进入等待状态的频繁程度而提升或降低优先级</p></li><li><p>长时间得不到执行而被提升优先级</p></li></ul><p>6.线程在用尽时间片之后会被强制剥夺继续执行的权利，进入就绪状态，这个过程叫做<strong>抢占（Preemption）</strong>，即之后执行的别的线程抢占了当前线程。早期系统中线程是不可抢占的。线程必须手动发出放弃执行的命令，才能让其他线程得到执行。此时线程是主动进入就绪状态的，而不是靠时间片用尽被强制进入。若线程始终拒绝进入就绪状态也不进行等待，那么其他线程将永远无法执行。但此时线程调度的时机是确定的。</p><p>在不可抢占线程中，线程主动放弃执行的情况：</p><ul><li><p>党线程试图等待某事件时（I/O等）</p></li><li><p>线程主动放弃时间片</p></li></ul><p>7.Linux内核中并不存在正真意义上的线程概念。Linux将所有执行实体都称为<strong>任务（Task）</strong>，每一个任务概念上都类似于一个单线程，具有内存空间、执行实体、文件资源。共享同一个内存空间的多个任务构成了一个进程。</p><table><thead><tr><th>系统调用</th><th>作用</th></tr></thead><tbody><tr><td>fork</td><td>复制当前进程</td></tr><tr><td>exec</td><td>使用新的可执行映像覆盖当前可执行映像</td></tr><tr><td>clone</td><td>创建子进程并从指定位置开始执行</td></tr></tbody></table><p><strong>fork函数产生一个和当前进程完全一样的新进程，并和当前进程一同从fork函数返回。</strong></p><pre><code class="hljs jboss-cli">pid_t pid;<span class="hljs-keyword">if</span><span class="hljs-params">(<span class="hljs-attr">pid</span> == fork()</span>)&#123;<span class="hljs-string">...</span>&#125;</code></pre><ul><li><p>调用fork函数后，新的任务启动并和本任务一起从fork函数返回。<strong>本任务fork返回新任务的pid，新任务fork返回0</strong>。</p></li><li><p>fork不复制原任务的内存空间，而是和原任务一起共享一个<strong>写时复制/写时拷贝（Copy on Write，COW）</strong>的内存空间。写时复制指的是<strong>两个任务可以同时自由读取内存，但任意一个任务试图对内存进行修改时，内存就会复制一份提供给修改方单独使用，避免影响到其他任务使用。</strong></p></li><li><p><strong>exec可以用新的可执行映像替换当前的可执行影响</strong>，所以在fork产生一个新的任务之后，新任务调用exec来执行新的可执行文件。</p></li><li><p><strong>clone可以产生一个新任，从指定位置开始执行，可选共享当前进程的内存空间和文件等</strong>。</p></li></ul><pre><code class="hljs oxygene">int clone(int <span class="hljs-comment">(*fn)(void*)</span>, void* child_stack, int <span class="hljs-keyword">flags</span>, void* arg);</code></pre><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzE5MTk0MDU1NTAx?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="写时复制"></p><h3 id="1-6-2-线程安全"><a href="#1-6-2-线程安全" class="headerlink" title="1.6.2 线程安全"></a><strong>1.6.2 线程安全</strong></h3><p>1.在多线程环境中，可访问的全局变量和堆数据随时都可能被其他的线程改变。多线程程序在<strong>并发时数据的一致性</strong>非常重要。</p><p>2.单指令的操作称为<strong>原子的（Atomic）</strong>，单条指令的执行是不会被打断的。例如自增（++）会被操作系统编译为汇编代码后不止一条指令，所以有可能执行一半就被调度系统打断，去执行别的代码，这不是线程安全的。</p><table><thead><tr><th>Windows API</th><th>作用</th></tr></thead><tbody><tr><td>InterlockedExchange</td><td>原子地交换两个值</td></tr><tr><td>InterlockedDecrement</td><td>原子地减少一个值</td></tr><tr><td>InterlockedIncrement</td><td>原子地增加一个值</td></tr><tr><td>InterlockedXor</td><td>原子地进行异或操作</td></tr></tbody></table><p>3.<strong>同步</strong>是指在一个线程访问数据未结束的时候。其他线程不得对同一个数据进行访问，如此对数据的访问被原子化了。</p><p>4.同步最常用的方法是使用<strong>锁（Lock）</strong>。锁是一种非强制机制，每一个线程在访问数据资源之前需试图<strong>获取（Acquire）</strong>锁，并在访问结束之后<strong>释放（Release）</strong>锁。<strong>在锁已经被占用的时候试图获取锁，线程会等待，直到锁被重新可用。</strong></p><p>5.<strong>二元信号量（Binary Semaphore）</strong>是最简单的锁，有<strong>占用与非占用</strong>两种状态。它适合只能被唯一一个线程独占访问的资源。对于允许多个线程并发访问的资源，多元信号量简称<strong>信号量（Semaphore）</strong>。<strong>一个初始值为N的信号量允许N个线程并发访问。</strong>线程访问资源的时候对信号量的操作步骤如下：</p><ul><li>将信号量的值减1</li><li>如果信号量的值小于0，则进入等待状态，否则继续执行。访问完资源后，线程释放信号量</li><li>将信号量的值加1</li><li>如果信号量的值小于1，唤醒一个等待中的线程</li></ul><p>6.<strong>互斥量（Mutex）</strong>和二元信号量类似，资源同时允许一个线程访问。<strong>信号量在整个系统中可以被任意线程获取或释放</strong>，即同一个信号量可以被系统中的任意一个线程获取之后由另一个线程释放。<strong>互斥量要求哪个线程获取互斥量，哪个线程负责释放互斥量。</strong></p><p>7.<strong>临界区（Critical Section）</strong>是比互斥量更加严格的同步手段。把临界区的锁获取称为进入临界区，锁的释放称为离开临界区。<strong>互斥量和信号量在系统的任何进程里都是可见的，即一个进程创建的互斥量或信号量，另一个进程试图去获取该锁是合法的。临界区作用范围仅限于本进程，其他进程无法获取该锁。</strong></p><p>8.<strong>读写锁（Read-Write Lock）</strong>是一种特定的场合的同步。对于同一个锁，读写锁有<strong>共享的（Shard）</strong>或<strong>独占的（Exclusive）</strong>两种获取方式。</p><ul><li><p>当锁处于自由状态时，试图以任何一种方式获取锁都能成功，并将锁置于对应状态。</p></li><li><p>如果锁处于共享状态，其他线程以共享的方式获取锁仍会成功，此时锁分配给多个线程。</p></li><li><p>如果其他线程试图以独占的方式获取已经处于共享状态的锁，那么它必须等待锁被所有的线程释放。</p></li><li><p>处于独占的锁阻止任何其他线程获取该锁。</p></li></ul><table><thead><tr><th>读写锁状态</th><th>以共享方式获取</th><th>以独占方式获取</th></tr></thead><tbody><tr><td>自由</td><td>成功</td><td>成功</td></tr><tr><td>共享</td><td>成功</td><td>等待</td></tr><tr><td>独占</td><td>等待</td><td>等待</td></tr></tbody></table><p>9.条件变量（Condition Variable）类似于一个栅栏。</p><ul><li><p>线程可以等待条件变量，一个条件变量可以可以被多个线程等待</p></li><li><p>线程可以唤醒条件变量，此时某个或所有等待此条件的变量的线程都会被唤醒并继续支持</p></li></ul><p><strong><strong>未完待续，下次继续补在后面。。。</strong></strong></p><p><strong><em>=================================================</em></strong></p><p><strong><strong>继续。。。</strong></strong></p><p>10.一个函数被重入，表示这个函数没有执行完成，由于外部因素或内部调用，又一次进入该函数执行。只有两种情况：</p><ul><li><strong>多个线程同时执行这个函数</strong></li><li><strong>函数自身调用自身（递归调用）</strong></li></ul><p>一个函数是<strong>可重入的（Reentrant）</strong>，说明该函数被重入之后不会产生任何不良后果，可以在多线程环境中安全使用。如要成为可重入，需有以下特点：</p><ul><li>不使用任何<strong>（局部）静态</strong>或<strong>全局的非const变量</strong></li><li>不返回任何<strong>（局部）静态</strong>或<strong>全局的非const变量的指针</strong></li><li>仅依赖于调用方提供的参数</li><li>不依赖于任何单个资源的锁（mutex等）</li><li>不调用任何不可重入的函数</li></ul><p>11.过度优化：<strong>编译器进行优化时，有可能为了提高变量的访问速度，把变量放到某个寄存器中却不写回；也有可能为了效率而交换毫不相干的两条相邻指令。</strong></p><p>使用<strong>volatile</strong>关键字试图阻止编译器过度优化。</p><ul><li>阻值编译器为了提高速度将一个变量缓存到寄存器内而不写回</li><li>阻值编译器调整操作volatile变量的指令顺序</li></ul><p><strong>CPU进行动态调度时，在执行程序时为了提高效率可能交换指令的顺序。</strong></p><pre><code class="hljs cpp"><span class="hljs-comment">/*</span><span class="hljs-comment">C++中new包含两个步骤：(1)分配内存、(2)调用析构函数</span><span class="hljs-comment">pInst = new T 包含三个步骤：(1)分配内存、(2)在内存的位置上调用构造函数、(3)将内存的地址赋值给pInst，(2)(3)顺序是可以颠倒的。</span><span class="hljs-comment">*/</span><span class="hljs-keyword">volatile</span> T *pInst = <span class="hljs-number">0</span>;<span class="hljs-function">T* <span class="hljs-title">GetInstance</span><span class="hljs-params">()</span></span><span class="hljs-function"></span>&#123;<span class="hljs-keyword">if</span>(pInst == <span class="hljs-literal">NULL</span>)&#123;lock();<span class="hljs-keyword">if</span>(pInst == <span class="hljs-literal">NULL</span>）pInst = <span class="hljs-keyword">new</span> T;unlock();&#125;<span class="hljs-keyword">return</span> pInst;&#125;</code></pre><p>通常情况下调用CPU提供的一条指令，通常被称为<strong>barrier</strong>，一条barrier指令会阻值CPU将该指令之前的指令交换到barrier之后。</p><pre><code class="hljs pgsql"><span class="hljs-keyword">if</span>(!pInst)&#123;T *<span class="hljs-keyword">temp</span> = <span class="hljs-built_in">new</span> T;barrier();pInst = <span class="hljs-keyword">temp</span>;&#125;</code></pre><h3 id="1-6-3-多线程内部情况"><a href="#1-6-3-多线程内部情况" class="headerlink" title="1.6.3 多线程内部情况"></a><strong>1.6.3 多线程内部情况</strong></h3><p>1.<strong>线程的并发执行是由多处理器或操作系统调度来实现的。</strong>用户实际使用的线程并不是内核线程，而是存在于用户态的用户线程。用户态线程并不一定在操作系统内核中对应同等数量的内核线程。</p><ul><li><strong>一对一模型</strong>：一个用户使用的线程唯一对应一个内核线程</li></ul><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzIxMTcxMjQ3NzEz?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="一对一线程模型"></p><p>优点：线程之间<strong>真正的并发</strong>，一个线程阻塞，其他线程执行不受影响。<br>缺点：<strong>操作系统限制了内核线程的数量</strong>，一对一模型的数量受到限制；<strong>线程调度时上下文切换开销大，导致用户线程执行效率低下。</strong></p><ul><li><strong>多对一模型</strong>：<strong>多个用户线程映射到一个内核线程上</strong>，线程之间的切换由用户态的代码决定。</li></ul><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzIxMTcxODMyNjky?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="多对一线程模型"></p><p>优点：<strong>高效的上下文切换和几乎无限制的线程数量。</strong><br>缺点：如果一个用户线程阻塞，那么所有线程都无法得到执行，内核线程也随之阻塞。</p><ul><li><strong>多对多模型</strong>：将多个用户线程映射到少数但不止一个内核线程上。</li></ul><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzIxMTcyMzI2Nzg5?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="多对多线程模型"></p><p>优点：一个用户线程阻塞不会使所有用户线程阻塞，因为此时还会有别的线程可以被调度执行。</p><p><strong>* <em>终于完了。。。后面就不会跟着目录写了。。。</em> *</strong></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Linux</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>链接、装载与库</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>链接、装载与库——虚拟地址空间</title>
+    <link href="/2020/06/27/virtual-address-space/"/>
+    <url>/2020/06/27/virtual-address-space/</url>
+    
+    <content type="html"><![CDATA[<p><strong>* <em>接着第一章继续，part.2。。。</em> *</strong></p><h1 id="第一章-温故而知新"><a href="#第一章-温故而知新" class="headerlink" title="第一章 温故而知新"></a><strong>第一章 温故而知新</strong></h1><h2 id="1-5-内存不够怎么办"><a href="#1-5-内存不够怎么办" class="headerlink" title="1.5 内存不够怎么办"></a><strong>1.5 内存不够怎么办</strong></h2><p>1.早期的计算机中，程序直接运行在物理内存上，即程序在运行时所访问的地址都是物理地址。计算机将有限的物理内存分配给多个程序使用。这种简单的内存分配策略有很多问题。</p><ul><li><p><strong>地址空间不隔离</strong><br>所有程序直接访问物理地址，程序所使用的内存空间不是相互隔离的。恶意程序可以很容易改写其他程序的内存数据。</p></li><li><p><strong>内存使用效率低</strong><br>一个程序执行时，监控程序直接将整个程序装入内存中然后开始执行。如果要运行一个需要内存非常大的程序，此时剩余可用的内存已经不够了，此时可以将其他程序的数据暂时写入磁盘，等到要用时再读回来。整个过程中有大量的数据在换入换出，导致效率十分低下。</p></li><li><p><strong>程序运行的地址不确定</strong><br>程序每次装入运行时，需要给它从内存中分配一块足够大的空闲区域，此时空闲区域的位置是不确定的。这样影响了之后访问数据和指令跳转时的目标地址，涉及程序的重定位（PS:在后面的链接部分有讲，看了之后真是恍然大悟。。。）。</p></li></ul><p>解决这些问题的法宝：增加中间层，即使用一种间接的地址访问方法。把程序给出的地址看作一种<strong>虚拟地址（Virtual Address）</strong>，通过某些<strong>映射方法</strong>，将<strong>虚拟地址转换成实际的物理地址</strong>。只要能妥善地控制这个虚拟地址到物理地址的映射过程，就可以保证任意一个程序所能访问的物理内存跟另一个程序相互不重叠，达到地址空间隔离的效果。</p><h3 id="1-5-1-关于隔离"><a href="#1-5-1-关于隔离" class="headerlink" title="1.5.1 关于隔离"></a><strong>1.5.1 关于隔离</strong></h3><p>1.所谓地址空间可以想象成一个很大的数组，每个数组的元素都是一个字节，这个数组的大小由地址空间的地址长度决定。地址空间分为两种：<strong>虚拟地址空间（Virtual Address Space）</strong>和<strong>物理地址空间（Physical Address Space）</strong>。物理地址空间是实实在在存在的。虚拟地址空间是指虚拟的、人们想象出来的地址空间，其实它并不存在，<strong>每个进程都有自己独立的虚拟空间，而且每个进程只能访问自己的地址空间</strong>，有效地做到了进程的隔离。</p><h3 id="1-5-2-分段（Segmentation）"><a href="#1-5-2-分段（Segmentation）" class="headerlink" title="1.5.2 分段（Segmentation）"></a><strong>1.5.2 分段（Segmentation）</strong></h3><p>1.最开始使用<strong>分段（Segmentation）</strong>的方法，基本思路是把一段与程序所需要的内存空间大小的虚拟空间映射到某个地址空间。把这两块相同大小的地址空间一一映射。即<strong>虚拟空间中的每个字节相对应于物理空间中的每个字节</strong>。映射过程由软件来设置。</p><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzE2MjI1MTMwNTY5?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="段映射机制"></p><p>分段的方法解决了第一个和第三个问题。做到了<strong>地址隔离</strong>、<strong>程序不再需要重定位</strong>。但依旧没有解决内存使用效率的问题。分段对内存区域的映射以程序为单位，还是会将整个程序换入换出到磁盘。</p><h3 id="1-5-3-分页（Paging）"><a href="#1-5-3-分页（Paging）" class="headerlink" title="1.5.3 分页（Paging）"></a><strong>1.5.3 分页（Paging）</strong></h3><p>1.根据程序的<strong>局部性原理</strong>，<strong>当一个程序在运行时，在某个时间段内，它只是频繁地用到了一小部分数据</strong>。使用更小粒度的内存分割和映射的方法，使程序的局部性原理得到充分利用。</p><p>2.<strong>分页是将地址空间人为地等分为固定大小的页</strong>，每一页的大小由硬件决定，或硬件支持多种大小的页，操作系统决定页的大小。但在<strong>同一时刻只能选择一种大小</strong>。目前几乎所有的PC上的操作系统都使用<strong>4KB</strong>大小的页。</p><p>3.<strong>当进程的虚拟地址空间按页分割时，把常用的的数据和代码页装载到内存中，把不常用的代码和数据保存在磁盘里，当需要用的时候从磁盘中读取</strong>。</p><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzE2MjMxMjQ5NjE1?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="进程虚拟空间、物理空间和磁盘之间的页映射关系"></p><p>虚拟空间的页叫做<strong>虚拟页（VP，Virtual Page）</strong>，物理内存中的页叫做<strong>物理页（PP，Physical Page）</strong>，磁盘中的页叫做<strong>磁盘页（DP，Disk Page）</strong>。有些虚拟空间的页被映射到同一个物理页，实现了<strong>内存共享</strong>。</p><p>4.当进程所需的页不在内存中时，硬件会捕获此消息，即<strong>页错误（Page Fault）</strong>，操作系统接管进程，将需要的页从磁盘中读出并装入内存，之后建立映射关系。</p><p>5.保护也是页映射的目的之一，每个页可以设置权限属性。</p><p>6.虚拟存储的实现需要依靠硬件的支持。几乎所有的硬件都采用<strong>MMU（Memory Management Unit）</strong>部件进行页映射。</p><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzE2MjMyNTA5NDc2?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="虚拟地址到物理地址的转换"></p><p>在页映射模式下，CPU发出Virtual Address，即虚拟地址。经过MMU转换变成Physical Address。</p><p><strong>* <em>下次继续线程相关吧。。。</em> *</strong></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Linux</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>链接、装载与库</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>链接、装载与库——计算机组成</title>
+    <link href="/2020/06/27/computer-composition/"/>
+    <url>/2020/06/27/computer-composition/</url>
+    
+    <content type="html"><![CDATA[<p><strong>* <em>从这篇开始连续记录我的读书笔记，将书中重要的知识点总结，方便自己以后快速回忆与阅读。那就先从《程序员的自我修养——装载、链接与库》第一章开始喽。</em> *</strong></p><h1 id="第一章-温故而知新"><a href="#第一章-温故而知新" class="headerlink" title="第一章 温故而知新"></a><strong>第一章 温故而知新</strong></h1><h2 id="1-1-从Hello-World-说起"><a href="#1-1-从Hello-World-说起" class="headerlink" title="1.1 从Hello World 说起"></a><strong>1.1 从Hello World 说起</strong></h2><p>无</p><h2 id="1-2-万变不离其宗"><a href="#1-2-万变不离其宗" class="headerlink" title="1.2 万变不离其宗"></a><strong>1.2 万变不离其宗</strong></h2><p>1.计算机中有三个最为关键的部件，分别为<strong>中央处理器CPU</strong>、<strong>内存</strong>和<strong>I/O控制芯片</strong>。</p><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzE1MTkzMjQ5MjE5?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="早期计算机硬件结构"></p><p>早期的CPU的核心频率与内存一样，所以直接连接在<strong>同一个总线（Bus）上</strong>。但为了协调I/O设备与总线之间的速度，<strong>一般每个设备都会有一个相应的I/O控制器</strong>。</p><p>2.由于CPU核心频率的提升，且远远快于内存的速度，于是产生了与<strong>内存频率相一致的系统总线</strong>，而CPU采用<strong>倍频的方式与系统总线进行通信</strong>。</p><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzE1MTk0NDE4MDIx?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="硬件结构框架"></p><p>为了协调CPU、内存和高速的图形设备，专门设计了一个<strong>高速的北桥芯片</strong>，以便它们之间能够高速地交换数据。但如果相对低速的设备全部连接在北桥上，北桥同时处理不同速度的设备，设计会十分复杂。于是设计了<strong>专门处理低速设备的南桥（Southbridge）芯片</strong>,将低速设备都连接在南桥上，由南桥汇总后连接到北桥上。90年代时，PC在系统总线上采用PCI结构，在低速设备上采用ISA总线。</p><p>3.<strong>多对称处理器（SMP，Symmetry Multi-Processing）</strong>，每个CPU在系统中所处地位和所发挥的功能一样，是相互对称的。<strong>多核处理器（Multi-core Processor）</strong>实际上就是SMP的简化版，它们之间的区别很小，逻辑上来看它们是完全相同的。区别在于多核和SMP在<strong>缓存共享</strong>等方面有细微的差别，使得程序在优化上可以有针对性地处理。</p><h2 id="1-3-站得高，望得远"><a href="#1-3-站得高，望得远" class="headerlink" title="1.3 站得高，望得远"></a><strong>1.3 站得高，望得远</strong></h2><p>1.计算机系统软件体系结构采用一种层的结构。</p><blockquote><p>“计算机科学领域的任何问题都可以通过增加一个间接的中间层来解决。”</p></blockquote><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzE1MjAxMTI3OTI1?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="计算机软件体系结构"></p><ul><li><p>每个层次之间都需要相互通信，一般将通信的协议成为<strong>接口（Interface）</strong>，接口的下层是接口提供者，由它定义接口；接口的上层是接口的使用者，它使用接口来实现所需功能。</p></li><li><p>从整体层次结构上来看，开发工具与应用程序是是属于同一个层次的，都使用操作系统<strong>应用程序编程接口（Application Programming Interface）</strong>。应用程序接口的提供者运行库，什么样的运行库提供什么样的API。运行库使用操作系统提供的<strong>系统调用接口（System call Interface）</strong>,系统调用接口在实现中往往以<strong>软件中断（Software Interrupt）</strong>的方式提供。</p></li></ul><h2 id="1-4-操作系统做什么"><a href="#1-4-操作系统做什么" class="headerlink" title="1.4 操作系统做什么"></a><strong>1.4 操作系统做什么</strong></h2><blockquote><p><strong>操作系统的一个功能是提供抽象的接口，另外一个主要功能是管理硬件资源。</strong></p></blockquote><h3 id="1-4-1-不要让CPU打盹"><a href="#1-4-1-不要让CPU打盹" class="headerlink" title="1.4.1 不要让CPU打盹"></a><strong>1.4.1 不要让CPU打盹</strong></h3><p>1.如何高效、充分的利用CPU？</p><ul><li><p>计算机发展早期，为了充分利用CPU资源，编写了一个监控程序，当某个程序暂时无需使用CPU时，监控程序就把另外正在等待CPU资源的程序启动，使<strong>CPU充分利用</strong>。这种方法被称为<strong>多道程序（Multiprogramming）</strong>。其最大的问题是程序之间的调度太粗糙，程序之间不分轻重缓急。</p></li><li><p>经过改进，程序运行模式变成一种协作模式，即每个程序运行一段时间后都主动让出CPU给其他程序，使得一段时间内每个程序都有机会运行一小段时间。这种程序协作模式叫做<strong>分时系统（Time-Sharing System）</strong>。但如果一个程序一直霸占CPU，那么其他程序都得等着。</p></li><li><p><strong>多任务（Multi-tasking）系统</strong>，操作系统接管了所有的硬件资源，并且本身运行在一个手硬件保护的级别。所有的应用程序都以<strong>进程（Process）</strong>的方式运行在比操作系统权限更低的级别，<strong>每个进程都有自己独立的地址空间，使得进程之间的地址空间相互隔离。</strong></p></li><li><p>CPU由操作系统统一进行分配，<strong>每个进程根据进程优先级的高低都有机会得到CPU</strong>，如果运行时间超出了一定时间，操作系统会暂停该进程，将CPU资源分配给其他等待运行的进程。这种分配方式即<strong>抢占式（Preemptive）</strong>，<strong>操作系统可以强制剥夺并且分配给它认为目前最需要的进程。</strong></p><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzE1MjEzNzQ3MzQ4?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="进程转换流程"></p></li></ul><h3 id="1-4-2-设备驱动"><a href="#1-4-2-设备驱动" class="headerlink" title="1.4.2 设备驱动"></a><strong>1.4.2 设备驱动</strong></h3><p>1.当成熟的操作系统出现以后，硬件逐渐被抽象成了一系列概念。在UNIX中，硬件设备的访问跟访问普通文件一样。从硬件细节中解放，将繁琐的的硬件细节全交给操作系统中的<strong>硬件驱动（Device Driver）程序</strong>来完成。</p><p>2.文件系统是操作系统中最重要的部分之一，文件系统管理者磁盘中文件的存储方式。</p><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzE1MjE1MzM1NTM1?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="文件在磁盘中的结构"></p><p>硬盘的结构介绍：</p><ul><li><p>硬盘基本存储单位为<strong>扇区（Sector）</strong>，每个扇区一般为512字节。一个磁盘往往有多个盘片，每个盘片分两面，每面按照同心圆划分为若干个磁道，每个磁道划分为若干个扇区。</p></li><li><p>如果按照每个磁道都拥有相同的数量的扇区，那么靠近盘面外围的磁道密度肯定比内圈更加稀疏。但如果不同的磁道扇区数又不同，计算起来就十分麻烦。现代硬盘为了屏蔽这些复杂的硬件细节，普遍使用<strong>LBA（Logical Block Address）</strong>的方式，即整个硬盘中所有的扇区从0开始编号，一直到最后一个扇区，这个扇区编号叫做<strong>逻辑扇区号</strong>。</p></li></ul><p><strong>* <em>下次的读书笔记将总结第一章剩下的内容，主要为内存及其分配机制、线程相关等内容。</em> *</strong></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Linux</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>链接、装载与库</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>学习的日子</title>
     <link href="/2020/06/26/hello-world/"/>
     <url>/2020/06/26/hello-world/</url>
     
-    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
+    <content type="html"><![CDATA[<h3 id="学习的日子"><a href="#学习的日子" class="headerlink" title="学习的日子"></a>学习的日子</h3><p>学习，是一个漫长的经历。期间的快乐和苦痛只有自己感受最深。</p><p>学习的路程——道阻且长，但在这路上最大的动力就是内心的信念和兴趣了。</p><p>学习也有一段时间了，其实内心一直反感诸如此类的博客，认为有这时间不如多看看几页书、多想想项目方案。但前天施老师的一句话让我重新思考了这个问题。没错，人也是一种遵循自然法则的生物。到了一定年龄，其实各机能就会到达顶峰，随后而来的就是下滑。这其中最可怕的就是记忆力下滑。换个说法，说哲学点儿，我追不上时间。时光匆匆，白驹过隙，时间的流逝不留下一丝痕迹，表象能确认的可能就是那钟表滴答滴答的声音了吧。但我有时间没有的能力，我可以将一切经历记录下来，让时间留在这些记录中。</p><p>路虽弥,不行不至；事虽小,不做不成。未来的路还很长，做最好的自己，尽最大的能力，不让自己后悔就好。</p><p>第一次写blog，没个主题，也不知道写了些什么，最后还是送给自己一句话吧：桃李不言，下自成蹊。</p>]]></content>
     
     
+    <categories>
+      
+      <category>Life</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>感想随笔</tag>
+      
+    </tags>
     
   </entry>
   

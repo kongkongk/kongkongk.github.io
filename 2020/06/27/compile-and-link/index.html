@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>链接、装载与库——编译与链接 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>kongkong</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-06-27 20:55">
+      2020年6月27日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.8k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      19
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2020年6月27日 晚上
+                
+              </p>
+            
+            <article class="markdown-body">
+              <p><strong>* <em>从第二章开始不再按照目录的顺序总结，而是将大块知识点总结在一起。。。</em> *</strong></p>
+<h1 id="第二章-编译和链接"><a href="#第二章-编译和链接" class="headerlink" title="第二章 编译和链接"></a><strong>第二章 编译和链接</strong></h1><blockquote>
+<p><strong>集成开发环境（IDE）</strong>一般都将编译和链接的过程一步完成，此过程成为构建（Bulid）。但其掩盖了系统软件运行机制。</p>
+</blockquote>
+<pre><code class="hljs gams"><span class="hljs-meta"><span class="hljs-meta-keyword">$gcc</span> hello.c</span>
+<span class="hljs-symbol">$</span>./a.out</code></pre>
+
+<p>一个<strong>可执行文件的生成</strong>，可以分解成4个步骤：<strong>预处理（Prepressing）</strong>、<strong>编译（Compilation）</strong>、<strong>汇编（Assembly）</strong>和<strong>链接（Linking）</strong>。</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzIyMjA1MzA4MTUy?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="GCC编译过程分解"></p>
+<p>1.<strong>预编译</strong>：C程序源代码文件和相关头文件被预编译器cpp预编译成 .i 文件。C++程序被预编译后的文件拓展名为 .ii 。</p>
+<pre><code class="hljs stylus"><span class="hljs-comment">/* -E表示只进行预编译 */</span>
+<span class="hljs-variable">$gcc</span> -E hello<span class="hljs-selector-class">.c</span> -o hello<span class="hljs-selector-class">.i</span> 或 <span class="hljs-variable">$cpp</span> hello<span class="hljs-selector-class">.c</span> &gt; hello.i</code></pre>
+<p><strong>预编译过程主要处理源代码文件中以“#”开始的预编译指令。</strong></p>
+<ul>
+<li><p>将所有的“#define”删除，并展开所有宏定义</p>
+</li>
+<li><p>处理所有条件预编译指令，如“#if”、“#ifdef”、“#elif”、“#else”、“#endif”</p>
+</li>
+<li><p>处理“#include”预编译指令，将包含的文件插入到该预编译指令的位置。此过程是递归的。</p>
+</li>
+<li><p>删除所有的注释“//”和“/**/”</p>
+</li>
+<li><p>添加行号和文件标识，以便于编译时器编译器产生调试用的行号信息及编译时产生错误或警告的时显示行号</p>
+</li>
+<li><p>保留所有#pragma编译器指令，因为编译器需要使用它们</p>
+</li>
+</ul>
+<p>2.<strong>编译</strong>：把预处理完的文件进行一系列<strong>词法分析</strong>、<strong>语法分析</strong>、<strong>语义分析</strong>及<strong>优化后生成相应的汇编代码文件</strong>。</p>
+<pre><code class="hljs stylus"><span class="hljs-comment">/* -S表示只进行编译 */</span>
+<span class="hljs-variable">$gcc</span> -S hello<span class="hljs-selector-class">.i</span> -o hello<span class="hljs-selector-class">.s</span> 或 <span class="hljs-variable">$gcc</span> -S hello<span class="hljs-selector-class">.c</span> -o hello.s</code></pre>
+
+<p>现在版本的GCC将<strong>预编译和编译两个步骤合并在一个步骤中，由编译器完成</strong>。对于C语言代码使用cc1程序、C++语言使用cc1plus、Objective-C语言使用cc1obj、fortran语言使用f771、Java语言使用jc1。</p>
+<blockquote>
+<p><strong>实际上gcc命令只是后台程序的包装，其根据不同的参数调用预编译器cc1、汇编器as、链接器ld。</strong></p>
+</blockquote>
+<p><strong>编译器是将高级语言翻译成机器语言的一个工具</strong>，其编译过程一般分为6步：<strong>扫描</strong>、<strong>语法分析</strong>、<strong>语义分析</strong>、<strong>源代码优化</strong>、<strong>代码生成</strong>和<strong>目标代码优化</strong>。</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzIyMjEzMjE1MDMw?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="编译过程"></p>
+<ul>
+<li><strong>语法分析</strong>：源代码程序被输入到<strong>扫描机（Scanner）</strong>，运用一种类似于<strong>有限状态机（Finite State Machine）</strong>的算法，将源代码的字符序列分割成一系列<strong>记号（Token）</strong>。<br>词法分析产生的记号一般分为：关键字、标识符、字符量（包含数字、字符串等）和特殊符号（如加号、等号）。此过程中，扫描器也将标识符存放到符号表，将数字、字符串常量存放到文字表。<br><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzIyMjE0NTI4Nzcx?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="语法树"></li>
+</ul>
+<p> <strong>符号和数字是最小的表达式，它们不再由表达式来组成，它们通常作为整个语法树的叶节点。</strong>语法分析的同时运算符号的优先级和含义也被确定下来。如果出现了表达式不合法，比如括号不匹配、表达式中缺少操作符等，编译器会报告语法分析阶段的错误。</p>
+<ul>
+<li><p><strong>语义分析</strong>：<strong>语义分析器（Semantic Analyzer）</strong>判断语句是否正真的有意义。编译器能分析的是<strong>静态语义（Static Semantic）</strong>，是在<strong>编译期可以确定的</strong>语义，通常包括声明、类型的匹配、类型的转换。而<strong>动态语义（Dynamic Semantic）</strong>只有在运行期才能确定，比如0作为除数。<br>语义分析后，<strong>语法树的标识符都标识了类型</strong>，若有类型的隐式转换，语义分析器会在语法树中插入相应的转换结点。<br><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzIzMjMyNDI5NzQ0?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="这里写图片描述"></p>
+</li>
+<li><p><strong>中间语言生成</strong>：<strong>源代码优化器（Source Code Optimizer）</strong>在源代码级别进行优化。源代码优化器往往将整个语法树转换成<strong>中间代码（Intermediate Code）</strong>，它是<strong>语法树的顺序表示</strong>。<br>它与目标代码非常接近，但<strong>其跟目标机器和运行环境无关</strong>，<strong>不包含数据的大小</strong>、<strong>变量地址</strong>、<strong>寄存器名</strong>等。中间代码常见类型有：<strong>三地址码（Three-address Code）</strong>和<strong>P-代码（P-Code）</strong>。<br><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzI2MjAxNTUwMTk5?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="优化后的语法树"><br>上图语法树翻译成三地址码为：</p>
+<pre><code class="hljs mipsasm"><span class="hljs-built_in">t1</span> = <span class="hljs-number">2</span> + <span class="hljs-number">6</span>
+<span class="hljs-built_in">t2</span> = index + <span class="hljs-number">4</span>
+<span class="hljs-built_in">t3</span> = <span class="hljs-built_in">t2</span> * <span class="hljs-built_in">t3</span>
+array[index] = <span class="hljs-built_in">t3</span>
+<span class="hljs-comment">/*继续优化*/</span>
+<span class="hljs-built_in">t2</span> = index + <span class="hljs-number">4</span>
+<span class="hljs-built_in">t2</span> = <span class="hljs-built_in">t2</span> * <span class="hljs-number">8</span></code></pre>
+<p><strong>中间代码使编译器分成前端和后端。编译器前端负责产生机器无关的中间代码，编译器后端将中间代码转换成目标机器代码。</strong></p>
+</li>
+<li><p><strong>目标代码优化与生成</strong>：编译器后端主要包括<strong>代码生成器（Code Generator）</strong>和<strong>目标代码优化器（Target Code Optimizer）</strong>。<br><strong>代码生成器将中间代码转换成目标机器代码，目标代码优化器对目标代码进行优化</strong>，比如选择合适的寻址方式、使用位移代替乘法运算、删除多余指令等。</p>
+</li>
+</ul>
+<p>3.<strong>汇编</strong>：汇编器将<strong>汇编代码转化成机器可以执行的指令</strong>，每一个汇编语句几乎都对应一条机器指令。根据<strong>汇编指令和机器指令的对照表</strong>一一翻译。</p>
+<pre><code class="hljs stylus"><span class="hljs-variable">$as</span> hello<span class="hljs-selector-class">.s</span> -o hello<span class="hljs-selector-class">.o</span> 或 
+<span class="hljs-variable">$gcc</span> -c hello<span class="hljs-selector-class">.s</span> -o hello<span class="hljs-selector-class">.o</span> 或 
+<span class="hljs-variable">$gcc</span> -c hello<span class="hljs-selector-class">.c</span> -o hello.o</code></pre>
+<p>4.<strong>链接</strong>：重新计算各个目标地址的过程叫做<strong>重定位（Relocation）</strong>。<strong>符号（Symbol）</strong>用来表示一个地址，这个地址可能是函数或变量的起始地址。汇编器在每次汇编程序的时候重新计算符号的地址，把所有引用该符号的指令修正到这个正确的地址。</p>
+<p>一个程序被分割成多个模块之后，模块之间的通信方式有<strong>模块间的函数调用</strong>和<strong>模块间的变量访问</strong>两种方式，归结为模块间符号的引用。</p>
+<blockquote>
+<p><strong>定义符号的模块多出一块区域，引用该符号的模块刚好少了那一块区域。两者的拼接过程即链接（Linking）。</strong></p>
+</blockquote>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzI2MjEyOTE5MTUw?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="模块间拼接"></p>
+<ul>
+<li>模块拼接——<strong>静态链接</strong></li>
+</ul>
+<blockquote>
+<p><strong>将每个源代码模块独立地编译，然后按照需要将它们组装起来，这个组装模块的过程就是链接（Linking）。</strong></p>
+</blockquote>
+<p>链接过程主要包括<strong>地址和空间分配（Address and Storage Allocation）</strong>、<strong>符号决议（Symbol Resolution）</strong>和<strong>重定位（Relocation）</strong>等。每个模块的源代码文件经过编译器编译成<strong>目标文件（Object File，一般拓展名为.o或.obj）</strong>，<strong>目标文件和库（Library）一起链接形成最终可执行文件</strong>。</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwMzI2MjEzODMzNzcy?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="连接过程"></p>
+<p>每个模块都是单独编译，编译器编译a.c时并不知道引用的函数的地址，所以暂时把调用该函数的目标地址搁置，等待最后链接时由链接器将这些指令的目标地址修正。<strong>链接器在链接时根据所引用的符号，自动去相应的模块查找该符号的地址，然后将a.c模块中所有引用到该符号的指令重新修正，让其目标地址为真正的符号的地址。</strong><br>地址修正的过程叫做<strong>重定位（Relocation）</strong>，每个要被修正的地方叫一个<strong>重定位入口（Relacation Entry）。</strong></p>
+<p><strong>* <em>下次想总结一下UDP/TCP相关。。。</em> *</strong></p>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Linux/">Linux</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E9%93%BE%E6%8E%A5%E3%80%81%E8%A3%85%E8%BD%BD%E4%B8%8E%E5%BA%93/">链接、装载与库</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/06/27/object-file-1/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">链接、装载与库——目标文件（1）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/06/27/processes-and-threads/">
+                        <span class="hidden-mobile">链接、装载与库——进程与线程</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "链接、装载与库——编译与链接&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

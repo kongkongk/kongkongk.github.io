@@ -17,7 +17,7 @@
   <meta name="description" content="">
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
-  <title>学习的日子 - Hexo</title>
+  <title>链接、装载与库——目标文件（2） - Hexo</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -152,8 +152,8 @@
               
   <div class="mt-3 post-meta">
     <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-    <time datetime="2020-06-26 18:45">
-      2020年6月26日 晚上
+    <time datetime="2020-06-27 21:01">
+      2020年6月27日 晚上
     </time>
   </div>
 
@@ -163,7 +163,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      351 字
+      554 字
     </span>
   
 
@@ -173,7 +173,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      3
+      6
        分钟
     </span>
   
@@ -218,11 +218,78 @@
               </p>
             
             <article class="markdown-body">
-              <h3 id="学习的日子"><a href="#学习的日子" class="headerlink" title="学习的日子"></a>学习的日子</h3><p>学习，是一个漫长的经历。期间的快乐和苦痛只有自己感受最深。</p>
-<p>学习的路程——道阻且长，但在这路上最大的动力就是内心的信念和兴趣了。</p>
-<p>学习也有一段时间了，其实内心一直反感诸如此类的博客，认为有这时间不如多看看几页书、多想想项目方案。但前天施老师的一句话让我重新思考了这个问题。没错，人也是一种遵循自然法则的生物。到了一定年龄，其实各机能就会到达顶峰，随后而来的就是下滑。这其中最可怕的就是记忆力下滑。换个说法，说哲学点儿，我追不上时间。时光匆匆，白驹过隙，时间的流逝不留下一丝痕迹，表象能确认的可能就是那钟表滴答滴答的声音了吧。但我有时间没有的能力，我可以将一切经历记录下来，让时间留在这些记录中。</p>
-<p>路虽弥,不行不至；事虽小,不做不成。未来的路还很长，做最好的自己，尽最大的能力，不让自己后悔就好。</p>
-<p>第一次写blog，没个主题，也不知道写了些什么，最后还是送给自己一句话吧：桃李不言，下自成蹊。</p>
+              <p><strong>* <em>逐个分析各段。。。</em> *</strong></p>
+<h1 id="第三章-目标文件里面有什么"><a href="#第三章-目标文件里面有什么" class="headerlink" title="第三章 目标文件里面有什么"></a>第三章 目标文件里面有什么</h1><blockquote>
+<p><strong>真正了不起的程序员对自己的程序的每一个字节都了如指掌。</strong> </p>
+</blockquote>
+<pre><code class="hljs cpp"><span class="hljs-comment">//Test.c</span>
+
+<span class="hljs-keyword">int</span> global_init_var = <span class="hljs-number">84</span>;
+<span class="hljs-keyword">int</span> global_uninit_var;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">func1</span><span class="hljs-params">(<span class="hljs-keyword">int</span> i)</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-built_in">printf</span>(<span class="hljs-string">"%d\n"</span>, i);
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> static_var = <span class="hljs-number">85</span>;
+	<span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> static_var2;
+	<span class="hljs-keyword">int</span> a = <span class="hljs-number">1</span>;
+	<span class="hljs-keyword">int</span> b	
+
+	func1(static_var + static_var2 + a + b);
+
+	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;</code></pre>
+<p>示例程序中包括代码段、数据段、BSS段、只读数据段（.rodata）、注释信息段（.comment）。</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNDI2MTUwMzA1NzAw?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="图3.4 目标文件组成"></p>
+<ol>
+<li><p><strong>代码段</strong>：</p>
+<ul>
+<li><strong>.text</strong>段中存放的是Test.c中函数func()和main()的<strong>指令</strong>。</li>
+</ul>
+</li>
+<li><p><strong>数据段</strong>和<strong>只读数据段</strong>：</p>
+<ul>
+<li><strong>.data</strong>段保存<strong>初始化了的全局变量和局部静态变量</strong>（上述代码中的global_init_var和static_var）。</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li><p><strong>.rodata</strong>段存放<strong>只读数据</strong>，一般是程序的<strong>只读变量（const修饰的变量）</strong>和<strong>字符串常量</strong>（上述代码中”<strong>%d\n</strong>“是一种只读数据）。单独设立.rodata段从<strong>语义上支持C++的const关键字</strong>，也在加载时<strong>将属性映射成只读</strong>，保证安全性。有时编译器会把字符串常量放到.data段，而不会单独放在.rodata段。</p>
+<ol start="3">
+<li><strong>BSS段</strong>：</li>
+</ol>
+</li>
+<li><p><strong>.bss</strong>段中存放的是<strong>未初始化的全局变量和局部静态变量</strong>（上述代码中的global_uninit_var和static_var2），准确的说是.bss段为他们<strong>预留了空间</strong>。</p>
+</li>
+<li><p>有些编译器将未初始化的全局变量存放在目标文件.bss段，有些不存放只是<strong>预留一个未定义的全局变量符号”COMMON 符号“，到最终链接成可执行文件的时候再在.bss段·分配空间。</strong></p>
+</li>
+<li><p>但编译单元<strong>内部可见的静态变量</strong>（如·global_uninit_var加上static修饰），是存放在.bss段。</p>
+</li>
+<li><p><strong><code>static int x1 = 0;</code></strong></p>
+</li>
+</ul>
+<p><strong>x1被放在.bss段，因为可以认为是未初始化的，所以被优化放在.bss段。</strong></p>
+<ul>
+<li><strong><code>static int x2 = 1;</code></strong></li>
+</ul>
+<p><strong>x2被放在.data段，因为初始化值为1，所以放在.data段。</strong></p>
+<ol start="4">
+<li><p>其他段：<br><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNDI2MTgwNzEzMzI0?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="图3.5 其他段"></p>
+</li>
+<li><p>自定义段：</p>
+<ul>
+<li><strong><code>_attribute_((section(&quot;FOO&quot;))) int global = 42;</code></strong></li>
+</ul>
+</li>
+</ol>
+<ul>
+<li><strong><code>_attribute_((section(&quot;BAR&quot;))) void foo()</code></strong><br>在全局变量和函数之前加上<code>_attribute_((section(&quot;name&quot;)))</code>属性可以把相应的变量或函数放到以”name“作为的段中。</li>
+</ul>
+<p><strong>* <em>以上为主要段，下一次总结ELF文件结构，包括文件头、段表。。。</em> *</strong></p>
 
             </article>
             <hr>
@@ -232,7 +299,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/Life/">Life</a>
+                      <a class="hover-with-bg" href="/categories/Linux/">Linux</a>
                     
                   </div>
                 
@@ -240,7 +307,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/%E6%84%9F%E6%83%B3%E9%9A%8F%E7%AC%94/">感想随笔</a>
+                      <a class="hover-with-bg" href="/tags/%E9%93%BE%E6%8E%A5%E3%80%81%E8%A3%85%E8%BD%BD%E4%B8%8E%E5%BA%93/">链接、装载与库</a>
                     
                   </div>
                 
@@ -253,15 +320,21 @@
                   <div class="post-prev col-6">
                     
                     
-                      <a href="/2020/06/27/computer-composition/">
+                      <a href="/2020/06/27/object-file-3/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">链接、装载与库——计算机组成</span>
+                        <span class="hidden-mobile">链接、装载与库——目标文件（3）</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
                   </div>
                   <div class="post-next col-6">
                     
+                    
+                      <a href="/2020/06/27/object-file-1/">
+                        <span class="hidden-mobile">链接、装载与库——目标文件（1）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
                     
                   </div>
                 </div>
@@ -423,7 +496,7 @@
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "学习的日子&nbsp;",
+        "链接、装载与库——目标文件（2）&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,
