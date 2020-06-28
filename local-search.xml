@@ -4,6 +4,506 @@
   
   
   <entry>
+    <title>剑指Offer——（22）从上往下打印二叉树&amp;&amp;层次遍历</title>
+    <link href="/2020/06/28/print-binary-tree-and-level-traversal-from-top-to-bottom/"/>
+    <url>/2020/06/28/print-binary-tree-and-level-traversal-from-top-to-bottom/</url>
+    
+    <content type="html"><![CDATA[<p><strong>题目描述：</strong></p><blockquote><p><strong>从上往下打印出二叉树的每个节点，同层节点从左至右打印。</strong></p></blockquote><p><strong>实现如下：</strong></p><pre><code class="hljs reasonml"><span class="hljs-comment">//层次遍历时使用队列容器，保证先进先出</span><span class="hljs-comment">//分别判断节点的左右孩子是否为空</span><span class="hljs-comment">//非空就将孩子节点尾插</span><span class="hljs-comment">//每次都从队头获取打印值、头删出队</span><span class="hljs-comment">//队列为空时说明遍历结束</span><span class="hljs-comment">//注意判断root是否合法</span><span class="hljs-keyword">class</span> Solution &#123;public:deque&lt;TreeNode*&gt; q;<span class="hljs-comment">//存放层次遍历时的节点顺序</span>vector&lt;<span class="hljs-built_in">int</span>&gt; vec;vector&lt;<span class="hljs-built_in">int</span>&gt; <span class="hljs-constructor">PrintFromTopToBottom(TreeNode<span class="hljs-operator">*</span> <span class="hljs-params">root</span>)</span> &#123;<span class="hljs-keyword">if</span> (root<span class="hljs-operator"> == </span>NULL) return vec;<span class="hljs-comment">//root为空时，直接return</span>q.push<span class="hljs-constructor">_back(<span class="hljs-params">root</span>)</span>;<span class="hljs-comment">//root非空时，首先尾插</span><span class="hljs-keyword">while</span> (!q.empty<span class="hljs-literal">()</span>)<span class="hljs-comment">//判断是否遍历结束</span>&#123;TreeNode *tmp = q.front<span class="hljs-literal">()</span>;<span class="hljs-comment">//队头获取该打印的节点</span>q.pop<span class="hljs-constructor">_front()</span>;<span class="hljs-comment">//分别判断左右孩子是否为空，非空时队列尾插</span><span class="hljs-keyword">if</span> (tmp-&gt;left != NULL)q.push<span class="hljs-constructor">_back(<span class="hljs-params">tmp</span>-&gt;<span class="hljs-params">left</span>)</span>;<span class="hljs-keyword">if</span> (tmp-&gt;right != NULL)q.push<span class="hljs-constructor">_back(<span class="hljs-params">tmp</span>-&gt;<span class="hljs-params">right</span>)</span>;vec.push<span class="hljs-constructor">_back(<span class="hljs-params">tmp</span>-&gt;<span class="hljs-params">val</span>)</span>;<span class="hljs-comment">//将val添加</span>&#125;return vec;&#125;&#125;;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Data Structures and Algorithms</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>剑指Offer</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>剑指Offer——（21）栈的压入、弹出序列</title>
+    <link href="/2020/06/28/stack-push-and-pop-sequence/"/>
+    <url>/2020/06/28/stack-push-and-pop-sequence/</url>
+    
+    <content type="html"><![CDATA[<p><strong>题目描述：</strong></p><blockquote><p><strong>输入两个整数序列，第一个序列表示栈的压入顺序，请判断第二个序列是否为该栈的弹出顺序。假设压入栈的所有数字均不相等。例如序列1,2,3,4,5是某栈的压入顺序，序列4，5,3,2,1是该压栈序列对应的一个弹出序列，但4,3,5,1,2就不可能是该压栈序列的弹出序列。（注意：这两个序列的长度是相等的）</strong></p></blockquote><p><strong>实现如下：</strong></p><pre><code class="hljs arduino"><span class="hljs-comment">//模拟栈的push与pop，利用辅助栈</span><span class="hljs-comment">//在线测试用例中给出了pushV&#123;1&#125;，popV&#123;2&#125;的情况V，万恶→_→</span><span class="hljs-comment">//判断一个出栈序列是否合法，需要在已知的入栈序列情况下判断</span><span class="hljs-comment">//出栈序列中的数pop时，必须保证此数在入栈序列中位置之前的数全部入过栈</span><span class="hljs-comment">//特殊情况：</span><span class="hljs-comment">//1.序列为空</span><span class="hljs-comment">//2.序列中的数字值不一致</span><span class="hljs-comment">//3.出栈顺序不合法</span><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Solution</span> </span><span class="hljs-class">&#123;</span><span class="hljs-keyword">public</span>:<span class="hljs-built_in">stack</span>&lt;<span class="hljs-keyword">int</span>&gt; assistStack;<span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">IsPopOrder</span><span class="hljs-params">(<span class="hljs-built_in">vector</span>&lt;<span class="hljs-keyword">int</span>&gt; pushV, <span class="hljs-built_in">vector</span>&lt;<span class="hljs-keyword">int</span>&gt; popV)</span> </span><span class="hljs-function"></span>&#123;<span class="hljs-comment">//判断是否为空</span><span class="hljs-keyword">if</span> (pushV.empty() || popV.empty()) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>;<span class="hljs-comment">//j作为pushV的下标记录</span><span class="hljs-keyword">for</span> ( <span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; popV.<span class="hljs-built_in">size</span>(); ++i)&#123;<span class="hljs-comment">//如果辅助栈不为空且其top不等于该出栈的数且数已全部入过栈，此时出栈顺序不合法</span><span class="hljs-keyword">if</span> (!assistStack.empty() &amp;&amp; assistStack.top() != popV[i] &amp;&amp; j &gt;= pushV.<span class="hljs-built_in">size</span>()) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<span class="hljs-keyword">else</span>&#123;<span class="hljs-comment">//如果辅助栈为空或辅助栈top不等于该出栈的数且还有数字未入过栈</span><span class="hljs-keyword">if</span> (assistStack.empty() || (assistStack.top() != popV[i] &amp;&amp; j &lt; popV.<span class="hljs-built_in">size</span>()))&#123;<span class="hljs-comment">//直至在pushV中找到与该出栈的数相同值的位置</span><span class="hljs-keyword">while</span> ((j &lt; pushV.<span class="hljs-built_in">size</span>()) &amp;&amp; pushV[j] != popV[i])assistStack.push(pushV[j++]);<span class="hljs-comment">//此时j自加1，是因为此循环有可能因为pushV[j] == popV[i]，所以模拟push操作(其实没往assistStack中push)，跳过此数</span>++j;<span class="hljs-keyword">continue</span>;&#125;<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (assistStack.top() == popV[i])<span class="hljs-comment">//当pushV栈顶元素等于该出栈的数，正常出栈</span>&#123;assistStack.pop();<span class="hljs-keyword">continue</span>;&#125;&#125;&#125;<span class="hljs-comment">//此条件判断有可能两序列中的数字值不一致情况</span><span class="hljs-keyword">if</span> (assistStack.empty()) <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;&#125;&#125;;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Data Structures and Algorithms</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>剑指Offer</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>剑指Offer——（20）包含min函数的栈</title>
+    <link href="/2020/06/28/the-stack-containing-the-min-function/"/>
+    <url>/2020/06/28/the-stack-containing-the-min-function/</url>
+    
+    <content type="html"><![CDATA[<p><strong>题目描述：</strong></p><blockquote><p><strong>定义栈的数据结构，请在该类型中实现一个能够得到栈最小元素的min函数。</strong></p></blockquote><p><strong>实现如下：</strong></p><pre><code class="hljs cs"><span class="hljs-comment">//利用一个辅助栈，用来存放和数据栈相对应的每层之下的最小值</span><span class="hljs-comment">//利用minValue存储当前最小值，O(1)</span><span class="hljs-keyword">class</span> <span class="hljs-title">Solution</span> &#123;<span class="hljs-keyword">public</span>:<span class="hljs-keyword">int</span> minValue = <span class="hljs-number">0</span>;stack&lt;<span class="hljs-keyword">int</span>&gt; assistStack;stack&lt;<span class="hljs-keyword">int</span>&gt; dataStack;<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">push</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> <span class="hljs-keyword">value</span></span>) </span><span class="hljs-function"></span>&#123;dataStack.push(<span class="hljs-keyword">value</span>);<span class="hljs-keyword">if</span> (dataStack.size() == <span class="hljs-number">1</span>)<span class="hljs-comment">//此时value为第一个元素，直接将value push进辅助栈，及当前最小值</span>&#123;assistStack.push(<span class="hljs-keyword">value</span>);minValue = <span class="hljs-keyword">value</span>;&#125;<span class="hljs-keyword">else</span><span class="hljs-comment">//否则用minValue与value比较，小的push进辅助栈，且更新minValue</span>&#123;<span class="hljs-keyword">if</span> (<span class="hljs-keyword">value</span> &lt; minValue)minValue = <span class="hljs-keyword">value</span>;assistStack.push(minValue);&#125;&#125;<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">pop</span>(<span class="hljs-params"></span>) </span><span class="hljs-function"></span>&#123;<span class="hljs-keyword">if</span> (!dataStack.empty())<span class="hljs-comment">//非空时操作</span>&#123;dataStack.pop();assistStack.pop();<span class="hljs-comment">//更新辅助栈，保证每层之下的最小值不变</span>minValue = assistStack.top();<span class="hljs-comment">//将minValue更新为这层之下的最小值</span>&#125;&#125;<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">top</span>(<span class="hljs-params"></span>) </span><span class="hljs-function"></span>&#123;<span class="hljs-keyword">if</span>(!dataStack.empty())<span class="hljs-comment">//非空时进行</span><span class="hljs-keyword">return</span> dataStack.top();<span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;&#125;<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">min</span>(<span class="hljs-params"></span>) </span><span class="hljs-function"></span>&#123;<span class="hljs-keyword">return</span> minValue;<span class="hljs-comment">//直接返回minValue</span>&#125;&#125;;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Data Structures and Algorithms</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>剑指Offer</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>剑指Offer——（19）顺时针打印矩阵</title>
+    <link href="/2020/06/28/print-matrix-clockwise/"/>
+    <url>/2020/06/28/print-matrix-clockwise/</url>
+    
+    <content type="html"><![CDATA[<p><strong>题目描述：</strong></p><blockquote><p><strong>输入一个矩阵，按照从外向里以顺时针的顺序依次打印出每一个数字，例如，如果输入如下矩阵： 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 则依次打印出数字1,2,3,4,8,12,16,15,14,13,9,5,6,7,11,10.</strong></p></blockquote><p><strong>实现如下：</strong></p><pre><code class="hljs angelscript"><span class="hljs-comment">/*</span><span class="hljs-comment">1 -&gt; 2 -&gt; 3  -&gt;   4</span><span class="hljs-comment">                  ↓</span><span class="hljs-comment">5 -&gt; 6 -&gt; 7       8</span><span class="hljs-comment">↑        ↓       ↓</span><span class="hljs-comment">9   10  &lt;-  11    12</span><span class="hljs-comment">↑                 ↓</span><span class="hljs-comment">13 &lt;- 14 &lt;- 15 &lt;- 16</span><span class="hljs-comment">*/</span><span class="hljs-comment">//将问题分解成若干子问题</span><span class="hljs-comment">//1.控制按圈打印</span><span class="hljs-comment">//2.一圈之内如何打印</span><span class="hljs-comment">//每一圈的起始坐标都在矩阵主对角线上，判断何时结束绕圈</span><span class="hljs-comment">//圈内打印时注意判断特殊情况，最少都有一行</span><span class="hljs-comment">//1.只有一行</span><span class="hljs-comment">//2.只有一列</span><span class="hljs-comment">//3.2*2大小</span><span class="hljs-comment">//4.3*3大小及以上</span><span class="hljs-keyword">class</span> <span class="hljs-symbol">Solution</span> &#123;<span class="hljs-keyword">public</span>:vector&lt;<span class="hljs-built_in">int</span>&gt; printMatrix(vector&lt;vector&lt;<span class="hljs-built_in">int</span>&gt; &gt; matrix) &#123;vector&lt;<span class="hljs-built_in">int</span>&gt; vec;<span class="hljs-built_in">int</span> row = matrix.size();<span class="hljs-keyword">if</span> (row &lt; <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> vec;<span class="hljs-comment">//判断vector是否为空</span><span class="hljs-built_in">int</span> col = matrix[<span class="hljs-number">0</span>].size();<span class="hljs-built_in">int</span> startRow = <span class="hljs-number">0</span>;<span class="hljs-built_in">int</span> startCol = <span class="hljs-number">0</span>;<span class="hljs-built_in">int</span> endRow = matrix.size() - <span class="hljs-number">1</span>;<span class="hljs-built_in">int</span> endCol = matrix[<span class="hljs-number">0</span>].size() - <span class="hljs-number">1</span>;<span class="hljs-built_in">int</span> i = <span class="hljs-number">0</span>;<span class="hljs-keyword">while</span> (row &gt; startRow * <span class="hljs-number">2</span> &amp;&amp; col &gt; startCol * <span class="hljs-number">2</span>)<span class="hljs-comment">//判断起始点是否真实存在</span>&#123;<span class="hljs-keyword">for</span> (i = startCol; i &lt;= endCol; ++i)<span class="hljs-comment">//无论如何，最少都会有一行</span>&#123;vec.push_back(matrix[startRow][i]);&#125;<span class="hljs-comment">//如果进行第二步打印，必须满足endRow-startRow&gt;=1,排除只有一行的情况</span><span class="hljs-keyword">if</span> (endRow - startRow &gt;= <span class="hljs-number">1</span>)&#123;<span class="hljs-keyword">for</span> (i = startRow + <span class="hljs-number">1</span>; i &lt;= endRow; ++i)&#123;vec.push_back(matrix[i][endCol]);&#125;&#125;<span class="hljs-comment">//如果进行第三步打印，要在第二步条件的基础上满足endCol-startCol&gt;=1,排除只有一列的情况</span><span class="hljs-keyword">if</span> (endCol - startCol &gt;= <span class="hljs-number">1</span> &amp;&amp; endRow - startRow &gt;= <span class="hljs-number">1</span>)&#123;<span class="hljs-keyword">for</span> (i = endCol - <span class="hljs-number">1</span>; i &gt;= startCol; --i)&#123;vec.push_back(matrix[endRow][i]);&#125;&#125;<span class="hljs-comment">//如果进行第四步打印，要在第三步条件的基础上满足endRow-startRow&gt;=2,排除2*2的情况</span><span class="hljs-keyword">if</span> (endRow - startRow &gt;= <span class="hljs-number">2</span> &amp;&amp; endCol - startCol &gt;= <span class="hljs-number">1</span>)&#123;<span class="hljs-keyword">for</span> (i = endRow - <span class="hljs-number">1</span>; i &gt; startRow; --i)&#123;vec.push_back(matrix[i][startCol]);&#125;&#125;<span class="hljs-comment">//调整边界范围，进行下一圈打印</span>startRow += <span class="hljs-number">1</span>;startCol += <span class="hljs-number">1</span>;endRow -= <span class="hljs-number">1</span>;endCol -= <span class="hljs-number">1</span>;&#125;<span class="hljs-keyword">return</span> vec;&#125;&#125;;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Data Structures and Algorithms</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>剑指Offer</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>剑指Offer——（18）二叉树的镜像</title>
+    <link href="/2020/06/28/mirror-of-the-binary-tree/"/>
+    <url>/2020/06/28/mirror-of-the-binary-tree/</url>
+    
+    <content type="html"><![CDATA[<p><strong>题目描述：</strong></p><blockquote><p><strong>操作给定的二叉树，将其变换为源二叉树的镜像。</strong></p></blockquote><p><strong>实现如下：</strong></p><pre><code class="hljs xl"><span class="hljs-comment">//每一个节点都是每一棵子树的根节点，只须交换左右孩子节点即可</span><span class="hljs-comment">//注意输入空指针防御</span><span class="hljs-comment">/*输入样例</span><span class="hljs-comment">二叉树的镜像定义：源二叉树 </span><span class="hljs-comment">        8</span><span class="hljs-comment">       /  \</span><span class="hljs-comment">      6   10</span><span class="hljs-comment">     / \  / \</span><span class="hljs-comment">    5  7 9 11</span><span class="hljs-comment">    镜像二叉树</span><span class="hljs-comment">        8</span><span class="hljs-comment">       /  \</span><span class="hljs-comment">      10   6</span><span class="hljs-comment">     / \  / \</span><span class="hljs-comment">    11 9 7  5</span><span class="hljs-comment">*/</span><span class="hljs-comment">/*节点结构体定义</span><span class="hljs-comment">struct TreeNode </span><span class="hljs-comment">&#123;</span><span class="hljs-comment">int val;</span><span class="hljs-comment">struct TreeNode *left;</span><span class="hljs-comment">struct TreeNode *right;</span><span class="hljs-comment">TreeNode(int x) : val(x), left(NULL), right(NULL) &#123;&#125;</span><span class="hljs-comment">&#125;;</span><span class="hljs-comment">*/</span>class Solution &#123;public:void Mirror(TreeNode *pRoot) &#123;<span class="hljs-keyword">if</span> (pRoot == NULL) return;<span class="hljs-comment">//判断是否为空指针</span>T<span class="hljs-function"><span class="hljs-title">reeNode</span> *tmp = pRoot-&gt;</span>left;<span class="hljs-comment">//否则交换左右孩子的指向</span><span class="hljs-function"><span class="hljs-title">pRoot</span>-&gt;</span><span class="hljs-function"><span class="hljs-title">left</span> = pRoot-&gt;</span>right;<span class="hljs-function"><span class="hljs-title">pRoot</span>-&gt;</span>right = tmp;M<span class="hljs-function"><span class="hljs-title">irror</span>(pRoot-&gt;</span>left);<span class="hljs-comment">//递归调用对左孩子镜像处理</span>M<span class="hljs-function"><span class="hljs-title">irror</span>(pRoot-&gt;</span>right);<span class="hljs-comment">//递归调用对右孩子镜像处理</span>&#125;&#125;;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Data Structures and Algorithms</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>剑指Offer</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>剑指Offer——（17）树的子结构</title>
+    <link href="/2020/06/28/tree-substructure/"/>
+    <url>/2020/06/28/tree-substructure/</url>
+    
+    <content type="html"><![CDATA[<p><strong>题目描述：</strong></p><blockquote><p><strong>输入两棵二叉树A，B，判断B是不是A的子结构。（ps：我们约定空树不是任意一个树的子结构）</strong></p></blockquote><p><strong>实现如下：</strong></p><pre><code class="hljs zephir"><span class="hljs-comment">//分两步</span><span class="hljs-comment">//第一步：寻找与B树根节点val相等的A树节点。如果找到进入第二步，否则继续寻找，直到找完A树</span><span class="hljs-comment">//第二步：以找的节点作为A树子树的根节点，同时遍历两棵树，判断是否所有节点都相同</span><span class="hljs-comment">//特殊情况：</span><span class="hljs-comment">//1.进行第二步时注意有可能存在B树大小等于A的子树、B树大小小于A的子树、B树大小大于A的子树</span><span class="hljs-comment">//2.注意对无效值的防御</span><span class="hljs-comment">//3.减少递归此数，及时判断return</span><span class="hljs-comment">/*</span><span class="hljs-comment">struct TreeNode </span><span class="hljs-comment">&#123;</span><span class="hljs-comment">int val;</span><span class="hljs-comment">struct TreeNode *left;</span><span class="hljs-comment">struct TreeNode *right;</span><span class="hljs-comment">TreeNode(int x) : val(x), left(NULL), right(NULL) &#123;&#125;</span><span class="hljs-comment">&#125;;</span><span class="hljs-comment">*/</span><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Solution</span> </span><span class="hljs-class"></span>&#123;<span class="hljs-keyword">public</span>:<span class="hljs-comment">//第二步</span><span class="hljs-keyword">bool</span> Subtree(TreeNode* pRoot1, TreeNode* pRoot2)&#123;<span class="hljs-keyword">if</span> (pRoot1 == <span class="hljs-keyword">NULL</span> &amp;&amp; pRoot2 == <span class="hljs-keyword">NULL</span>) <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;<span class="hljs-comment">//B树大小等于A的子树</span><span class="hljs-keyword">if</span> (pRoot1 != <span class="hljs-keyword">NULL</span> &amp;&amp; pRoot2 == <span class="hljs-keyword">NULL</span>) <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;<span class="hljs-comment">//B树大小小于A的子树</span><span class="hljs-keyword">if</span> (pRoot1 == <span class="hljs-keyword">NULL</span> &amp;&amp; pRoot2 != <span class="hljs-keyword">NULL</span>) <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;<span class="hljs-comment">//B树大小大于A的子树</span><span class="hljs-keyword">if</span> (pRoot1-&gt;val == pRoot2-&gt;val)<span class="hljs-comment">//如果val相等则进行进一步比较</span><span class="hljs-keyword">return</span> Subtree(pRoot1-&gt;left, pRoot2-&gt;left) &amp;&amp; Subtree(pRoot1-&gt;right, pRoot2-&gt;right);<span class="hljs-keyword">else</span><span class="hljs-comment">//否则直接return</span><span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;&#125;<span class="hljs-comment">//第一步</span><span class="hljs-keyword">bool</span> HasSubtree(TreeNode* pRoot1, TreeNode* pRoot2)&#123;<span class="hljs-comment">//对空指针防御</span><span class="hljs-keyword">if</span> (pRoot1 == <span class="hljs-keyword">NULL</span> || pRoot2 == <span class="hljs-keyword">NULL</span>) <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;TreeNode *p1 = pRoot1;<span class="hljs-keyword">bool</span> flag = <span class="hljs-keyword">false</span>;<span class="hljs-comment">//是否相等标志</span><span class="hljs-keyword">if</span> (p1-&gt;val == pRoot2-&gt;val)<span class="hljs-comment">//若A树有节点val等于B树根节点val，进入第二步</span>&#123;flag = Subtree(p1, pRoot2);<span class="hljs-comment">//开始第二步递归调用</span><span class="hljs-keyword">if</span> (flag) <span class="hljs-keyword">return</span> flag;<span class="hljs-comment">//如果是子结构，直接return</span>&#125;<span class="hljs-comment">//否则继续第一步</span>flag = HasSubtree(p1-&gt;left, pRoot2);<span class="hljs-comment">//对左子树进行第一步</span><span class="hljs-keyword">if</span> (flag) <span class="hljs-keyword">return</span> flag;flag = HasSubtree(p1-&gt;right, pRoot2);<span class="hljs-comment">//对右子树进行第一步</span><span class="hljs-keyword">if</span> (flag) <span class="hljs-keyword">return</span> flag;<span class="hljs-keyword">return</span> flag;&#125;&#125;;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Data Structures and Algorithms</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>剑指Offer</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>剑指Offer——（16）合并两个排序的链表</title>
+    <link href="/2020/06/28/merge-two-sorted-linked-lists/"/>
+    <url>/2020/06/28/merge-two-sorted-linked-lists/</url>
+    
+    <content type="html"><![CDATA[<p><strong>题目描述：</strong></p><blockquote><p><strong>输入两个单调递增的链表，输出两个链表合成后的链表，当然我们需要合成后的链表满足单调不减规则。</strong></p></blockquote><p><strong>实现如下：</strong></p><pre><code class="hljs php"><span class="hljs-comment">//本题在线测试用例怎么还是无头节点链表→_→，啊...</span><span class="hljs-comment">//比较value谁小谁添加到新链表中</span><span class="hljs-comment">//新链表的头节点指针为newHead，由s指针负责添加信节点</span><span class="hljs-comment">//特殊情况：</span><span class="hljs-comment">//1.传入空指针</span><span class="hljs-comment">//2.任意一个链表添加完毕</span><span class="hljs-comment">//3.传入的一个链表为空，另一个不为空</span><span class="hljs-comment">//节点结构体定义</span><span class="hljs-comment">/*</span><span class="hljs-comment">struct ListNode </span><span class="hljs-comment">&#123;</span><span class="hljs-comment">int val;</span><span class="hljs-comment">struct ListNode *next;</span><span class="hljs-comment">ListNode(int x) : val(x), next(NULL) &#123;&#125;</span><span class="hljs-comment">&#125;;</span><span class="hljs-comment">*/</span><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Solution</span> </span><span class="hljs-class"></span>&#123;<span class="hljs-keyword">public</span>:ListNode* Merge(ListNode* pHead1, ListNode* pHead2)&#123;<span class="hljs-comment">//判断传入参数是否为空</span><span class="hljs-keyword">if</span> (pHead1 == <span class="hljs-keyword">NULL</span> &amp;&amp; pHead2 == <span class="hljs-keyword">NULL</span>)<span class="hljs-keyword">return</span> <span class="hljs-keyword">NULL</span>;ListNode *newHead = <span class="hljs-keyword">NULL</span>;<span class="hljs-comment">//新链表的头指针</span>ListNode *s = <span class="hljs-keyword">NULL</span>;<span class="hljs-comment">//负责给新链表添加心节点</span><span class="hljs-keyword">while</span> (pHead1 != <span class="hljs-keyword">NULL</span> &amp;&amp; pHead2 != <span class="hljs-keyword">NULL</span>)<span class="hljs-comment">//直到将一个链表添加完</span>&#123;<span class="hljs-keyword">if</span> (pHead1-&gt;val &lt;= pHead2-&gt;val)<span class="hljs-comment">//谁小谁添加</span>&#123;<span class="hljs-keyword">if</span> (newHead == s &amp;&amp; newHead == <span class="hljs-keyword">NULL</span>)<span class="hljs-comment">//第一次添加节点</span>&#123;newHead = pHead1;s = pHead1;&#125;<span class="hljs-keyword">else</span><span class="hljs-comment">//除第一次以外添加节点</span>&#123;s-&gt;next = pHead1;s = s-&gt;next;&#125;pHead1 = pHead1-&gt;next;<span class="hljs-comment">//使pHead1指向为排序节点</span>&#125;<span class="hljs-keyword">else</span>&#123;<span class="hljs-keyword">if</span> (newHead == s &amp;&amp; newHead == <span class="hljs-keyword">NULL</span>)<span class="hljs-comment">//第一次添加节点情况</span>&#123;newHead = pHead2;s = pHead2;&#125;<span class="hljs-keyword">else</span><span class="hljs-comment">//除第一次情况以外</span>&#123;s-&gt;next = pHead2;s = s-&gt;next;&#125;pHead2 = pHead2-&gt;next;&#125;&#125;<span class="hljs-comment">//判断是否为一个为空另一个不为空的情况</span><span class="hljs-keyword">if</span> (newHead == <span class="hljs-keyword">NULL</span> &amp;&amp; pHead1 != <span class="hljs-keyword">NULL</span>) newHead = pHead1;<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (newHead == <span class="hljs-keyword">NULL</span> &amp;&amp; pHead2 != <span class="hljs-keyword">NULL</span>) newHead = pHead2;<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (pHead1 != <span class="hljs-keyword">NULL</span>) s-&gt;next = pHead1;<span class="hljs-comment">//判断是否还有链表未添加完</span><span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (pHead2 != <span class="hljs-keyword">NULL</span>)s-&gt;next = pHead2;<span class="hljs-keyword">return</span> newHead;&#125;&#125;;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Data Structures and Algorithms</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>剑指Offer</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>剑指Offer——（15）反转链表</title>
+    <link href="/2020/06/28/reverse-linked-list/"/>
+    <url>/2020/06/28/reverse-linked-list/</url>
+    
+    <content type="html"><![CDATA[<p><strong>题目描述：</strong></p><blockquote><p><strong>输入一个链表，反转链表后，输出链表的所有元素。</strong></p></blockquote><p><strong>实现如下：</strong></p><pre><code class="hljs php"><span class="hljs-comment">//此题在线用例还是无头链表→_→</span><span class="hljs-comment">//1&lt;-2&lt;-3 4-&gt;5</span><span class="hljs-comment">//   p  s q</span><span class="hljs-comment">//保证三个指针指向相邻的三个节点</span><span class="hljs-comment">//健壮性：</span><span class="hljs-comment">//1.传入空指针</span><span class="hljs-comment">//2.链表中只有一个节点</span><span class="hljs-comment">/*节点结构体定义</span><span class="hljs-comment">struct ListNode </span><span class="hljs-comment">&#123;</span><span class="hljs-comment">int val;</span><span class="hljs-comment">struct ListNode *next;</span><span class="hljs-comment">ListNode(int x) : val(x), next(NULL) &#123;&#125;</span><span class="hljs-comment">&#125;;</span><span class="hljs-comment">*/</span><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Solution</span> </span><span class="hljs-class"></span>&#123;<span class="hljs-keyword">public</span>:ListNode* ReverseList(ListNode* pHead) &#123;<span class="hljs-keyword">if</span> (pHead == <span class="hljs-keyword">NULL</span>) <span class="hljs-keyword">return</span> <span class="hljs-keyword">NULL</span>;<span class="hljs-comment">//放置传入空指针</span>ListNode *p = pHead;ListNode *s = pHead-&gt;next;ListNode *q = pHead;p-&gt;next = <span class="hljs-keyword">NULL</span>;<span class="hljs-comment">//首先将第一个节点的next赋值为NULL</span><span class="hljs-keyword">while</span> (s != <span class="hljs-keyword">NULL</span>)<span class="hljs-comment">//判断是否还有为反转节点</span>&#123;q = s-&gt;next;<span class="hljs-comment">//预先保存s的next</span>s-&gt;next = p;<span class="hljs-comment">//连到已反转链表</span>p = s;<span class="hljs-comment">//指向已反转链表的第一个节点</span>s = q;<span class="hljs-comment">//指向未反转链表的第一个节点</span>&#125;<span class="hljs-keyword">return</span> p;&#125;&#125;;<span class="hljs-comment">//使用两个指针，用pHead代替上面方法的p的作用</span><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Solution</span></span><span class="hljs-class"></span>&#123;<span class="hljs-keyword">public</span>:ListNode* ReverseList(ListNode* pHead)&#123;<span class="hljs-keyword">if</span> (pHead == <span class="hljs-keyword">NULL</span>) <span class="hljs-keyword">return</span> <span class="hljs-keyword">NULL</span>;ListNode *p = pHead;ListNode *s = pHead-&gt;next;pHead-&gt;next = <span class="hljs-keyword">NULL</span>;<span class="hljs-keyword">while</span> (s != <span class="hljs-keyword">NULL</span>)&#123;p = s;s = s-&gt;next;<span class="hljs-comment">//保存下一个未反转节点</span>p-&gt;next = pHead;pHead = p;&#125;<span class="hljs-keyword">return</span> pHead;&#125;&#125;;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Data Structures and Algorithms</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>剑指Offer</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>剑指Offer——（14）链表中倒数第k个结点</title>
+    <link href="/2020/06/28/the-last-k-th-node-in-the-list/"/>
+    <url>/2020/06/28/the-last-k-th-node-in-the-list/</url>
+    
+    <content type="html"><![CDATA[<p><strong>题目描述：</strong></p><blockquote><p><strong>输入一个链表，输出该链表中倒数第k个结点。</strong></p></blockquote><p><strong>实现如下：</strong></p><pre><code class="hljs zephir"><span class="hljs-comment">//在线测试用例依旧是无头链表→_→</span><span class="hljs-comment">//最后一个节点定义为倒数第一个节点</span><span class="hljs-comment">//1-&gt;2-&gt;3-&gt;4-&gt;5</span><span class="hljs-comment">//p     s</span><span class="hljs-comment">//      p     s</span><span class="hljs-comment">//eg.寻找倒数第3个节点 k-1=2</span><span class="hljs-comment">//要想一次遍历找到倒数第k个节点，关键在于最后一个节点与倒数第k个节点之间相差k-1个节点</span><span class="hljs-comment">//所以要保证两个指针之间一直保持k-1个节点差</span><span class="hljs-comment">//健壮性：</span><span class="hljs-comment">//1.传入空指针</span><span class="hljs-comment">//2.k为无符号正数，k&lt;1</span><span class="hljs-comment">//3.不存在倒数第k个节点</span><span class="hljs-comment">/*节点结构体定义</span><span class="hljs-comment">struct ListNode &#123;</span><span class="hljs-comment">int val;</span><span class="hljs-comment">struct ListNode *next;</span><span class="hljs-comment">ListNode(int x) : val(x), next(NULL) &#123;&#125;</span><span class="hljs-comment">&#125;;</span><span class="hljs-comment">*/</span><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Solution</span> </span><span class="hljs-class"></span>&#123;<span class="hljs-keyword">public</span>:ListNode* FindKthToTail(ListNode* pListHead, unsigned <span class="hljs-keyword">int</span> k) &#123;<span class="hljs-keyword">if</span> (pListHead == <span class="hljs-keyword">NULL</span> || k &lt; <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> <span class="hljs-keyword">NULL</span>;<span class="hljs-comment">//传入空指针、k无效</span>ListNode *p = pListHead;ListNode *s = pListHead;<span class="hljs-keyword">int</span> num = <span class="hljs-number">0</span>;<span class="hljs-comment">//记录s指针移动的次数</span><span class="hljs-keyword">while</span> (s-&gt;next != <span class="hljs-keyword">NULL</span>)<span class="hljs-comment">//直到遍历完此链表</span>&#123;s = s-&gt;next;++num;<span class="hljs-comment">//当s移动次数大于等于k时，才能让p开始移动，此时两指针保持k-1距离</span><span class="hljs-keyword">if</span> (num &gt;= k) p = p-&gt;next;&#125;<span class="hljs-comment">//如果s移动次数都小于两者必须的间距，说明不存在倒数第k个节点</span><span class="hljs-keyword">if</span> (num &lt; k - <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> <span class="hljs-keyword">NULL</span>;<span class="hljs-keyword">return</span> p;&#125;&#125;;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Data Structures and Algorithms</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>剑指Offer</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>剑指Offer——（13）调整数组顺序使奇数位于偶数前面</title>
+    <link href="/2020/06/28/adjust-the-array-order-so-that-odd-numbers-are-in-front-of-even-numbers/"/>
+    <url>/2020/06/28/adjust-the-array-order-so-that-odd-numbers-are-in-front-of-even-numbers/</url>
+    
+    <content type="html"><![CDATA[<p><strong>题目描述：</strong></p><blockquote><p><strong>输入一个整数数组，实现一个函数来调整该数组中数字的顺序，使得所有的奇数位于数组的前半部分，所有的偶数位于位于数组的后半部分，并保证奇数和奇数，偶数和偶数之间的相对位置不变。</strong></p></blockquote><p><strong>实现如下：</strong></p><pre><code class="hljs arduino"><span class="hljs-comment">//很奇怪，竟然加了“保证奇数和奇数，偶数和偶数之间的相对位置不变。”这个条件→_→</span><span class="hljs-comment">//如果加了这个条件，目前想到的是开辟一个新的vector从array中遍历</span><span class="hljs-comment">//第一次遍历，将奇数push，第二次遍历再将偶数push</span><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Solution</span> &#123;</span><span class="hljs-keyword">public</span>:<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">reOrderArray</span><span class="hljs-params">(<span class="hljs-built_in">vector</span>&lt;<span class="hljs-keyword">int</span>&gt; &amp;<span class="hljs-built_in">array</span>)</span></span><span class="hljs-function"></span>&#123;<span class="hljs-built_in">vector</span>&lt;<span class="hljs-keyword">int</span>&gt; res;<span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-built_in">array</span>.<span class="hljs-built_in">size</span>(); ++i)<span class="hljs-comment">//array为空直接跳出</span>&#123;<span class="hljs-keyword">if</span> (<span class="hljs-built_in">array</span>[i] &amp; <span class="hljs-number">0x1</span>)res.push_back(<span class="hljs-built_in">array</span>[i]);&#125;<span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-built_in">array</span>.<span class="hljs-built_in">size</span>(); i++)<span class="hljs-comment">//array为空直接跳出</span>&#123;<span class="hljs-keyword">if</span> (<span class="hljs-built_in">array</span>[i] % <span class="hljs-number">2</span> == <span class="hljs-number">0</span>)res.push_back(<span class="hljs-built_in">array</span>[i]);&#125;<span class="hljs-built_in">array</span> = res;&#125;&#125;;<span class="hljs-comment">//如果不考虑“保证奇数和奇数，偶数和偶数之间的相对位置不变。”这个条件</span><span class="hljs-comment">//维护两个指针/迭代器，itp寻找下一个最近的偶数，its寻找前一个最近的奇数</span><span class="hljs-comment">//当itp &gt; its时，说明全部奇数都在偶数前面</span><span class="hljs-comment">//特殊情况：</span><span class="hljs-comment">//当its - itp == 1时，不需要再交换</span><span class="hljs-comment">//全部为奇数</span><span class="hljs-comment">//全部为偶数</span><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Solution</span> &#123;</span><span class="hljs-keyword">public</span>:<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">reOrderArray</span><span class="hljs-params">(<span class="hljs-built_in">vector</span>&lt;<span class="hljs-keyword">int</span>&gt; &amp;<span class="hljs-built_in">array</span>)</span> </span><span class="hljs-function"></span>&#123;<span class="hljs-keyword">int</span> <span class="hljs-built_in">size</span> = <span class="hljs-built_in">array</span>.<span class="hljs-built_in">size</span>();<span class="hljs-keyword">if</span> (<span class="hljs-built_in">size</span> == <span class="hljs-number">0</span> || <span class="hljs-built_in">size</span> == <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span>;<span class="hljs-comment">//为空或只有一个元素时</span><span class="hljs-built_in">vector</span>&lt;<span class="hljs-keyword">int</span>&gt;::iterator itp = <span class="hljs-built_in">array</span>.<span class="hljs-built_in">begin</span>();<span class="hljs-built_in">vector</span>&lt;<span class="hljs-keyword">int</span>&gt;::iterator its = <span class="hljs-built_in">array</span>.<span class="hljs-built_in">end</span>() - <span class="hljs-number">1</span>;<span class="hljs-keyword">int</span> tmp = <span class="hljs-number">0</span>;<span class="hljs-keyword">while</span> (itp &lt; its)<span class="hljs-comment">//保证还有数字未调整</span>&#123;<span class="hljs-comment">//寻找下一个偶数，</span><span class="hljs-keyword">while</span> (itp != <span class="hljs-built_in">array</span>.<span class="hljs-built_in">end</span>() - <span class="hljs-number">1</span> &amp;&amp; *itp &amp; <span class="hljs-number">0x1</span>) ++itp;<span class="hljs-comment">//寻找下一个奇数</span><span class="hljs-keyword">while</span> (its != <span class="hljs-built_in">array</span>.<span class="hljs-built_in">begin</span>() &amp;&amp; !(*its &amp; <span class="hljs-number">0x1</span>)) --its;<span class="hljs-comment">//判断是否itp剩下的全为奇数或its剩下的全为偶数</span><span class="hljs-keyword">if</span> (itp == <span class="hljs-built_in">array</span>.<span class="hljs-built_in">end</span>() || its == <span class="hljs-built_in">array</span>.<span class="hljs-built_in">begin</span>()) <span class="hljs-keyword">break</span>;<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(itp &lt; its)<span class="hljs-comment">//保证非its - itp == 1的情况</span>&#123;tmp = *itp;*itp = *its;*its = tmp;&#125;&#125;&#125;&#125;;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Data Structures and Algorithms</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>剑指Offer</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>剑指Offer——（12）数值的整数次方</title>
+    <link href="/2020/06/28/numerical-integer-power/"/>
+    <url>/2020/06/28/numerical-integer-power/</url>
+    
+    <content type="html"><![CDATA[<p><strong>题目描述：</strong></p><blockquote><p><strong>给定一个double类型的浮点数base和int类型的整数exponent。求base的exponent次方。</strong></p></blockquote><p><strong>实现如下：</strong></p><pre><code class="hljs angelscript"><span class="hljs-comment">//方法一：循环</span><span class="hljs-comment">//此题不需要考虑计算后值溢出的情况，即不存在大数情况</span><span class="hljs-comment">//异常情况：</span><span class="hljs-comment">//底数为0时-&gt;0.0</span><span class="hljs-comment">//指数为0时-&gt;1.0(数学定义)</span><span class="hljs-comment">//指数为负数时，需要考虑先计算指数绝对值的结果，再取倒数</span><span class="hljs-keyword">class</span> <span class="hljs-symbol">Solution</span> &#123;<span class="hljs-keyword">public</span>:<span class="hljs-built_in">double</span> Power(<span class="hljs-built_in">double</span> base, <span class="hljs-built_in">int</span> exponent)&#123;<span class="hljs-comment">//底数为0时，因为base为double类型，所以需要进行范围判断</span><span class="hljs-keyword">if</span> (base - <span class="hljs-number">0</span> &lt;= <span class="hljs-number">0.0000001</span> &amp;&amp; base - <span class="hljs-number">0</span> &gt;= <span class="hljs-number">-0.0000001</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0.0</span>;<span class="hljs-keyword">if</span> (exponent == <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">1.0</span>;<span class="hljs-comment">//指数为0，return</span><span class="hljs-built_in">double</span> res = base;<span class="hljs-built_in">int</span> unsigned_exponent = abs(exponent);<span class="hljs-comment">//先取绝对值，考虑exp为负</span><span class="hljs-keyword">for</span> (<span class="hljs-built_in">int</span> i = <span class="hljs-number">2</span>; i &lt;= unsigned_exponent; ++i)&#123;res *= base;&#125;<span class="hljs-keyword">if</span> (exponent &lt; <span class="hljs-number">0</span>) res = <span class="hljs-number">1.0</span> / res;<span class="hljs-comment">//exp为负数时，取res的倒数</span><span class="hljs-keyword">return</span> res;&#125;&#125;;<span class="hljs-comment">//方法二：递归</span><span class="hljs-comment">//计算的指数若为n，则只需计算指数为(n/2)时的值，用这个值再平方就可以得到指数为n的值</span><span class="hljs-comment">//注意：</span><span class="hljs-comment">//n为奇数时。需要再乘以一个base，因为(n/2)向下取整</span><span class="hljs-comment">//exponent还是先计算为正数的情况，之后再判断是否求倒数</span><span class="hljs-keyword">class</span> <span class="hljs-symbol">Solution</span>&#123;<span class="hljs-keyword">public</span>:<span class="hljs-built_in">double</span> unsignedPower(<span class="hljs-built_in">double</span> base, <span class="hljs-built_in">int</span> exponent)&#123;<span class="hljs-keyword">if</span> (exponent == <span class="hljs-number">1</span>)<span class="hljs-comment">//指数为1，return base</span><span class="hljs-keyword">return</span> base;<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (exponent == <span class="hljs-number">0</span>)<span class="hljs-comment">//指数为0，return 1</span><span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<span class="hljs-built_in">double</span> res = unsignedPower(base, exponent &gt;&gt; <span class="hljs-number">1</span>);<span class="hljs-comment">//右移一位-&gt;除2</span>res *= res;<span class="hljs-comment">//再平方，减少运算次数</span><span class="hljs-keyword">if</span> (exponent &amp; <span class="hljs-number">0x1</span>) res *= base;<span class="hljs-comment">//判断指数是否为奇数，与1异或-&gt;模2</span><span class="hljs-keyword">return</span> res;&#125;<span class="hljs-built_in">double</span> Power(<span class="hljs-built_in">double</span> base, <span class="hljs-built_in">int</span> exponent)&#123;<span class="hljs-comment">//判断底数是否为0</span><span class="hljs-keyword">if</span> (base - <span class="hljs-number">0</span> &lt;= <span class="hljs-number">0.0000001</span> &amp;&amp; base - <span class="hljs-number">0</span> &gt;= <span class="hljs-number">-0.0000001</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0.0</span>;<span class="hljs-keyword">if</span> (exponent == <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">1.0</span>; <span class="hljs-comment">//判断指数是否为0</span><span class="hljs-keyword">if</span> (exponent &lt; <span class="hljs-number">0</span>)<span class="hljs-keyword">return</span> <span class="hljs-number">1.0</span> / unsignedPower(base, abs(exponent));<span class="hljs-comment">//负指数应求倒数</span><span class="hljs-keyword">else</span><span class="hljs-keyword">return</span> unsignedPower(base, abs(exponent));&#125;&#125;;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Data Structures and Algorithms</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>剑指Offer</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>剑指Offer——（11）二进制中1的个数</title>
+    <link href="/2020/06/28/the-number-of-1s-in-binary/"/>
+    <url>/2020/06/28/the-number-of-1s-in-binary/</url>
+    
+    <content type="html"><![CDATA[<p><strong>题目描述：</strong></p><blockquote><p><strong>输入一个整数，输出该数二进制表示中1的个数。其中负数用补码表示。</strong></p></blockquote><p><strong>实现如下：</strong></p><pre><code class="hljs angelscript"><span class="hljs-comment">//方法一</span><span class="hljs-comment">//使测试数据x中只有一个1，逐步右移，使这个1从数值最低位到数值最高位与n依次比较</span><span class="hljs-keyword">class</span> <span class="hljs-symbol">Solution</span> &#123;<span class="hljs-keyword">public</span>:<span class="hljs-built_in">int</span> NumberOf1(<span class="hljs-built_in">int</span> n) &#123;<span class="hljs-built_in">int</span> x = <span class="hljs-number">1</span>;<span class="hljs-built_in">int</span> num = <span class="hljs-number">0</span>;<span class="hljs-keyword">for</span> (<span class="hljs-built_in">int</span> i = <span class="hljs-number">0</span>; i &lt; sizeof(<span class="hljs-built_in">int</span>)*<span class="hljs-number">8</span>; ++i)<span class="hljs-comment">//计算x的位数</span>&#123;<span class="hljs-keyword">if</span> (n &amp; x) ++num;<span class="hljs-comment">//n与x进行位与运算</span>x = x &lt;&lt; <span class="hljs-number">1</span>;<span class="hljs-comment">//x右移1位</span>&#125;<span class="hljs-keyword">return</span> num;&#125;&#125;;<span class="hljs-comment">//方法二</span><span class="hljs-comment">//数字0中没有1</span><span class="hljs-comment">//非0数字中一定有1</span><span class="hljs-comment">//将n = n-1使其最低位的1变零，此位之前的位不受影响，此位之后的位全从0变1</span><span class="hljs-comment">//如果n此时不为0，说明还有1存在，重复上步骤。</span><span class="hljs-comment">//如果n = 0时，1的个数计算完毕，return。</span><span class="hljs-keyword">class</span> <span class="hljs-symbol">Solution</span>&#123;<span class="hljs-keyword">public</span>:<span class="hljs-built_in">int</span> NumberOf1(<span class="hljs-built_in">int</span> n)&#123;<span class="hljs-built_in">int</span> num = <span class="hljs-number">0</span>;<span class="hljs-keyword">while</span> (n != <span class="hljs-number">0</span>)<span class="hljs-comment">//n中还有1存在</span>&#123;++num;n = n &amp; (n - <span class="hljs-number">1</span>);<span class="hljs-comment">//进行位与计算，使此位的1变0</span>&#125;<span class="hljs-keyword">return</span> num;&#125;&#125;;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Data Structures and Algorithms</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>剑指Offer</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>剑指Offer——（10）矩形覆盖</title>
+    <link href="/2020/06/28/rectangle-cover/"/>
+    <url>/2020/06/28/rectangle-cover/</url>
+    
+    <content type="html"><![CDATA[<p><strong>题目描述：</strong></p><blockquote><p><strong>我们可以用2<em>1的小矩形横着或者竖着去覆盖更大的矩形。请问用n个2</em>1的小矩形无重叠地覆盖一个2*n的大矩形，总共有多少种方法？</strong></p></blockquote><p><strong>实现如下：</strong></p><pre><code class="hljs angelscript"><span class="hljs-comment">//有两种放置方法</span><span class="hljs-comment">//1.左边竖着放一个，则还剩下2*(n-1)</span><span class="hljs-comment">//2.左上角横着放一个，相应左下角也横着放一个，则还剩下2*(n-2)</span><span class="hljs-comment">//f(n) = f(n-1) + f(n-2)</span><span class="hljs-comment">//特殊情况：不存在时返回0；2*1时只有竖着放一种情况；2*2时两种情况</span><span class="hljs-keyword">class</span> <span class="hljs-symbol">Solution</span>&#123;<span class="hljs-keyword">public</span>:<span class="hljs-built_in">int</span> rectCover(<span class="hljs-built_in">int</span> number)&#123;<span class="hljs-keyword">if</span> (number &lt; <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<span class="hljs-comment">//特殊情况</span><span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(number == <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (number == <span class="hljs-number">2</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">2</span>;<span class="hljs-keyword">else</span>&#123;<span class="hljs-built_in">int</span> a = <span class="hljs-number">1</span>, b = <span class="hljs-number">2</span>, tmp = <span class="hljs-number">0</span>;<span class="hljs-keyword">for</span> (<span class="hljs-built_in">int</span> i = <span class="hljs-number">3</span>; i &lt;= number; ++i)&#123;tmp = a + b;a = b;b = tmp;&#125;<span class="hljs-keyword">return</span> tmp;&#125;&#125;&#125;;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Data Structures and Algorithms</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>剑指Offer</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>剑指Offer——（9）变态跳台阶</title>
+    <link href="/2020/06/28/abnormal-jump-step/"/>
+    <url>/2020/06/28/abnormal-jump-step/</url>
+    
+    <content type="html"><![CDATA[<p><strong>题目描述：</strong></p><blockquote><p><strong>一只青蛙一次可以跳上1级台阶，也可以跳上2级……它也可以跳上n级。求该青蛙跳上一个n级的台阶总共有多少种跳法。</strong></p></blockquote><p><strong>实现如下：</strong></p><pre><code class="hljs angelscript"><span class="hljs-comment">//有n级台阶</span><span class="hljs-comment">//若跳1级则剩下n-1级，跳法f(n-1)</span><span class="hljs-comment">//若跳2级则剩下n-2级，跳法f(n-2)</span><span class="hljs-comment">//若跳3级则剩下n-3级，跳法f(n-3)</span><span class="hljs-comment">//若跳n-级则剩下1级，跳法f(n-(n-1))，即剩下一个台阶</span><span class="hljs-comment">//若跳n级则剩下0级，跳法f(0)，即为1种方法</span><span class="hljs-comment">//f(n) = 1 + f(n-1) + f(n-2) + ... +f (1)</span><span class="hljs-comment">//f(1) = 1</span><span class="hljs-comment">//f(2) = 1 + f(1) = 2；</span><span class="hljs-comment">//f(3) = 1 + f(2) + f(1) = 4...</span><span class="hljs-comment">//以此类推</span><span class="hljs-comment">//f(n) = 2^(n-1)</span><span class="hljs-keyword">class</span> <span class="hljs-symbol">Solution</span>&#123;<span class="hljs-keyword">public</span>:<span class="hljs-built_in">int</span> jumpFloorII(<span class="hljs-built_in">int</span> number)&#123;<span class="hljs-keyword">return</span> <span class="hljs-number">1</span> &lt;&lt; --number;<span class="hljs-comment">//左移n-1位</span>&#125;&#125;;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Data Structures and Algorithms</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>剑指Offer</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>剑指Offer——（8）跳台阶</title>
+    <link href="/2020/06/28/jump-the-stairs/"/>
+    <url>/2020/06/28/jump-the-stairs/</url>
+    
+    <content type="html"><![CDATA[<p><strong>题目描述：</strong></p><blockquote><p><strong>一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法。</strong></p></blockquote><p><strong>实现如下：</strong></p><pre><code class="hljs angelscript"><span class="hljs-comment">//两种跳跃方式：跳1级或跳2级</span><span class="hljs-comment">//假设有n级台阶，跳1级还剩余n-1级，跳2级还剩余n-2级，那剩余台阶继续选择跳法</span><span class="hljs-comment">//f(n) = f(n-1) + f(n-2) -&gt; 斐波那契数列</span><span class="hljs-comment">//n = 1时，1</span><span class="hljs-comment">//n = 2时，2</span><span class="hljs-keyword">class</span> <span class="hljs-symbol">Solution</span> &#123;<span class="hljs-keyword">public</span>:<span class="hljs-built_in">int</span> jumpFloor(<span class="hljs-built_in">int</span> n)&#123;        <span class="hljs-built_in">int</span> a = <span class="hljs-number">1</span>, b = <span class="hljs-number">2</span>, tmp = <span class="hljs-number">0</span>;<span class="hljs-keyword">if</span> (n == <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<span class="hljs-comment">//特殊情况只有1级台阶</span><span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (n == <span class="hljs-number">2</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">2</span>;<span class="hljs-comment">//特殊情况只有2级台阶</span><span class="hljs-keyword">else</span>&#123;<span class="hljs-keyword">for</span> (<span class="hljs-built_in">int</span> i = <span class="hljs-number">3</span>; i &lt;= n; ++i)&#123;tmp = a + b;a = b;b = tmp;&#125;<span class="hljs-keyword">return</span> b;&#125;&#125;&#125;;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Data Structures and Algorithms</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>剑指Offer</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>剑指Offer——（7）斐波那契数列</title>
+    <link href="/2020/06/28/fibonacci-sequence/"/>
+    <url>/2020/06/28/fibonacci-sequence/</url>
+    
+    <content type="html"><![CDATA[<p><strong>题目说明：</strong></p><blockquote><p><strong>大家都知道斐波那契数列，现在要求输入一个整数n，请你输出斐波那契数列的第n项。n&lt;=39</strong></p></blockquote><p><strong>实现如下：</strong></p><pre><code class="hljs angelscript"><span class="hljs-comment">//0 1 1 2 3 5 8 13 21...</span><span class="hljs-comment">//简洁的递归，但是注意消除重复计算项，采用map存储已计算的n的value</span><span class="hljs-keyword">class</span> <span class="hljs-symbol">Solution</span> &#123;<span class="hljs-keyword">public</span>:map&lt;<span class="hljs-built_in">int</span>, long long&gt; m;long long num;<span class="hljs-built_in">int</span> Fibonacci(<span class="hljs-built_in">int</span> n) &#123;<span class="hljs-keyword">if</span> (n == <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (n == <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<span class="hljs-keyword">else</span>&#123;map&lt;<span class="hljs-built_in">int</span>, long long&gt;::iterator it = m.find(n);<span class="hljs-comment">//查找是否已计算过</span><span class="hljs-keyword">if</span> (m.end() == it)<span class="hljs-comment">//之前没算过，进行计算，再insert</span>&#123;num = Fibonacci(n - <span class="hljs-number">1</span>) + Fibonacci(n - <span class="hljs-number">2</span>);m.insert(pair&lt;<span class="hljs-built_in">int</span>, long long&gt;(n, num));<span class="hljs-keyword">return</span> num;&#125;<span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> it-&gt;second;<span class="hljs-comment">//若之前算过，直接get second</span>&#125;&#125;&#125;;<span class="hljs-comment">//O(n)的循环方法，没有什么好解释的...→_→</span><span class="hljs-keyword">class</span> <span class="hljs-symbol">Solution</span> &#123;<span class="hljs-keyword">public</span>:<span class="hljs-built_in">int</span> Fibonacci(<span class="hljs-built_in">int</span> n) &#123;long long res[<span class="hljs-number">2</span>] = &#123; <span class="hljs-number">0</span>,<span class="hljs-number">1</span> &#125;;long long tmp = <span class="hljs-number">0</span>;<span class="hljs-keyword">if</span> (n == <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (n == <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<span class="hljs-keyword">else</span>&#123;<span class="hljs-keyword">for</span> (<span class="hljs-built_in">int</span> i = <span class="hljs-number">2</span>; i &lt;= n; ++i)&#123;<span class="hljs-comment">//空瓶子swap</span>tmp = res[<span class="hljs-number">0</span>] + res[<span class="hljs-number">1</span>];res[<span class="hljs-number">0</span>] = res[<span class="hljs-number">1</span>];res[<span class="hljs-number">1</span>] = tmp;&#125;<span class="hljs-keyword">return</span> res[<span class="hljs-number">1</span>];&#125;&#125;&#125;;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Data Structures and Algorithms</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>剑指Offer</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>剑指Offer——（6）旋转数组的最小数字</title>
+    <link href="/2020/06/28/rotate-the-smallest-number-of-an-array/"/>
+    <url>/2020/06/28/rotate-the-smallest-number-of-an-array/</url>
+    
+    <content type="html"><![CDATA[<p><strong>题目描述：</strong></p><blockquote><p><strong>把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。</strong><br>   <strong>输入一个非递减排序的数组的一个旋转，输出旋转数组的最小元素。</strong><br>   <strong>例如数组{3,4,5,1,2}为{1,2,3,4,5}的一个旋转，该数组的最小值为1。</strong><br>   <strong>NOTE：给出的所有元素都大于0，若数组大小为0，请返回0。</strong></p></blockquote><p><strong>实现如下：</strong></p><pre><code class="hljs arduino"><span class="hljs-comment">//&#123;3,4,5,1,2&#125;</span><span class="hljs-comment">// l   m   r</span><span class="hljs-comment">//规律：一般前旋转区的数大于等于后旋转区的数</span><span class="hljs-comment">//注意特殊情况</span><span class="hljs-comment">//1.旋转数为0个，即未旋转，此时rotateArray[0]为min</span><span class="hljs-comment">//2.&#123;0,1,1,1,1&#125;-&gt;&#123;1,1,1,0,1&#125;</span><span class="hljs-comment">//                l   m   r 此时无法判断middle在前旋转区还是后旋转区</span><span class="hljs-comment">//O(logn)</span><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Solution</span> </span><span class="hljs-class">&#123;</span><span class="hljs-keyword">public</span>:<span class="hljs-comment">//遍历vector</span><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">searchInRotateArray</span><span class="hljs-params">(<span class="hljs-built_in">vector</span>&lt;<span class="hljs-keyword">int</span>&gt; rotateArray)</span></span><span class="hljs-function"></span>&#123;<span class="hljs-built_in">vector</span>&lt;<span class="hljs-keyword">int</span>&gt;::iterator it = rotateArray.<span class="hljs-built_in">begin</span>();<span class="hljs-keyword">int</span> <span class="hljs-built_in">min</span> = <span class="hljs-number">1</span>;<span class="hljs-keyword">for</span> (; it != rotateArray.<span class="hljs-built_in">end</span>(); ++it)&#123;<span class="hljs-keyword">if</span> (<span class="hljs-built_in">min</span> &gt; *it) <span class="hljs-built_in">min</span> = *it;&#125;<span class="hljs-keyword">return</span> <span class="hljs-built_in">min</span>;&#125;<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">minNumberInRotateArray</span><span class="hljs-params">(<span class="hljs-built_in">vector</span>&lt;<span class="hljs-keyword">int</span>&gt; rotateArray)</span> </span><span class="hljs-function"></span>&#123;<span class="hljs-keyword">if</span> (rotateArray.<span class="hljs-built_in">size</span>() == <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<span class="hljs-comment">//数组异常</span><span class="hljs-built_in">vector</span>&lt;<span class="hljs-keyword">int</span>&gt;::iterator itleft = rotateArray.<span class="hljs-built_in">begin</span>();<span class="hljs-built_in">vector</span>&lt;<span class="hljs-keyword">int</span>&gt;::iterator itright = rotateArray.<span class="hljs-built_in">end</span>() - <span class="hljs-number">1</span>;<span class="hljs-built_in">vector</span>&lt;<span class="hljs-keyword">int</span>&gt;::iterator itmiddle = itleft;<span class="hljs-comment">//防止未旋转情况</span><span class="hljs-comment">//第一次循环条件不满足时，即为未旋转情况，直接return</span><span class="hljs-keyword">while</span> (*itleft &gt;= *itright)&#123;itmiddle = itleft + (itright - itleft)/<span class="hljs-number">2</span>;<span class="hljs-keyword">if</span> (itright - itleft == <span class="hljs-number">1</span>)<span class="hljs-comment">//相邻时itright即为min</span>&#123;itmiddle = itright;<span class="hljs-keyword">break</span>;&#125;<span class="hljs-comment">//当l==m==r时，只能采取遍历方式寻找min</span><span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (*itleft == *itright &amp;&amp; *itleft == *itmiddle)<span class="hljs-keyword">return</span> searchInRotateArray(rotateArray);<span class="hljs-comment">//此时min在后旋转区</span><span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (*itleft &lt;= *itmiddle) itleft = itmiddle;<span class="hljs-comment">//此时min在前旋转区</span><span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (*itright &gt;= *itmiddle) itright = itmiddle;&#125;<span class="hljs-keyword">return</span> *itmiddle;&#125;&#125;;<span class="hljs-comment">//嘿嘿...直接sort，费这老鼻子劲→_→</span><span class="hljs-comment">//O(n)</span><span class="hljs-comment">/*</span><span class="hljs-comment">#include &lt;algorithm&gt;</span><span class="hljs-comment">class Solution &#123;</span><span class="hljs-comment">public:</span><span class="hljs-comment">int minNumberInRotateArray(vector&lt;int&gt; rotateArray)</span><span class="hljs-comment">&#123;</span><span class="hljs-comment">sort(rotateArray.begin(), rotateArray.end());</span><span class="hljs-comment">return rotateArray[0];</span><span class="hljs-comment">&#125;</span><span class="hljs-comment">&#125;;</span><span class="hljs-comment">*/</span></code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Data Structures and Algorithms</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>剑指Offer</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>剑指Offer——（5）用两个栈实现队列</title>
+    <link href="/2020/06/28/implement-queue-with-two-stacks/"/>
+    <url>/2020/06/28/implement-queue-with-two-stacks/</url>
+    
+    <content type="html"><![CDATA[<p><strong>题目描述：</strong></p><blockquote><p><strong>用两个栈来实现一个队列，完成队列的Push和Pop操作。 队列中的元素为int类型。</strong></p></blockquote><p><strong>实现如下：</strong></p><pre><code class="hljs arduino"><span class="hljs-comment">//栈：先进后出 队列：先进先出</span><span class="hljs-comment">//注意最后一个元素的转移优化</span><span class="hljs-comment">//两个队列实现一个栈</span><span class="hljs-comment">//stack1负责入栈，stack2负责出栈</span><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Solution</span></span><span class="hljs-class">&#123;</span><span class="hljs-keyword">public</span>:<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">push</span><span class="hljs-params">(<span class="hljs-keyword">int</span> node)</span> </span><span class="hljs-function"></span>&#123;stack1.push(node);&#125;<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">pop</span><span class="hljs-params">()</span> </span><span class="hljs-function"></span>&#123;<span class="hljs-keyword">int</span> x = <span class="hljs-number">0</span>;<span class="hljs-keyword">if</span> (!stack2.empty())<span class="hljs-comment">//stack2不为空，说明有数据，可以直接pop</span>&#123;x = stack2.top();stack2.pop();&#125;<span class="hljs-keyword">else</span>&#123;<span class="hljs-comment">//否则将stack1中的除最后一个的其余数据先pop再依次push到stack2中</span><span class="hljs-keyword">while</span> (!stack1.empty())&#123;x = stack1.top();<span class="hljs-keyword">if</span> (stack1.<span class="hljs-built_in">size</span>() == <span class="hljs-number">1</span>)&#123;stack1.pop();<span class="hljs-keyword">break</span>;&#125;<span class="hljs-keyword">else</span>&#123;stack1.pop();stack2.push(x);&#125;&#125;&#125;<span class="hljs-keyword">return</span> x;&#125;<span class="hljs-keyword">private</span>:<span class="hljs-built_in">stack</span>&lt;<span class="hljs-keyword">int</span>&gt; stack1;<span class="hljs-built_in">stack</span>&lt;<span class="hljs-keyword">int</span>&gt; stack2;&#125;;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Data Structures and Algorithms</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>剑指Offer</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>剑指Offer——（4）重建二叉树</title>
+    <link href="/2020/06/28/rebuild-binary-tree/"/>
+    <url>/2020/06/28/rebuild-binary-tree/</url>
+    
+    <content type="html"><![CDATA[<p><strong>题目描述：</strong></p><blockquote><p><strong>输入某二叉树的前序遍历和中序遍历的结果，请重建出该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字。例如输入前序遍历序列{1,2,4,7,3,5,6,8}和中序遍历序列{4,7,2,1,5,3,8,6}，则重建二叉树并返回。</strong></p></blockquote><p><strong>实现如下：</strong></p><pre><code class="hljs reasonml"><span class="hljs-comment">//前序中序、后序中序都可以重建二叉树，但前序后序不可以，因为只有中序可以区分左子树与右子树</span><span class="hljs-comment">/*</span><span class="hljs-comment">pre:&#123;1,2,4,7,3,5,6,8&#125;</span><span class="hljs-comment">vin:&#123;4,7,2,1,5,3,8,6&#125;</span><span class="hljs-comment">*/</span><span class="hljs-comment">//Definition for binary tree</span><span class="hljs-comment">/*</span><span class="hljs-comment">struct TreeNode</span><span class="hljs-comment">&#123;</span><span class="hljs-comment">    int val;</span><span class="hljs-comment">    TreeNode *left;</span><span class="hljs-comment">    TreeNode *right;</span><span class="hljs-comment">    TreeNode(int x) : val(x), left(NULL), right(NULL) &#123;&#125;</span><span class="hljs-comment">&#125;;</span><span class="hljs-comment">*/</span><span class="hljs-keyword">class</span> Solution&#123;public:    TreeNode* re<span class="hljs-constructor">ConstructBinaryTree(<span class="hljs-params">vector</span>&lt;<span class="hljs-params">int</span>&gt; <span class="hljs-params">pre</span>, <span class="hljs-params">vector</span>&lt;<span class="hljs-params">int</span>&gt; <span class="hljs-params">vin</span>)</span>    &#123;    <span class="hljs-comment">//判断异常情况：前序为空或后序为空或两者个数不同</span>        <span class="hljs-keyword">if</span> (pre.size<span class="hljs-literal">()</span><span class="hljs-operator"> == </span><span class="hljs-number">0</span><span class="hljs-operator"> || </span>vin.size<span class="hljs-literal">()</span><span class="hljs-operator"> == </span><span class="hljs-number">0</span><span class="hljs-operator"> || </span>pre.size<span class="hljs-literal">()</span> != vin.size<span class="hljs-literal">()</span>)         return NULL;        <span class="hljs-keyword">else</span> <span class="hljs-comment">//调用递归函数</span>        return <span class="hljs-constructor">ConstructBinaryTree(<span class="hljs-params">pre</span>.<span class="hljs-params">begin</span>()</span>, vin.<span class="hljs-keyword">begin</span><span class="hljs-literal">()</span>, pre.size<span class="hljs-literal">()</span>);    &#125;     TreeNode* <span class="hljs-constructor">ConstructBinaryTree(<span class="hljs-params">vector</span>&lt;<span class="hljs-params">int</span>&gt;::<span class="hljs-params">iterator</span> <span class="hljs-params">itp</span>, <span class="hljs-params">vector</span>&lt;<span class="hljs-params">int</span>&gt;::<span class="hljs-params">iterator</span> <span class="hljs-params">itv</span>, <span class="hljs-params">int</span> <span class="hljs-params">n</span>)</span>    &#123;        TreeNode *s = NULL;        <span class="hljs-keyword">if</span> (n &gt; <span class="hljs-number">0</span>)        &#123;            s = <span class="hljs-keyword">new</span> <span class="hljs-constructor">TreeNode(<span class="hljs-operator">*</span><span class="hljs-params">itp</span>)</span>;            <span class="hljs-comment">//在中序序列中寻找根结点的对应下标</span>            <span class="hljs-built_in">int</span> index = <span class="hljs-constructor">FindIndex(<span class="hljs-params">itv</span>, <span class="hljs-params">n</span>, <span class="hljs-operator">*</span><span class="hljs-params">itp</span>)</span>;            <span class="hljs-keyword">if</span> (index<span class="hljs-operator"> == </span>-<span class="hljs-number">1</span>) exit<span class="hljs-number">(-1)</span>;<span class="hljs-comment">//未找到数字，序列错误</span>            <span class="hljs-comment">//缩小节点的范围，仅限s的左子树，注意下标和个数的变化</span>            s-&gt;left = <span class="hljs-constructor">ConstructBinaryTree(<span class="hljs-params">itp</span> + 1, <span class="hljs-params">itv</span>, <span class="hljs-params">index</span>)</span>;            <span class="hljs-comment">//缩小节点的范围，仅限s的右子树</span>            s-&gt;right = <span class="hljs-constructor">ConstructBinaryTree(<span class="hljs-params">itp</span> + <span class="hljs-params">index</span> + 1, <span class="hljs-params">itv</span> + <span class="hljs-params">index</span> + 1, <span class="hljs-params">n</span> - <span class="hljs-params">index</span> - 1)</span>;        &#125;        return s;    &#125;    <span class="hljs-built_in">int</span> <span class="hljs-constructor">FindIndex(<span class="hljs-params">vector</span>&lt;<span class="hljs-params">int</span>&gt;::<span class="hljs-params">iterator</span> <span class="hljs-params">itv</span>, <span class="hljs-params">int</span> <span class="hljs-params">n</span>, <span class="hljs-params">int</span> <span class="hljs-params">x</span>)</span>    &#123;        for (<span class="hljs-built_in">int</span> i = <span class="hljs-number">0</span>; i &lt; n; ++i, ++itv)        &#123;            <span class="hljs-keyword">if</span> (*itv<span class="hljs-operator"> == </span>x) return i;        &#125;        return -<span class="hljs-number">1</span>;<span class="hljs-comment">//未找到返回-1</span>    &#125;&#125;;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Data Structures and Algorithms</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>剑指Offer</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>剑指Offer——（3）从尾到头打印链表</title>
+    <link href="/2020/06/28/print-a-linked-list-from-end-to-end/"/>
+    <url>/2020/06/28/print-a-linked-list-from-end-to-end/</url>
+    
+    <content type="html"><![CDATA[<p><strong>题目描述：</strong></p><blockquote><p><strong>输入一个链表，从尾到头打印链表每个节点的值。</strong></p></blockquote><p><strong>实现如下：</strong></p><pre><code class="hljs reasonml"><span class="hljs-comment">//可以使用stack的先进后出，也可以使用递归，因为已给定函数所以使用递归</span><span class="hljs-comment">//本题的在线测试用例是无头链表→_→</span><span class="hljs-comment">/*节点结构体</span><span class="hljs-comment">struct ListNode </span><span class="hljs-comment">&#123;</span><span class="hljs-comment">int val;</span><span class="hljs-comment">    struct ListNode *next;</span><span class="hljs-comment">    ListNode(int x) : val(x), next(NULL) &#123;&#125;</span><span class="hljs-comment">&#125;;</span><span class="hljs-comment">*/</span><span class="hljs-keyword">class</span> Solution&#123;public:vector&lt;<span class="hljs-built_in">int</span>&gt; print<span class="hljs-constructor">ListFromTailToHead(ListNode<span class="hljs-operator">*</span> <span class="hljs-params">head</span>)</span>&#123;vector&lt;<span class="hljs-built_in">int</span>&gt; v;<span class="hljs-comment">//判断是否为空，不为空调用递归函数</span><span class="hljs-keyword">if</span> (head != NULL) <span class="hljs-constructor">ListFromTailToHead(<span class="hljs-params">head</span>, <span class="hljs-params">v</span>)</span>;return v;&#125;<span class="hljs-comment">//递归函数传参为指向当前结点的指针和存储value的vector引用，因为vector需要共同使用</span>void <span class="hljs-constructor">ListFromTailToHead(ListNode <span class="hljs-operator">*</span><span class="hljs-params">p</span>, <span class="hljs-params">vector</span>&lt;<span class="hljs-params">int</span>&gt; &amp;<span class="hljs-params">vec</span>)</span>&#123;<span class="hljs-comment">//当前指针不为空时说明节点存在</span><span class="hljs-keyword">if</span> (p != NULL)&#123;<span class="hljs-constructor">ListFromTailToHead(<span class="hljs-params">p</span>-&gt;<span class="hljs-params">next</span>, <span class="hljs-params">vec</span>)</span>;<span class="hljs-comment">//先递归后压value</span>vec.push<span class="hljs-constructor">_back(<span class="hljs-params">p</span>-&gt;<span class="hljs-params">val</span>)</span>;&#125;&#125;&#125;;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>Data Structures and Algorithms</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>剑指Offer</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>剑指Offer——（2）替换空格</title>
     <link href="/2020/06/27/replace-spaces/"/>
     <url>/2020/06/27/replace-spaces/</url>
@@ -254,7 +754,7 @@
   
   
   <entry>
-    <title>学习的日子</title>
+    <title>初来乍到，请多多指教</title>
     <link href="/2020/06/26/hello-world/"/>
     <url>/2020/06/26/hello-world/</url>
     
