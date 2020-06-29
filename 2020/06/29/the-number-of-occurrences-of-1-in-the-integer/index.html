@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/self.jpeg">
+  <link rel="icon" type="image/png" href="/img/self.jpeg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>剑指Offer——（31）整数中1出现的次数（从1到n整数中1出现的次数） - kongkong</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>kongkong</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-06-29 21:05">
+      2020年6月29日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      615 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      8
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2020年6月29日 晚上
+                
+              </p>
+            
+            <article class="markdown-body">
+              <p><strong>题目描述：</strong></p>
+<blockquote>
+<p><strong>求出1<del>13的整数中1出现的次数,并算出100</del>1300的整数中1出现的次数？为此他特别数了一下1~13中包含1的数字有1、10、11、12、13因此共出现6次,但是对于后面问题他就没辙了。ACMer希望你们帮帮他,并把问题更加普遍化,可以很快的求出任意非负整数区间中1出现的次数。</strong></p>
+</blockquote>
+<p><strong>实现如下：</strong></p>
+<pre><code class="hljs angelscript"><span class="hljs-comment">//方法一</span>
+<span class="hljs-comment">//将所有的数遍历一次，对每一个数的每一位再进行是否为1的判断</span>
+<span class="hljs-comment">//时间复杂度为O（n*logn）</span>
+<span class="hljs-keyword">class</span> <span class="hljs-symbol">Solution</span> 
+&#123;
+<span class="hljs-keyword">private</span>:
+	<span class="hljs-built_in">int</span> NumberOf1(unsigned <span class="hljs-built_in">int</span> n)
+	&#123;
+        <span class="hljs-built_in">int</span> number = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">while</span>(n)<span class="hljs-comment">//对此数字的每一位都进行判断</span>
+		&#123;
+            <span class="hljs-keyword">if</span>(n % <span class="hljs-number">10</span> == <span class="hljs-number">1</span>)<span class="hljs-comment">//模10取余，判断是否为1</span>
+                number++;
+            n = n / <span class="hljs-number">10</span>;<span class="hljs-comment">//将最后一位舍弃</span>
+        &#125;
+        <span class="hljs-keyword">return</span> number;
+    &#125;
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-built_in">int</span> NumberOf1Between1AndN(unsigned <span class="hljs-built_in">int</span> n)
+    &#123;
+        <span class="hljs-built_in">int</span> number = <span class="hljs-number">0</span>;<span class="hljs-comment">//计数器</span>
+        <span class="hljs-keyword">for</span>(unsigned <span class="hljs-built_in">int</span> i = <span class="hljs-number">1</span>; i &lt;= n; ++i)<span class="hljs-comment">//循环遍历所有的数</span>
+            number += NumberOf1(i);
+        <span class="hljs-keyword">return</span> number;
+    &#125;
+&#125;;</code></pre>
+
+<pre><code class="hljs cpp"><span class="hljs-comment">//方法二</span>
+<span class="hljs-comment">//时间复杂度为O(logn)</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Solution</span> </span>
+<span class="hljs-class">&#123;</span>
+<span class="hljs-keyword">private</span>:
+	<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">PowerBase10</span><span class="hljs-params">(<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span> num)</span><span class="hljs-comment">//计算num与10次方的关系</span></span>
+<span class="hljs-function">	</span>&#123;
+		<span class="hljs-keyword">int</span> res = <span class="hljs-number">1</span>;
+		<span class="hljs-keyword">for</span> (<span class="hljs-keyword">unsigned</span> i = <span class="hljs-number">0</span>; i &lt; num; ++i)		
+			res *= <span class="hljs-number">10</span>;
+		<span class="hljs-keyword">return</span> res;
+	&#125;
+	<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">NumberOf1</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* str)</span></span>
+<span class="hljs-function">	</span>&#123;
+		<span class="hljs-comment">//防御性动作，判断字符串是否存在、第一个数字是否合法、字符串是否为NULL</span>
+		<span class="hljs-keyword">if</span> (!str || *str &lt; <span class="hljs-string">'0'</span> || *str &gt; <span class="hljs-string">'9'</span> || *str == <span class="hljs-string">'\0'</span>)
+			<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+		
+		<span class="hljs-keyword">int</span> first = *str - <span class="hljs-string">'0'</span>;<span class="hljs-comment">//取数字的最高位，将其转化为int</span>
+		<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span> length = <span class="hljs-keyword">static_cast</span>&lt;<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span>&gt;(<span class="hljs-built_in">strlen</span>(str));<span class="hljs-comment">//计算数字的位数，将其转化为unsigned int</span>
+
+		<span class="hljs-keyword">if</span> (length == <span class="hljs-number">1</span> &amp;&amp; first == <span class="hljs-number">0</span>)<span class="hljs-comment">//如果是一位数且值为0，则直接返回0</span>
+			<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+		<span class="hljs-keyword">if</span> (length == <span class="hljs-number">1</span> &amp;&amp; first &gt; <span class="hljs-number">0</span>)<span class="hljs-comment">//如果是一位数且值大于0，则1只出现1次，直接返回1</span>
+			<span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;
+
+		<span class="hljs-keyword">int</span> numFirstDigit = <span class="hljs-number">0</span>;
+		<span class="hljs-keyword">if</span> (first &gt; <span class="hljs-number">1</span>)<span class="hljs-comment">//如果第一位数大于1，则计算数字与10的次方关系</span>
+			numFirstDigit = PowerBase10(length - <span class="hljs-number">1</span>);
+		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (first == <span class="hljs-number">1</span>)<span class="hljs-comment">//如果第一位数等于1，则1出现的次数为从最高位为1到最大值的差值再加一</span>
+			numFirstDigit = atoi(str + <span class="hljs-number">1</span>) + <span class="hljs-number">1</span>;
+		
+		<span class="hljs-keyword">int</span> numOtherDigits = first*(length - <span class="hljs-number">1</span>)*PowerBase10(length - <span class="hljs-number">2</span>);<span class="hljs-comment">//计算次高位开始的数出现1的次数</span>
+		<span class="hljs-keyword">int</span> numRecursive = NumberOf1(str + <span class="hljs-number">1</span>);<span class="hljs-comment">//递归计算从1开始到此数去掉最高位的数出现1的次数</span>
+
+		<span class="hljs-keyword">return</span> numFirstDigit + numOtherDigits + numRecursive;<span class="hljs-comment">//返回之和</span>
+	&#125;
+<span class="hljs-keyword">public</span>:
+	<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">NumberOf1Between1AndN_Solution</span><span class="hljs-params">(<span class="hljs-keyword">int</span> n)</span></span>
+<span class="hljs-function">	</span>&#123;
+		<span class="hljs-keyword">if</span> (n &lt;= <span class="hljs-number">0</span>)<span class="hljs-comment">//防御性动作</span>
+			<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+		<span class="hljs-keyword">char</span> str[<span class="hljs-number">100</span>];
+		<span class="hljs-built_in">sprintf</span>(str, <span class="hljs-string">"%d"</span>, n);<span class="hljs-comment">//将数字转化为字符串形式</span>
+		<span class="hljs-keyword">return</span> NumberOf1(str);
+	&#125;
+&#125;;</code></pre>
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/06/29/the-past-and-present-of-the-main-function/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">装载、链接与库——main函数的前世今生</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/06/29/computer-network-architecture/">
+                        <span class="hidden-mobile">计算机网络体系结构</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "剑指Offer——（31）整数中1出现的次数（从1到n整数中1出现的次数）&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

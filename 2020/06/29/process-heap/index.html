@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/self.jpeg">
+  <link rel="icon" type="image/png" href="/img/self.jpeg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>链接、装载与库——进程的堆 - kongkong</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>kongkong</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-06-29 20:57">
+      2020年6月29日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.7k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      17
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2020年6月29日 晚上
+                
+              </p>
+            
+            <article class="markdown-body">
+              <p> <strong>* <em>本次只是简要的总结堆的基本情况，具体的函数分析和堆算法分析今后会继续再学习。。。→_→</em> *</strong></p>
+<blockquote>
+<p><strong>程序在任意时刻都可能会发出请求，申请或释放一段内存资源，堆由此而生。</strong></p>
+</blockquote>
+<ol>
+<li><strong>堆(Heap)</strong></li>
+</ol>
+<ul>
+<li><p>堆是一块巨大的内存空间，占据虚拟空间的绝大部分。在这片空间里，<strong>程序可以请求一块连续内存并自由使用，这块内存在程序主动释放之前一直保持有效</strong></p>
+</li>
+<li><p><strong>程序向操作系统申请一块适当大小的堆空间，程序自己管理这块空间。管理堆空间分配的一般是程序的运行库，运行库向操作系统“批发”了一大块堆空间，然后“零售”给程序用。当全部“售完”或程序有已满足不了的更大内存需求时，再向操作系统“进货”</strong></p>
+</li>
+</ul>
+<ol start="2">
+<li><strong>Linux进程堆管理</strong><br>Linux下的进程堆管理提供了两种堆空间分配方式（系统调用）：</li>
+</ol>
+<ul>
+<li><p><strong><code>int brk(void *end_data_segment);</code></strong></p>
+<pre><code>- **作用为设置进程数据段的结束地址，即扩大或缩小数据段重点内容**。将数据段的结束地址向高地址移动为扩大空间，反之亦然
+
+- **sbrk**与之类似，其**以一个增量（Increment）作为参数，表示需要增加或减少的空间大小，返回值为增加或减少后的数据段结束地址，实际上是对brk 系统调用的包装**</code></pre></li>
+<li><p><strong><code>void* mmap(void *start, size_t length, int prot, int flags, int fd, off_t offset);</code></strong></p>
+<ul>
+<li><p>作用为<strong>向操作系统申请一段虚拟地址空间</strong>，这块虚拟地址空间也可以映射到文件，当其映射到文件时，称这块空间为<strong>匿名空间（Anonymous Space）</strong>，匿名空间就可以作为堆空间</p>
+</li>
+<li><p>第一、二个参数表示需要<strong>申请的空间的起始地址和长度</strong>，如果<strong>起始地址设置为0，那么Linux系统自动挑选合适的起始地址</strong></p>
+</li>
+<li><p>第三、四个参数表示<strong>申请空间的权限</strong>（可读、可写、可执行）和<strong>映射类型</strong>（文件映射、匿名空间）</p>
+</li>
+<li><p>第五、六个参数表示<strong>当文件映射时指定文件描述符和文件偏移</strong></p>
+</li>
+</ul>
+<p><strong>glibc中的malloc函数</strong>处理请求方式如下</p>
+<ul>
+<li>当请求<strong>小于128KB</strong>时，在<strong>现有堆空间中</strong>，按照<strong>堆分配算法</strong>为其分配一块空间并返回</li>
+<li>当请求<strong>大于128KB</strong>时，使用<strong>mmap()函数为其分配一块匿名空间</strong>，在这个匿名空间中为用户分配空间</li>
+<li><strong>系统虚拟空间申请函数，申请的空间的起始地址和大小必须是系统页大小的整数倍</strong></li>
+<li>影响malloc申请的最大空间大小的因素：<strong>系统资源限制（ulimit）</strong>、<strong>物理内存和交换空间的总和</strong>。因为<strong>mmap申请匿名空间时，系统会为它在内存或交换空间中预留地址，但申请空间的大小不能超过空闲内存和空闲交换空间的总和</strong></li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li><strong>堆分配算法</strong>：管理一大块连续的内存空间，按照需求分配或释放其中的空间</li>
+</ol>
+<ul>
+<li><p><strong>空闲链表（Free List）</strong>：<strong>把堆中各个空闲的块按照链表的方式连接起来，当用户请求一块空间时，遍历整个列表，直到找到合适大小的块并将它拆分；当用户释放空间时将它合并到空闲链表中</strong></p>
+<pre><code>数据结构：在堆里的每一个**空闲空间的开头或结尾有一个头（header）**，头结构中记录了**上一个（prev）和下一个（next）空闲块的地址**，即所有的空闲块形成了一个空闲链表。</code></pre><p>  <img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNjA0MTUwMzA1NjI1?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="空闲链表分配"></p>
+<pre><code>具体分配算法：
+
+- **在空闲链表中查找足够容纳请求大小的一个空闲块，将其分成两块，一部分为程序请求的空间，另一部分为剩余的空闲空间**
+
+- **将空闲链表进行更新，若剩余的空闲块大小为0，则直接从空闲链表中删除**
+
+    ![空闲链表更新](https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNjA0MTUyMzAyOTY1?x-oss-process=image/format,png)
+- 释放时需要知道资源大小，所以当**分配k个字节资源时，实际分配k+4个字节资源，这4个字节用于存储该分配资源的大小**，因此释放时查看这4个字节的值就能知道该内存块的大小再将其插入到空闲链表中</code></pre></li>
+<li><p><strong>位图（Bitmap）</strong>：<strong>将整个堆划分为许多相同大小的块（block），当用户请求资源时，分配给用户整数个块空间</strong>。第一个块称为已分配区域的<strong>头（head）</strong>，其余的块称为已分配区域的<strong>主体（Body）</strong>。因此每个块只有<strong>头/主体/空闲三种状态，只需要两位二进制位即可表示一个块</strong>。</p>
+<pre><code>数据结构：使用**整数数组记录块的使用情况**
+
+**使用11表示H（Head），10表示主体（Body），00表示空闲（Free）**
+
+对应的位图为：（High）11-00-00-10-10-10-11-00-00-00-00-00-00-00-10-11
+
+![位图分配方式](https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNjA0MTY1OTQ0NDI5?x-oss-process=image/format,png)
+
+分配算法特点：
+优点：
+- **速度快**：整个堆的空闲信息存储在一个数组中，因此访问该数组时cache容易命中
+
+- **稳定性好**：即使部分数据被破坏，也不会导致整个堆的无法工作
+
+- **块不需要额外信息，易于管理**
+
+缺点：
+- **分配内存时容易产生内存碎片**
+
+- 如**果堆很大或设置的块很小，那么位图将会很大，可能失去cache命中率高的优势而且会浪费空间**</code></pre></li>
+<li><p><strong>对象池</strong>：<strong>把整个堆空间划分为大量小块每次请求时只需要找到一个小块</strong> </p>
+<pre><code>- 数据结构：可采用空闲链表、位图等
+
+    区别在于，它**假定每次请求的都是一个固定大小，由于每次只请求一个单位的内存，因此请求得到满足的速度很快，无需查找一个足够大的空间**
+
+- 具体分配算法：
+
+    在现实应用中，堆的分配算法一般是多种算法复合而成的。**在Glibc中，当申请的空间资源小于64字节时，采用类似于对象池的方法；当大于64字节且小于512字节时，采用上述方法中的最佳折中策略；当大于512字节时，采用最佳适配算法；当大于128KB时，直接使用mmap向操作系统申请空间**</code></pre></li>
+</ul>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Linux/">Linux</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E9%93%BE%E6%8E%A5%E3%80%81%E8%A3%85%E8%BD%BD%E4%B8%8E%E5%BA%93/">链接、装载与库</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/06/29/the-smallest-k-number/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">剑指Offer——（29）最小的k个数</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/06/29/process-stack/">
+                        <span class="hidden-mobile">链接、装载与库——进程的栈</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "链接、装载与库——进程的堆&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

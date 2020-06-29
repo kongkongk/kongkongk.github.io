@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/self.jpeg">
+  <link rel="icon" type="image/png" href="/img/self.jpeg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>链接、装载与库——符号、引用、COMMON块 - kongkong</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>kongkong</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-06-29 20:44">
+      2020年6月29日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.1k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      23
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2020年6月29日 晚上
+                
+              </p>
+            
+            <article class="markdown-body">
+              <p><strong>* <em>好久都没更这个了。。。请叫我拖更大魔王。。。→_→</em> *</strong></p>
+<p><strong>* <em>这一篇看下来，对符号的理解更深了。。。</em> *</strong></p>
+<blockquote>
+<p><strong>在链接过程中，目标文件之间相互拼合实际上是目标文件之间对函数和变量的地址的引用。</strong></p>
+<p><strong>在链接中，将函数和变量称为符号（Symbol），函数名和变量名为符号名（Symbol Name）。</strong> </p>
+</blockquote>
+<ol>
+<li><p><strong>符号表（Symbol Table）</strong><br>每一个目标文件都有一个<strong>符号表（Symbol Table）</strong>，表中<strong>记录目标文件中所用到的所有符号</strong>。每个定义的符号有一个对应的<strong>符号值（Symbol Value）</strong>，对函数和变量来说，<strong>符号值就是其地址</strong>。<br>符号表中的所有符号分类：</p>
+<ul>
+<li><p>定义在<strong>本目标文件的全局变量，可以被其他目标文件引用</strong></p>
+</li>
+<li><p>在<strong>本目标文件中引用的全局符号，没有定义在本目标文件，称为外部符号（External Symbol）</strong></p>
+</li>
+<li><p>段名，由编译器产生，其值为该段的起始地址</p>
+</li>
+<li><p>局部符号，其只在编译单元内部可见</p>
+</li>
+<li><p>行号信息，可选</p>
+</li>
+</ul>
+</li>
+<li><p><strong>ELF符号表结构</strong><br>ELf文件的<strong>符号表是文件中的”.symtab“段</strong>。其结构是一个<strong>Elf32_Sym结构的数组，每一个元素对应一个符号。这个数组下标为0的元素为无效的“未定义”符号。</strong></p>
+ <pre><code class="hljs cpp"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span></span>
+<span class="hljs-class">&#123;</span>
+	Elf32_Word st_name;<span class="hljs-comment">//符号名。即该符号名在字符串表中的下标。</span>
+	Elf32_Addr st_value;<span class="hljs-comment">//符号相对应的值。不同符号对应的值不一样。</span>
+	Elf32_Word st_size;<span class="hljs-comment">//符号大小。包含数据的符号，该值为该数据类型大小。若该值为0，表示该符号大小为0或未知。</span>
+	<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">char</span> st_info;<span class="hljs-comment">//符号类型和绑定信息。低4位表示符号类型（Symbol Type），高28位表示符号绑定信息（Symbol Binding）。</span>
+	<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">char</span> st_other;<span class="hljs-comment">//目前为0，没用</span>
+	<span class="hljs-comment">//符号所在的段。如果符号定义在本目标文件中，其表示符号所在段在段表中的下标。若为0，表示在本目标文件中被引用，定义在其他目标文件中。</span>
+	Elf32_Half at_shndx;
+&#125;Elf32_Sym;</code></pre></li>
+</ol>
+<p><strong>符号值（st_value）</strong>分类：</p>
+<ul>
+<li>在目标文件中，如果符号定义<strong>不是“COMMON块”</strong>类型，则符号值表示<strong>该符号在段中的偏移</strong>。</li>
+<li>在目标文件中，如果符号<strong>是“COMMON块”类型</strong>，则符号值表示<strong>该符号的对其属性</strong>。</li>
+<li><strong>在可执行文件中，符号值表示符号的虚拟地址</strong>。</li>
+</ul>
+<ol start="3">
+<li><strong>符号修饰与函数签名</strong></li>
+</ol>
+<p><strong>UNIX下的C语言规定，C语言代码源文件中的所有全局变量和函数经过编译后，相对应的符号名前加上下划线</strong>。<br>eg.Windows下的Visual C++编译器，C语言函数“foo”，编译后的符号名是“_foo”。<strong>Linux下的GCC编译器默认情况已经去掉了此方式</strong>。<br><strong>C++中增加了名称空间（Namespace）解决多模块的符号冲突问题</strong>。</p>
+<ul>
+<li><p><strong>符号修饰（Name Decoration）</strong> /<strong>符号改编（Name Mangling）</strong><br>C++中允许多个<strong>不同的参数类型</strong>的函数拥有<strong>相同的名字</strong>，即<strong>函数重载</strong>。<br>C++在语言级别支持<strong>名称空间</strong>，即允许在<strong>不同的名称空间</strong>中有多个<strong>同样名字的符号</strong>。</p>
+</li>
+<li><p><strong>函数签名（Function Signature）</strong><br>其包含了一个函数的信息，包括<strong>函数名、参数类型、所在的类和名称空间</strong>及其他信息。</p>
+</li>
+</ul>
+<p><strong>函数签名用于识别不同的函数</strong>，函数的名字是函数签名的一部分。<br>在编译器及链接器处理符号时，它们使用某种<strong>名称修饰</strong>方法，使的每个函数签名对应一个<strong>修饰后名称（Decorated Name）</strong>。即<strong>目标文件中的符号名是函数和变量的修饰后名称</strong>。</p>
+<ul>
+<li>名称修饰机制也用在C++中的<strong>全局变量和静态变量</strong>。<strong>变量的类型并没有被加入到修饰后名称中</strong>。</li>
+</ul>
+<ol start="4">
+<li><p><strong>extern “C”</strong><br>C++为了与C兼容，在符号管理上，有一个用来声明或定义一个C的符号的“<strong>extern “C”</strong>”关键字。</p>
+ <pre><code class="hljs cpp"><span class="hljs-comment">//大括号内部的代码当作C语言代码处理，C++的名称修饰机制将不起作用</span>
+<span class="hljs-keyword">extern</span> “C”
+&#123;
+	<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">func</span><span class="hljs-params">(<span class="hljs-keyword">int</span>)</span></span>;
+	<span class="hljs-keyword">int</span> var;
+&#125;
+<span class="hljs-comment">//单独声明某个函数或变量为C语言的符号</span>
+<span class="hljs-keyword">extern</span> <span class="hljs-string">"C"</span> <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">func</span><span class="hljs-params">(<span class="hljs-keyword">int</span>)</span></span>;
+<span class="hljs-keyword">extern</span> <span class="hljs-string">"C"</span> <span class="hljs-keyword">int</span> var;
+
+<span class="hljs-comment">//C语言函数库中的string.h中的memset()如何在.c或.cpp中正确使用</span>
+<span class="hljs-comment">//C++中必须使用extern "C"</span>
+<span class="hljs-comment">//但C中不支持extern "C"语法</span>
+<span class="hljs-comment">//因此利用C++中的宏”__cplusplus“，C++编译器在编译时默认定义这个宏</span>
+<span class="hljs-comment">//使用条件宏自动判断选择哪种环境</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">ifdef</span> __cplusplus</span>
+<span class="hljs-keyword">extern</span> <span class="hljs-string">"C"</span>
+&#123;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+	<span class="hljs-function"><span class="hljs-keyword">void</span> *<span class="hljs-title">memset</span><span class="hljs-params">(<span class="hljs-keyword">void</span> *, <span class="hljs-keyword">int</span>, <span class="hljs-keyword">size_t</span>)</span></span>;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">ifdef</span> __cplusplus</span>
+&#125;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span></code></pre></li>
+<li><p><strong>强符号与弱符号</strong><br>多个目标文件中含有相同名字全局符号的定义，那么这些目标文件链接时将会出现<strong>符号重复定义</strong>错误。</p>
+</li>
+</ol>
+<ul>
+<li><p>C/C++语言中，编译器默认<strong>函数和初始化了的全局变量为强符号（Strong Symbol）</strong>，<strong>未初始化的全局变量为弱符号（Weak Symbol）</strong>。</p>
+</li>
+<li><p>通过GCC的”<strong>_ attribute _ ((weak))</strong>“<strong>定义任何一个强符号为弱符号</strong>。</p>
+</li>
+<li><p><strong>强符号和弱符号针对定义，不是针对符号的引用。</strong></p>
+<p>链接器按照如下规则处理与选择被多次定义的全局符号</p>
+<ul>
+<li><p>不允许强符号被多次定义（<strong>不同目标文件中不能有同名的强符号</strong>）。</p>
+</li>
+<li><p>如果一个符号在某个目标文件中是强符号，在其他文件中都是弱符号，那么<strong>选择强符号</strong>。</p>
+</li>
+<li><p>如果一个符号在所有目标文件中都是弱符号，那么<strong>选择其中占用内存空间最大的一个</strong>。</p>
+</li>
+</ul>
+</li>
+</ul>
+<ol start="6">
+<li><strong>强引用和若引用</strong></li>
+</ol>
+<ul>
+<li><p>链接时，如果<strong>没有找到引用符号的定义</strong>，链接器报符号<strong>未定义错误</strong>，这种被称为<strong>强引用（Strong Reference）</strong>。</p>
+</li>
+<li><p>如果<strong>声明为弱引用（Weak Reference）</strong>，若引用的符号<strong>有定义</strong>，则链接器将<strong>该符号引用决议</strong>；若引用的符号<strong>未定义</strong>，链接器<strong>不报错</strong>，<strong>默认其为0或是一个特殊值</strong>。</p>
+</li>
+<li><p>在GCC中，使用”<strong>_ attribute _ ((weakref))”</strong>声明一个外部函数的引用为弱引用。</p>
+  <pre><code class="hljs cpp"><span class="hljs-comment">//GCC在链接时不会报错，但在运行可执行文件时，发生运行错误</span>
+<span class="hljs-comment">//因为当要调用foo()时，其地址为0，发生非法地址访问的错误</span>
+__attribute__ ((weakref)) <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">foo</span><span class="hljs-params">()</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+	foo();<span class="hljs-comment">//改成if(foo) foo();</span>
+	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;</code></pre></li>
+</ul>
+<ol start="7">
+<li><strong>COMMON块</strong><br>弱符号机制允许同一个符号的定义存在于多个文件中。<strong>链接器本身不支持符号类型，只知道符号的名字</strong>。但当<strong>一个弱符号以不同的类型定义在多个目标文件中</strong>时，链接器如何区分？<br>多个符号有多个类型定义时：</li>
+</ol>
+<ul>
+<li><p><strong>两个或两个以上强符号</strong>类型不一致。（<strong>非法。符号重定义</strong>）。</p>
+</li>
+<li><p>有<strong>一个强符号</strong>，<strong>其他都是弱符号</strong>，出现类型不一致。</p>
+</li>
+<li><p><strong>两个或两个以上弱符号</strong>类型不一致。</p>
+<p>现在的编译器和链接器支持<strong>COMMON块（Common Block）机制</strong>。<strong>COMMON类型的链接规则是针对符号都是弱符号的情况</strong>。如果其中有<strong>一个强符号，最终符号所占空间欲强符号相同</strong>。如果<strong>有弱符号大小大于强符号，链接器报警告</strong>。</p>
+<p>问题：为什么编译器<strong>把未初始化的全局变量标记为一个COMMON类型的变量</strong>，而<strong>不</strong>直接把它当作<strong>未初始化的局部静态变量，为其在BSS段分配空间。</strong></p>
+<p>答：</p>
+<ol>
+<li><p><strong>编译时</strong>，若目标文件中含有弱符号（比如未定义的全局变量），则<strong>该弱符号最终所占内存空间大小无法确定</strong>，因为有<strong>可能其他目标文件中该弱符号所占内存空间比本单元弱符号所占内存空间大</strong>，所以此时无法在.BSS段为该弱符号分配空间。</p>
+</li>
+<li><p><strong>链接时</strong>，读取了所有目标文件，<strong>确定了任意一个弱符号的大小</strong>。这时<strong>才在最终输出文件的.BSS段中为其分配空间</strong>。</p>
+</li>
+<li><p>总体看来，<strong>未初始化的全局变量最终还是被放在.BSS段。</strong></p>
+</li>
+</ol>
+<p>在GCC中使用”<strong>-fno-commom</strong>“或”<strong>_ <em>attribute</em> _((nocommom))</strong>“，使未初始化的全局变量不以COMMOM块的形式处理。即相当于一个<strong>强符号</strong>。</p>
+</li>
+</ul>
+<pre><code class="hljs reasonml"><span class="hljs-built_in">int</span> global <span class="hljs-constructor">__attribute__((<span class="hljs-params">nocommom</span>)</span>)；</code></pre>
+<p><strong>* <em>码字好累。。。下次再见喽。。。</em> *</strong></p>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Linux/">Linux</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E9%93%BE%E6%8E%A5%E3%80%81%E8%A3%85%E8%BD%BD%E4%B8%8E%E5%BA%93/">链接、装载与库</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/06/29/more-than-half-of-the-occurrences-in-the-array/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">剑指Offer——（28）数组中出现次数超过一半的数字</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/06/29/arrangement-of-strings/">
+                        <span class="hidden-mobile">剑指Offer——（27）字符串的排列</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "链接、装载与库——符号、引用、COMMON块&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
