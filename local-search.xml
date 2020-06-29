@@ -4,7 +4,7 @@
   
   
   <entry>
-    <title>装载、链接与库——系统调用</title>
+    <title>链接、装载与库——系统调用</title>
     <link href="/2020/06/29/system-call/"/>
     <url>/2020/06/29/system-call/</url>
     
@@ -20,7 +20,7 @@
     
     <tags>
       
-      <tag>装载、链接与库</tag>
+      <tag>链接、装载与库</tag>
       
     </tags>
     
@@ -29,7 +29,7 @@
   
   
   <entry>
-    <title>装载、链接与库——main函数的前世今生</title>
+    <title>链接、装载与库——main函数的前世今生</title>
     <link href="/2020/06/29/the-past-and-present-of-the-main-function/"/>
     <url>/2020/06/29/the-past-and-present-of-the-main-function/</url>
     
@@ -45,7 +45,7 @@
     
     <tags>
       
-      <tag>装载、链接与库</tag>
+      <tag>链接、装载与库</tag>
       
     </tags>
     
