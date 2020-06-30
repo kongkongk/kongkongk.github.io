@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/self.jpeg">
+  <link rel="icon" type="image/png" href="/img/self.jpeg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>C++全局构造与析构底层实现 - kongkong</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>kongkong</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-06-30 21:23">
+      2020年6月30日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      15
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2020年6月30日 晚上
+                
+              </p>
+            
+            <article class="markdown-body">
+              <p><strong>* <em>前一阵儿，被施老师问到C++全局变量是如何构造和析构的。。。？之前看书的时候好像忽略了这个点。。现在补上。。。→_→</em> *</strong></p>
+<p>理解这个点之前，需要把<strong>main函数的前世今生</strong>搞清楚。。<a href="http://blog.csdn.net/kongkongkkk/article/details/72861149" target="_blank" rel="noopener">请戳传送门</a></p>
+<ul>
+<li><p><strong>Glibc中的文件类型</strong></p>
+<ul>
+<li><p>在Glibc中主要分为<strong>头文件和库文件</strong></p>
+<ul>
+<li><p><strong>头文件位于/usr/include</strong></p>
+</li>
+<li><p>库文件包含<strong>动态库和静态库</strong></p>
+<ul>
+<li><p><strong>动态库位于/lib/libc.so.6</strong></p>
+</li>
+<li><p><strong>静态库位于/usr/lib/libc.a</strong></p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>除了C标准库外，Glibc中还有几个<strong>辅助的“运行库”</strong></p>
+<ul>
+<li><p><strong>/usr/lib/crt1.o 中包含程序的入口函数_start，由它负责调用__libc_start_main完成初始化，并调用main函数</strong></p>
+</li>
+<li><p><strong>/usr/lib/ctri.o</strong></p>
+</li>
+<li><p><strong>/usr/lib/ctrn.o</strong></p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>Glibc中的crti.o和crtn.o的内容和作用</strong></p>
+<ul>
+<li><p>因为全局变量必须在main函数之前构造、必须在main函数之后析构，所以<strong>运行库在每个目标文件中引入了两个初始化相关的段.init和.finit</strong></p>
+</li>
+<li><p><strong>链接器在进行链接时，会把所有输入的目标文件中的.init和.finit段按顺序收集合并成最终输出文件中的.init和.finit，这两个段实际上分别包含_init() 和 _finit()函数</strong></p>
+</li>
+<li><p><strong>crti.o和crtn.o中的代码实际上是_ init() 和_ finit()函数的开始和结尾部分，它们辅助.init 和 .finit中的指令实现初始化函数</strong>。crti.o和crtn.o与其他目标文件按顺序链接后，形成完整的_ init() 和_ finit()函数</p>
+</li>
+<li><p><strong>必须保证在链接时，crti.o在目标文件和系统库之前，crtn.o在目标文件和系统调用之后</strong>。因此链接器的输入文件顺序如下（<strong>ctr1.o不包含.init和.finit段，所以不会影响生成段的顺序</strong>）</p>
+  <pre><code class="hljs css"><span class="hljs-selector-tag">ld</span> <span class="hljs-selector-tag">ctr1</span><span class="hljs-selector-class">.o</span> <span class="hljs-selector-tag">ctri</span><span class="hljs-selector-class">.o</span> <span class="hljs-selector-attr">[user_object]</span>_<span class="hljs-selector-attr">[system_libraries]</span> <span class="hljs-selector-tag">ctrn</span><span class="hljs-selector-class">.o</span></code></pre>
+</li>
+</ul>
+</li>
+<li><p><strong>GCC中的crtbegin.o和crtend.o的内容和作用</strong></p>
+<ul>
+<li><p>C++语言的实现和编译器密切相关，所以<strong>GCC才是C++全局构造和析构的真正实现者，crtbegin.o和crtend.o配合Glibc实现C++全局构造和析构</strong></p>
+</li>
+<li><p><strong>crti.o和crtn.o中的.init和.finit提供一个在main函数之前和之后的代码运行机制，真正的全局构造和析构由crtbegin.o和crtend.o实现</strong></p>
+</li>
+<li><p><strong>对于每个编译单元，GCC编译器会遍历其所有的全局对象，生成一个特殊的函数，这个特殊的函数负责初始化本单元中的所有全局对象</strong></p>
+</li>
+<li><p>目标文件中有了这个函数，<strong>编译器就会在这个目标文件中产生.ctors段，.ctors段中放置一个指向特殊函数的指针</strong></p>
+</li>
+<li><p>链接时，链接器将每个目标文件的.ctors段合并成一个.ctors段，<strong>因此合并后的.ctors段就成为了一个函数指针数组，每个元素都指向一个目标文件的特殊函数</strong></p>
+</li>
+<li><p>链接时，<strong>各个目标文件的前后还要链接crtbegin.o和crtend.o</strong>，这两个目标文件具有的.ctors段也会被合并到可执行文件中</p>
+</li>
+<li><p><strong>crtbegin.o作为.ctors的开头部分，其.ctors段中存储了一个4字节的0xFFFFFFFF（-1），链接器负责将这个数字改成所有目标文件中的特殊函数的总数量，还将这个段的起始地址定义成符号 _ _ CTOR_ LIST _ _ ，即_ _ CTOR_LIST _ _就代表合并后的.ctors的起始地址</strong></p>
+</li>
+<li><p><strong>crtend.o中的内容只有一个0，定义了一个_ _ CTOR_ END_ _符号，指向.ctor段的末尾</strong></p>
+</li>
+<li><p>实际链接的目标文件顺序如下</p>
+<pre><code class="hljs stylus">ld  ctr1<span class="hljs-selector-class">.o</span> ctri<span class="hljs-selector-class">.o</span> ctrbegin<span class="hljs-selector-class">.o</span> <span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.o</span> <span class="hljs-selector-tag">b</span><span class="hljs-selector-class">.o</span> ctrend<span class="hljs-selector-class">.o</span> ctrn.o</code></pre>
+<p>  过程如图所示</p>
+<p>  <img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNzExMTg1NTI3NTY4?x-oss-process=image/format,png" srcset="/img/loading.gif" alt=".ctor段的形成"></p>
+</li>
+</ul>
+</li>
+<li><p><strong>全局变量构造源码剖析</strong></p>
+<ul>
+<li><p><strong>入口函数_start中调用了_libc_start_main函数，_libc_start_main函数传入参数_libc_csu_init函数指针</strong></p>
+  <pre><code class="hljs arduino"><span class="hljs-comment">//glibc-2.6.1/csu/Elf-init.c</span>
+<span class="hljs-keyword">void</span>
+__libc_csu_init (<span class="hljs-keyword">int</span> argc, <span class="hljs-keyword">char</span> **argv, <span class="hljs-keyword">char</span> **envp)
+&#123;
+	......
+	_init ();
+	<span class="hljs-keyword">const</span> <span class="hljs-keyword">size_t</span> <span class="hljs-built_in">size</span> = __init_array_end - __init_array_start;
+	<span class="hljs-keyword">for</span> (<span class="hljs-keyword">size_t</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-built_in">size</span>; i++)
+		(*__init_array_start [i]) (argc, argv, envp);
+&#125;</code></pre></li>
+<li><p><strong>_ _ libc_ csu_ init函数中调用了.init段中的_ init函数，_ init函数中又调用了_ _ do_ global_ ctors_ aux函数，这个_ _ do_ global_ ctors_aux函数来自GCC中的目标文件crtbegin.o</strong></p>
+<pre><code><pre><code class="hljs less"><span class="hljs-comment">//Crtstuff.c</span>
+<span class="hljs-selector-tag">static</span> <span class="hljs-selector-tag">void</span> <span class="hljs-selector-tag">__attribute__</span>((used))
+<span class="hljs-selector-tag">__do_global_ctors_aux</span> (void)
+&#123;
+  <span class="hljs-selector-tag">func_ptr</span> *<span class="hljs-selector-tag">p</span>;
+  <span class="hljs-selector-tag">for</span> (p = __CTOR_END__ - <span class="hljs-number">1</span>; *p != (func_ptr) -<span class="hljs-number">1</span>; p--)
+    (*p) ();
+&#125;</code></pre></code></pre></li>
+<li><p><strong>_ _ do_ global_ ctors_aux函数将合并的.ctors段中存储的各个目标文件的特殊函数依次调用，即完成了全局变量的构造。</strong></p>
+</li>
+</ul>
+</li>
+<li><p><strong>全局变量析构源码剖析</strong></p>
+<ul>
+<li><p>一直说的特殊函数是什么？特殊函数除了完成对象构造，还干了些什么？</p>
+  <pre><code class="hljs cpp"><span class="hljs-comment">//特殊函数的伪代码</span>
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">GLOBAL_I_A</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span>
+<span class="hljs-function"></span>
+<span class="hljs-function"></span>&#123;
+	A::A();<span class="hljs-comment">//调用构造函数</span>
+	__cxa_exit(_tcf_1);<span class="hljs-comment">//_tcf_1函数被注册到main函数结束后调用</span>
+&#125;</code></pre></li>
+<li><p>__tcf_1函数中有什么东西？</p>
+  <pre><code class="hljs aspectj"><span class="hljs-comment">//此函数名由编译器生成</span>
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> __tcf_1(<span class="hljs-keyword">void</span>)
+&#123;
+	A.~A();<span class="hljs-comment">//调用析构函数</span>
+&#125;</code></pre></li>
+<li><p><strong>由此可见在特殊函数中不仅调用了构造函数，而且还一道注册了析构函数。注册的析构函数与调用构造函数的顺序刚好相反，符合先构造后析构的原理</strong></p>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>* <em>今天真热。。。41℃。。。→_→</em> *</strong></p>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Language/">Language</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/C/">C++</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/06/30/sorting-algorithm/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">八大排序算法总结</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/06/30/singleton-pattern/">
+                        <span class="hidden-mobile">设计模式——单例模式</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "C++全局构造与析构底层实现&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

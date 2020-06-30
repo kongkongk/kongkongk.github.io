@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/self.jpeg">
+  <link rel="icon" type="image/png" href="/img/self.jpeg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>TCP三次握手与四次挥手的过程及原因 - kongkong</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>kongkong</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-06-30 21:03">
+      2020年6月30日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.5k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      16
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2020年6月30日 晚上
+                
+              </p>
+            
+            <article class="markdown-body">
+              <p><strong>* <em>本篇文章来彻彻底底的分析一下TCP三次握手与四次挥手的过程及原因。。。→_→</em> *</strong></p>
+<ol>
+<li><strong>TCP的连接建立——三次握手</strong></li>
+</ol>
+<ul>
+<li><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNzAxMjIyNTA0NzY4?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="三次握手"></p>
+</li>
+<li><p>最初两端的TCP进程都处于<strong>CLOSED（关闭）状态</strong>。<strong>A主动打开连接，B被动打开连接</strong></p>
+</li>
+<li><p>B的TCP<strong>服务器进程创建传输控制块TCB（Transmission Control Block）</strong>，然后<strong>处于LISTEN（收听）状态，准备接受客户端的连接请求</strong></p>
+</li>
+<li><p>A的TCP<strong>客户端进程也创建传输控制块TCB，向B发出连接请求报文段，此报文段中同步位SYN=1，且选择一个初始序号seq=x</strong>。TCP规定，<strong>SYN=1的报文段不能携带数据，但要消耗一个序号</strong>。此时A进入<strong>SYN-SENT（同步已发送）状态</strong></p>
+</li>
+<li><p>B收到连接请求报文后，<strong>如果同意建立连接，则向A发送确认报文段，此报文段中SYN=1，确认位ACK=1，确认号为ack=x+1，同时选择一个初始序号seq=y</strong>。此报文段也<strong>不能携带数据，但同样要消耗一个序号</strong>。此时B进入<strong>SYN-RCVD（同步收到）状态</strong></p>
+</li>
+<li><p>A收到B的确认报文段后，还要向B发送确认报文段。<strong>此报文段中ACK=1，ack=y+1，seq=x+1</strong>。TCP规定<strong>ACK报文段可以携带数据，但如果不携带数据则不消耗序号，所以下一个数据报文段的序号仍是seq=x+1</strong>。此时A进入<strong>ESTABLISHED（以建立连接）状态</strong></p>
+</li>
+<li><p>当B收到A的确认后，也进入<strong>ESTABLISHED（以建立连接）状态</strong></p>
+</li>
+</ul>
+<ol start="2">
+<li><strong>TCP释放连接——四次挥手</strong></li>
+</ol>
+<ul>
+<li><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNzAxMjIyNTM1MTM4?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="四次挥手"></p>
+</li>
+<li><p>A向B发送连接释放报文段并停止发送数据。<strong>此报文段中终止控制位FIN=1，seq=u（等于前面已传送过的数据的最后一个字节加1）</strong>。此时A进入<strong>FIN-WAIT-1（终止等待1）状态</strong>。TCP规定，<strong>FIN报文段即使不携带数据也要消耗一个序号</strong></p>
+</li>
+<li><p>B收到连接释放报文段后就发出确认报文段。<strong>此报文段中确认号ack=u+1，seq=v（等于前面已传送过的数据的最后一个字节加1）</strong>。此时B进入<strong>CLOSE-WAIT（关闭等待）状态</strong>。TCP服务器进程通知应用进程，A到B的连接释放了，这时的<strong>TCP连接处于半关闭（half-close）状态</strong>，但B到A的连接并未关闭，此时<strong>B发数据，A仍要接收</strong></p>
+</li>
+<li><p>A收到B的确认后，就进入<strong>FIN-WAIT2（终止等待2）状态</strong>，等待B发出的连接释放报文段</p>
+</li>
+<li><p>如果B已没有要发送的数据，就发送连接释放报文段。<strong>此报文段中FIN=1，seq=w（在半关闭状态中B可能发送了数据），ack=u+1</strong>。此时B进入<strong>LAST-ACK（最后确认）状态</strong></p>
+</li>
+<li><p>A收到了B的连接释放报文段后就发出确认报文段。<strong>此报文段中ACK=1，ack=w+1，seq=u+1</strong>。此时A进入<strong>TIME-WAIT（时间等待）状态</strong></p>
+</li>
+<li><p>此时TCP连接还没有释放掉，<strong>必须经过时间等待计时器（TIME-WAIT timer）设置的2倍的最长报文段寿命MSL（Maximum Segment Lifetime）后，A才进入到CLOSED状态</strong>。MSL建议设为<strong>2分钟</strong>。<strong>当A撤销相应的传输控制块TCB后，就结束了这次TCP连接</strong></p>
+</li>
+<li><p><strong>B收到A的确认报文，就进入CLOSEWD状态。B撤销相应的传输控制块TCB后，就结束了这次的TCP连接</strong></p>
+</li>
+</ul>
+<ol start="3">
+<li><strong>为什么要设置TIME-WAIT？</strong></li>
+</ol>
+<ul>
+<li><p>原因一：<strong>保证A发送的最后一个ACK报文能够到达B</strong>。因为这个ACK报文有可能丢失，B收不到这个对FIN+ACK报文的确认，所以B就会超时重传这个FIN+ACK报文段，这样A就能在2MSL时间内收到重传的FIN+ACK，接着A再重传一次确认报文段，重新启动时间等待计时器</p>
+</li>
+<li><p>原因二：<strong>A在发送完最后一个ACK报文段后，经过2MSL后，就可以使本连接持续的时间内所产生的所有报文段都从网络中消失</strong></p>
+</li>
+</ul>
+<ol start="4">
+<li><strong>为什么是三次握手？</strong></li>
+</ol>
+<ul>
+<li><p><strong>为了防止已失效的连接请求报文段突然有送到了B，因而产生错误</strong></p>
+</li>
+<li><p>假设两次握手时，<strong>A发出的第一个请求连接报文段在某一网络节点长时间滞留，以致延误到连接释放后才到达B</strong>。B收到失效的连接请求报文段后，认为是A又发出一次新的连接请求。于是向A发送确认报文段，同意建立连接，此时在假定两次握手的前提下，连接建立成功。这样会导致B的资源白白浪费</p>
+</li>
+<li><p>假设两次握手时，<strong>A发出一个请求报文段，但发送过后A就因为问题而导致下线</strong>。之后B收到了A发来的请求连接报文段，给A发送确认报文段，同意建立连接，此时在假定两次握手的前提下，连接建立成功。这样会导致B的资源白白浪费</p>
+</li>
+</ul>
+<ol start="5">
+<li><strong>为什么是四次挥手？</strong></li>
+</ol>
+<ul>
+<li><p><strong>TCP协议是全双工通信，这意味着客户端和服务器端都可以向彼此发送数据，所以关闭连接是双方都需要确认的共同行为</strong></p>
+</li>
+<li><p>假设是三次挥手时，首先释放了A到B方向的连接，此时TCP连接处于半关闭<strong>（Half-Close）状态，这时A不能向B发送数据，而B还是可以向A发送数据</strong>。如果此时A收到了B的确认报文段后，就立即发送一个确认报文段，<strong>这会导致B向A还在发送数据时连接就被关闭。这样会导致A没有完整收到B所发的报文段</strong></p>
+</li>
+</ul>
+<ol start="6">
+<li><strong>总结</strong></li>
+</ol>
+<ul>
+<li><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNzAxMjIyNjExNDY4?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="TCP的有限状态机"></p>
+</li>
+<li><p>粗实线箭头表示<strong>客户端的正常变迁</strong></p>
+</li>
+<li><p>粗虚线箭头表示<strong>服务器的正常变迁</strong></p>
+</li>
+<li><p>细线箭头表示<strong>异常变迁</strong></p>
+</li>
+</ul>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Linux/">Linux</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Network/">Network</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/06/30/timer/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">TCP中的四种计时器</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/06/30/fast-retransmission-and-fast-recovery/">
+                        <span class="hidden-mobile">TCP拥塞控制——快重传与快恢复</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "TCP三次握手与四次挥手的过程及原因&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

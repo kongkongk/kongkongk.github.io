@@ -168,36 +168,35 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/29/system-call/">链接、装载与库——系统调用</a>
+      <a class="index-header" href="/2020/06/30/the-first-technical-interview/">第一次技术面试</a>
 
-      <a href="/2020/06/29/system-call/" class="index-excerpt">
+      <a href="/2020/06/30/the-first-technical-interview/" class="index-excerpt">
         
         
           
         
-        <div>* 昨天总结了main函数前世今生的问题，跟着源码一步步看。。。今天来看看系统调用是什么。。。→_→ *
+        <div>* 一上来没有自我介绍。。直接就开始了。。套路不对啊。。→_→ *
 
-系统调用（System Call）是应用程序与操作系统与内核之间的接口
+问会哪些语言，JAVA、python、脚本语言会不会？（尴尬。。都只是了解）
 
+说一下TCP的三次握手和四次挥手？（就开始说每一步的流程和状态变化，顺便再说几句三次握手和四次挥手的原因）
 
-系统调用（System Call）的定义
+简单说一下TCP和UDP的区别和特点（可能是我第一个问题说的时间太长了。。。还特别强调了“简单”。。，）
 
-现代操作系统将可能产生冲突的系统资源（包括文件、I/O等设备）保护起来，阻止应用程序直接访问
-
-为了让应用程序有能力访问系统资源，也为了让程序借助操作系统做一些必须由操作系</div>
+说一下指针和引用的区别（自己也带</div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
           </div>
         
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-category"></i>
             
-              <a href="/categories/Linux/">Linux</a>
+              <a href="/categories/Life/">Life</a>
             
           </div>
         
@@ -205,7 +204,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E9%93%BE%E6%8E%A5%E3%80%81%E8%A3%85%E8%BD%BD%E4%B8%8E%E5%BA%93/">链接、装载与库</a>
+              <a href="/tags/%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/">面试总结</a>
             
           </div>
         
@@ -217,76 +216,29 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/29/the-past-and-present-of-the-main-function/">链接、装载与库——main函数的前世今生</a>
+      <a class="index-header" href="/2020/06/30/ugly-number/">剑指Offer——（33）丑数</a>
 
-      <a href="/2020/06/29/the-past-and-present-of-the-main-function/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* 当执行”Hello World“程序时，是从main函数开始执行的吗？答案当然是No，No，No！ *
-一个程序的运行步骤如下：
-
-操作系统在在创建进程后，把控制权交给了程序的入口，这个入口一般是运行库中的某个入口函数
-
-入口函数对运行库和程序运行环境进行初始化，包括堆、I/O、线程、全局变量构造等
-
-入口函数完成初始化后，调用main函数，正式开始执行程序主体部分
-
-main函数执行完毕后，</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Linux/">Linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%93%BE%E6%8E%A5%E3%80%81%E8%A3%85%E8%BD%BD%E4%B8%8E%E5%BA%93/">链接、装载与库</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/29/the-number-of-occurrences-of-1-in-the-integer/">剑指Offer——（31）整数中1出现的次数（从1到n整数中1出现的次数）</a>
-
-      <a href="/2020/06/29/the-number-of-occurrences-of-1-in-the-integer/" class="index-excerpt">
+      <a href="/2020/06/30/ugly-number/" class="index-excerpt">
         
         
           
         
         <div>题目描述：
 
-求出113的整数中1出现的次数,并算出1001300的整数中1出现的次数？为此他特别数了一下1~13中包含1的数字有1、10、11、12、13因此共出现6次,但是对于后面问题他就没辙了。ACMer希望你们帮帮他,并把问题更加普遍化,可以很快的求出任意非负整数区间中1出现的次数。
+把只包含因子2、3和5的数称作丑数（Ugly Number）。例如6、8都是丑数，但14不是，因为它包含因子7。 习惯上我们把1当做是第一个丑数。求按从小到大的顺序的第N个丑数。
 
 实现如下：
-//方法一
-//将所有的数遍历一次，对每一个数的每一位再进行是否为1的判断
-//时间复杂度为</div>
+//不用每一个数字都进行判断
+//而将丑数进行有序的排列，存储到set中
+//根据定义，丑数乘以2或3或5后，还是丑数
+//所以初始化第一个丑数1
+//由三种倍数关系计算出第一个大于当前最大丑</div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
           </div>
         
         
@@ -313,28 +265,30 @@ main函数执行完毕后，</div>
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/29/computer-network-architecture/">计算机网络体系结构</a>
+      <a class="index-header" href="/2020/06/30/what-really-happens-when-you-navigate-to-a-URL/">【转】What really happens when you navigate to a URL</a>
 
-      <a href="/2020/06/29/computer-network-architecture/" class="index-excerpt">
+      <a href="/2020/06/30/what-really-happens-when-you-navigate-to-a-URL/" class="index-excerpt">
         
         
           
         
-        <div>* 这几天开始二刷希仁老师的著作。。。再一次开始感受网络的魅力。。。→_→ *
+        <div>本文将深入理解当你输入一个网址的时候，后台到底发生了什么事。。。→_→
+原文传送门：What really happens when you navigate to a URL
 
-当一个问题复杂且规模巨大时，可以将其转化为若干较小的局部问题。
+首先，在浏览器中输入网址:
+ 
 
-网络世界的复杂性难以想象，不同的物理设备、不同的技术、采取不同的协议，这些因素都导致当今的网络结构异常复杂，因此对网络的处理办法采取层次划分的方法。
+浏览器查找域名的IP地址
+ 
+ DNS查找过程如下：
 
-层次划分的好处：
-
-各层之间相互独立：每一层只实现一种相对独立的功能，它也不需要知道它的下一层如何实</div>
+浏览器缓存 – 浏览器会缓存DNS记录一段时间。 有趣的是，操作系统没有告诉浏览器储存DNS记录的时间，这样不同浏览器会储存个自固</div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
           </div>
         
         
@@ -349,7 +303,7 @@ main函数执行完毕后，</div>
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/network/">network</a>
+              <a href="/tags/Network/">Network</a>
             
           </div>
         
@@ -361,22 +315,126 @@ main函数执行完毕后，</div>
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/29/maximum-sum-of-consecutive-subarrays/">剑指Offer——（30）连续子数组的最大和</a>
+      <a class="index-header" href="/2020/06/30/observer-listener-mode/">设计模式——观察者监听者模式</a>
 
-      <a href="/2020/06/29/maximum-sum-of-consecutive-subarrays/" class="index-excerpt">
+      <a href="/2020/06/30/observer-listener-mode/" class="index-excerpt">
         
         
           
         
-        <div>题目描述：
-
-HZ偶尔会拿些专业问题来忽悠那些非计算机专业的同学。今天测试组开完会后,他又发话了:在古老的一维模式识别中,常常需要计算连续子向量的最大和,当向量全为正数的时候,问题很好解决。但是,如果向量中包含负数,是否应该包含某个负数,并期望旁边的正数会弥补它呢？例如:{6,-3,-2,7,-15,1,2,2},连续子向量的最大和为8(从第0个开始,到第3个为止)。你会不会被他忽悠住？(子向量的</div>
+        <div>** *本篇总结一下基于多线程的线程安全的观察者监听者模式。。。→_→ **
+在阅读本文之前，需要先了解相关知识。。请戳传送门——智能指针的交叉引用问题及解决方法
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;memory&gt;
+#include &lt;map&gt;
+#include &lt;vector&gt;</div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Design-Patterns/">Design Patterns</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/30/smart-pointer/">智能指针的交叉引用问题及解决方法</a>
+
+      <a href="/2020/06/30/smart-pointer/" class="index-excerpt">
+        
+        
+          
+        
+        <div>* 本篇讨论一下因为智能指针的交叉引用造成的内存泄漏问题和解决方法。。。→_→ *
+讨论这个问题之前，先来看一段简单的代码
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+using namespace std;
+
+class B;
+class A
+&#123;
+public:
+	shared_ptr&lt;B&gt; _bptr;
+&#125;</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Language/">Language</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/C/">C++</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/30/sorting-algorithm/">八大排序算法总结</a>
+
+      <a href="/2020/06/30/sorting-algorithm/" class="index-excerpt">
+        
+        
+          
+        
+        <div>* 好久都没看排序算法了。。。今天把以前的代码贴上来。。。方便今后随时复习→_→ *
+
+交换排序
+ void swap_sort(int *arr, int len)
+&#123;
+	for (int i = 0; i &lt; len - 1; ++i)//最后一个不用再向后比较
+	&#123;
+		for (int j = i + 1; j &lt; len; ++j)
+		&#123;
+		</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
           </div>
         
         
@@ -391,7 +449,7 @@ HZ偶尔会拿些专业问题来忽悠那些非计算机专业的同学。今天
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+              <a href="/tags/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/">排序算法</a>
             
           </div>
         
@@ -403,36 +461,40 @@ HZ偶尔会拿些专业问题来忽悠那些非计算机专业的同学。今天
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/29/the-smallest-k-number/">剑指Offer——（29）最小的k个数</a>
+      <a class="index-header" href="/2020/06/30/construction-and-destruction/">C++全局构造与析构底层实现</a>
 
-      <a href="/2020/06/29/the-smallest-k-number/" class="index-excerpt">
+      <a href="/2020/06/30/construction-and-destruction/" class="index-excerpt">
         
         
           
         
-        <div>题目描述：
+        <div>* 前一阵儿，被施老师问到C++全局变量是如何构造和析构的。。。？之前看书的时候好像忽略了这个点。。现在补上。。。→_→ *
+理解这个点之前，需要把main函数的前世今生搞清楚。。请戳传送门
 
-输入n个整数，找出其中最小的K个数。例如输入4,5,1,6,2,7,3,8这8个数字，则最小的4个数字是1,2,3,4。
+Glibc中的文件类型
 
-实现如下：
-//测试用例中给出的返回值是有序的。。啧啧。。
-//找到序列中最小的k个数，利用set，对数字进行insert或erase
-//红黑树中查找、插入、删除操作都为 O（logk）
-//最终将set中存储的值返回值vector中
-//方法不改变原vect</div>
+在Glibc中主要分为头文件和库文件
+
+头文件位于/usr/include
+
+库文件包含动态库和静态库
+
+动态库位于/lib/libc.so.6
+
+静态库位于/usr/lib/li</div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
           </div>
         
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-category"></i>
             
-              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+              <a href="/categories/Language/">Language</a>
             
           </div>
         
@@ -440,7 +502,7 @@ HZ偶尔会拿些专业问题来忽悠那些非计算机专业的同学。今天
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+              <a href="/tags/C/">C++</a>
             
           </div>
         
@@ -452,37 +514,35 @@ HZ偶尔会拿些专业问题来忽悠那些非计算机专业的同学。今天
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/29/process-heap/">链接、装载与库——进程的堆</a>
+      <a class="index-header" href="/2020/06/30/singleton-pattern/">设计模式——单例模式</a>
 
-      <a href="/2020/06/29/process-heap/" class="index-excerpt">
+      <a href="/2020/06/30/singleton-pattern/" class="index-excerpt">
         
         
           
         
-        <div> * 本次只是简要的总结堆的基本情况，具体的函数分析和堆算法分析今后会继续再学习。。。→_→ *
+        <div>* 这篇开始总结几个比较常用的设计模式。。。不会设计模式。。怎么敢称熟悉OOP思想。。。→_→ *
 
-程序在任意时刻都可能会发出请求，申请或释放一段内存资源，堆由此而生。
+单例模式的核心结构中只包含一个被称为单例的特殊类。通过单例模式可以保证系统中一个类只有一个实例，即一个类只有一个对象实例
 
-
-堆(Heap)
-
-
-堆是一块巨大的内存空间，占据虚拟空间的绝大部分。在这片空间里，程序可以请求一块连续内存并自由使用，这块内存在程序主动释放之前一直保持有效
-
-程序向操作系统申请一块适当大小的堆空间，程序自己管理这块空间。管理</div>
+版本一：使用懒加载（快加载），只有在使用时才实例化
+class Singleton
+&#123;
+public:
+	static Singleton* getIntance(</div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
           </div>
         
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-category"></i>
             
-              <a href="/categories/Linux/">Linux</a>
+              <a href="/categories/Design-Patterns/">Design Patterns</a>
             
           </div>
         
@@ -490,7 +550,7 @@ HZ偶尔会拿些专业问题来忽悠那些非计算机专业的同学。今天
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E9%93%BE%E6%8E%A5%E3%80%81%E8%A3%85%E8%BD%BD%E4%B8%8E%E5%BA%93/">链接、装载与库</a>
+              <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
             
           </div>
         
@@ -502,77 +562,22 @@ HZ偶尔会拿些专业问题来忽悠那些非计算机专业的同学。今天
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/29/process-stack/">链接、装载与库——进程的栈</a>
+      <a class="index-header" href="/2020/06/30/address-translation/">Linux下如何在进程中获取虚拟地址对应的物理地址</a>
 
-      <a href="/2020/06/29/process-stack/" class="index-excerpt">
+      <a href="/2020/06/30/address-translation/" class="index-excerpt">
         
         
           
         
-        <div>
-内存是承载程序的介质，是程序进行运算和表达的场所。
+        <div>* 如果让你编写一个程序，来获取虚拟地址对应的物理地址。。你会试着操作MMU吗。。→_→ *
 
-未有特殊说明，则默认在32bit操作系统中。
-1. 程序的内存布局操作系统会将内存空间中的一部分分给内核使用，应用程序无法访问这段内存，这段内存被称为内核空间。Windows默认情况将高地址的2GB空间分配给内核，Linux默认情况将高地址的1GB空间分配给内核。剩下的内存空间称为用户空间，用户空间中有许多默认区域。
-
-栈：栈用于维护函数调用</div>
+Linux文件目录中的/proc记录着当前进程的信息，称其为虚拟文件系统。在/proc下有一个链接目录名为self，这意味着哪一个进程打开了它，self中存储的信息就是所链接进程的。self中有一个名为pagemap的文件，专门用来记录所链接进程的物理页号信息。这样通过/proc/pid/pagemap</div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Linux/">Linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%93%BE%E6%8E%A5%E3%80%81%E8%A3%85%E8%BD%BD%E4%B8%8E%E5%BA%93/">链接、装载与库</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/29/static-link/">链接、装载与库——静态链接</a>
-
-      <a href="/2020/06/29/static-link/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* 赶紧结束这本书的总结。。太拖了。。→_→ *
-第四章 静态链接1.链接器的空间与地址分配
-链接器为目标文件分配地址和空间可执行文件中的代码段和数据段由输入的目标文件中合并而来。
-
-
-按序叠加：直接将各个目标文件依次合并缺点：若有多个目标文件，则可能造成输出文件中有很多零散的段。每个段都有空间对齐要求，可能造成内存空间的大量内部碎片。
-
-相似段合并：将相同性质的段合并到一起
-
-
-
-“.bss”段</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
           </div>
         
         
@@ -587,7 +592,7 @@ HZ偶尔会拿些专业问题来忽悠那些非计算机专业的同学。今天
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E9%93%BE%E6%8E%A5%E3%80%81%E8%A3%85%E8%BD%BD%E4%B8%8E%E5%BA%93/">链接、装载与库</a>
+              <a href="/tags/Kernel/">Kernel</a>
             
           </div>
         
@@ -599,34 +604,32 @@ HZ偶尔会拿些专业问题来忽悠那些非计算机专业的同学。今天
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/29/more-than-half-of-the-occurrences-in-the-array/">剑指Offer——（28）数组中出现次数超过一半的数字</a>
+      <a class="index-header" href="/2020/06/30/real-address-mode-and-protection-mode/">实地址模式与保护模式</a>
 
-      <a href="/2020/06/29/more-than-half-of-the-occurrences-in-the-array/" class="index-excerpt">
+      <a href="/2020/06/30/real-address-mode-and-protection-mode/" class="index-excerpt">
         
         
           
         
-        <div>题目描述：
+        <div>* 为了给之后的虚拟地址映射总结作准备，本篇先来看看什么是实地址模式、什么是保护模式。。。→_→ *
+Intel的CPU发展也是经过技术不断地迭代更新，才有了今天的成就（但依旧逃不掉牙膏厂的美誉。。→_→）。所以在不同的技术时期，其CPU也采用了不同的寻址方式
 
-数组中有一个数字出现的次数超过数组长度的一半，请找出这个数字。例如输入一个长度为9的数组{1,2,3,2,2,2,5,4,2}。由于数字2在数组中出现了5次，超过数组长度的一半，因此输出2。如果不存在则输出0。
+实地址模式
 
-实现如下：
-//方法一
-//原理：数组中出现次数超过一半的数字，在其有序序列中就是中位数
-//利用partition的作用：将某个数字，放到它应该在的位置，而将其他数分类摆</div>
+在80286之前都采用这种寻址重点内容模式。比如在8086中虽然有20位地址总线，但CPU中的ALU的宽度却只有16位。于</div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
           </div>
         
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-category"></i>
             
-              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+              <a href="/categories/Linux/">Linux</a>
             
           </div>
         
@@ -634,7 +637,7 @@ HZ偶尔会拿些专业问题来忽悠那些非计算机专业的同学。今天
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+              <a href="/tags/Kernel/">Kernel</a>
             
           </div>
         
@@ -646,7 +649,7 @@ HZ偶尔会拿些专业问题来忽悠那些非计算机专业的同学。今天
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/"><i class="iconfont icon-arrowright"></i></a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
   

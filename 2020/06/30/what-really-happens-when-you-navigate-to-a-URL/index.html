@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/self.jpeg">
+  <link rel="icon" type="image/png" href="/img/self.jpeg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>【转】What really happens when you navigate to a URL - kongkong</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>kongkong</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-06-30 21:31">
+      2020年6月30日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.7k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      18
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2020年6月30日 晚上
+                
+              </p>
+            
+            <article class="markdown-body">
+              <p><strong><strong>本文将深入理解当你输入一个网址的时候，后台到底发生了什么事。。。→_→</strong></strong></p>
+<p><strong>原文传送门</strong>：<a href="http://igoro.com/archive/what-really-happens-when-you-navigate-to-a-url/" target="_blank" rel="noopener">What really happens when you navigate to a URL</a></p>
+<ol>
+<li><p>首先，<strong>在浏览器中输入网址</strong>:</p>
+<p> <img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNzE3MTA0OTEzMzk2?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="在浏览器中输入网址"></p>
+</li>
+<li><p><strong>浏览器查找域名的IP地址</strong></p>
+<p> <img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNzE3MTA1MzU2NDk5?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="浏览器查找域名的IP地址"></p>
+<p> DNS查找过程如下：</p>
+<ul>
+<li><strong>浏览器缓存</strong> – 浏览器会缓存DNS记录一段时间。 有趣的是，操作系统没有告诉浏览器储存DNS记录的时间，这样不同浏览器会储存个自固定的一个时间（2分钟到30分钟不等）。</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li><p><strong>系统缓存</strong> – 如果在浏览器缓存里没有找到需要的记录，浏览器会做一个系统调用（windows里是gethostbyname）。这样便可获得系统缓存中的记录。</p>
+</li>
+<li><p><strong>路由器缓存</strong> – 接着，前面的查询请求发向路由器，它一般会有自己的DNS缓存。</p>
+</li>
+<li><p><strong>ISP DNS 缓存</strong> – 接下来要check的就是ISP缓存DNS的服务器。在这一般都能找到相应的缓存记录。</p>
+</li>
+<li><p><strong>递归搜索</strong> – <strong>你的ISP的DNS服务器从跟域名服务器开始进行递归搜索</strong>。一般DNS服务器的缓存中会有.com域名服务器中的域名，所以到顶级服务器的匹配过程不是那么必要了。</p>
+<p>  DNS递归查找如下图所示：</p>
+<p>  <img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNzE3MTA1NTAzODc3?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="浏览器给web服务器发送一个HTTP请求"></p>
+<p>  DNS有一点令人担忧，这就是像wikipedia.org 或者 facebook.com这样的整个域名看上去只是对应一个单独的IP地址。还好，有几种方法可以消除这个瓶颈：</p>
+<p>  负载平衡器 是以一个特定IP地址进行侦听并将网络请求转发到集群服务器上的硬件设备。 一些大型的站点一般都会使用这种昂贵的高性能负载平衡器。</p>
+<p>  地理 DNS 根据用户所处的地理位置，通过把域名映射到多个不同的IP地址提高可扩展性。这样不同的服务器不能够更新同步状态，但映射静态内容的话非常好。</p>
+<p>  Anycast 是一个IP地址映射多个物理主机的路由技术。 美中不足，Anycast与TCP协议适应的不是很好，所以很少应用在那些方案中。</p>
+<p>  大多数DNS服务器使用Anycast来获得高效低延迟的DNS查找。</p>
+</li>
+</ul>
+<ol start="3">
+<li><p><strong>浏览器给web服务器发送一个HTTP请求</strong></p>
+<p> <img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNzE3MTExMjM3NDc2?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="浏览器给Web服务器发送一个HTTP请求"></p>
+<p> <strong>因为像Facebook主页这样的动态页面，打开后在浏览器缓存中很快甚至马上就会过期，毫无疑问他们不能从缓存中读取。</strong></p>
+<p> 所以，浏览器将把请求发送到Facebook所在的服务器：</p>
+ <pre><code class="hljs yaml"><span class="hljs-string">GET</span> <span class="hljs-string">http://facebook.com/</span> <span class="hljs-string">HTTP/1.1</span>
+ <span class="hljs-attr">Accept:</span> <span class="hljs-string">application/x-ms-application,</span> <span class="hljs-string">image/jpeg,</span> <span class="hljs-string">application/xaml+xml,</span> <span class="hljs-string">[...]</span>
+ <span class="hljs-attr">User-Agent:</span> <span class="hljs-string">Mozilla/4.0</span> <span class="hljs-string">(compatible;</span> <span class="hljs-string">MSIE</span> <span class="hljs-number">8.0</span><span class="hljs-string">;</span> <span class="hljs-string">Windows</span> <span class="hljs-string">NT</span> <span class="hljs-number">6.1</span><span class="hljs-string">;</span> <span class="hljs-string">WOW64;</span> <span class="hljs-string">[...]</span>
+ <span class="hljs-attr">Accept-Encoding:</span> <span class="hljs-string">gzip,</span> <span class="hljs-string">deflate</span>
+ <span class="hljs-attr">Connection:</span> <span class="hljs-string">Keep-Alive</span>
+ <span class="hljs-attr">Host:</span> <span class="hljs-string">facebook.com</span>
+ <span class="hljs-attr">Cookie:</span> <span class="hljs-string">datr=1265876274-[...];</span> <span class="hljs-string">locale=en_US;</span> <span class="hljs-string">lsd=WW[...];</span> <span class="hljs-string">c_user=2101[...]</span></code></pre>
+<ul>
+<li><p><strong>GET 这个请求定义了要读取的URL</strong>：“<a href="http://facebook.com/“" target="_blank" rel="noopener">http://facebook.com/“</a></p>
+</li>
+<li><p><strong>浏览器自身定义 (User-Agent 头)，和它希望接受什么类型的相应 (Accept and Accept-Encoding 头)。</strong></p>
+</li>
+<li><p><strong>Connection 头要求服务器为了后边的请求不要关闭TCP连接</strong></p>
+</li>
+<li><p><strong>请求中也包含浏览器存储的该域名的cookies</strong> 。在不同页面请求当中，<strong>cookies是与跟踪一个网站状态相匹配的键值</strong>。这样cookies会存储登录用户名，服务器分配的密码和一些用户设置等。<strong>Cookies会以文本文档形式存储在客户机里，每次请求时发送给服务器。</strong></p>
+</li>
+</ul>
+</li>
+<li><p><strong>服务器的永久重定向响应</strong><br> <img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNzE3MTEyMTQ2NDY3?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="服务器的永久重定位响应"></p>
+<p> 为什么服务器一定要重定向而不是直接发会用户想看的网页内容呢？</p>
+<ul>
+<li><p><strong>搜索引擎排名有关</strong>。如果一个页面有两个地址，就像<a href="http://www.igoro.com/" target="_blank" rel="noopener">http://www.igoro.com/</a> 和<a href="http://igoro.com/，搜索引擎会认为它们是两个网站,结果造成每一个的搜索链接都减少从而降低排名。而搜索引擎知道301永久重定向是" target="_blank" rel="noopener">http://igoro.com/，搜索引擎会认为它们是两个网站,结果造成每一个的搜索链接都减少从而降低排名。而搜索引擎知道301永久重定向是</a> 什么意思，这样就会把访问带www的和不带www的地址归到同一个网站排名下</p>
+</li>
+<li><p><strong>用不同的地址会造成缓存友好性变差</strong>。当一个页面有好几个名字时，它可能会在缓存里出现好几次。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>浏览器跟踪重定向地址</strong></p>
+<p> <img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNzE3MTEyMjM4MDc2?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="浏览器跟踪重定向地址"></p>
+<p> 现在，浏览器知道了“<a href="http://www.facebook.com/”才是要访问的正确地址，所以它会发送另一个获取请求：" target="_blank" rel="noopener">http://www.facebook.com/”才是要访问的正确地址，所以它会发送另一个获取请求：</a></p>
+</li>
+<li><p><strong>服务器“处理”请求</strong></p>
+<p> <img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNzE3MTEyMzE5NTIx?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="服务器处理请求"></p>
+<p> <strong>服务器接收到获取请求，然后处理并返回一个响应。</strong></p>
+<p> <strong>请求处理阅读请求及它的参数和cookies。它会读取也可能更新一些数据，并讲数据存储在服务器上。然后，需求处理会生成一个HTML响应。</strong></p>
+</li>
+<li><p><strong>服务器发回一个HTML响应</strong></p>
+<p> <img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNzE3MTEyNDA1NDU1?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="服务器发回HTML响应"></p>
+</li>
+<li><p><strong>浏览器开始显示HTML</strong></p>
+<p> <strong>在浏览器没有完整接受全部HTML文档时，它就已经开始显示这个页面了</strong></p>
+<p> <img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNzE3MTEyNDU4Mzk0?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="浏览器显示HTML"></p>
+</li>
+<li><p><strong>浏览器发送获取嵌入在HTML中的对象</strong></p>
+<p> <img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNzE3MTEyNTE5MTc0?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="浏览器发送获取嵌入在HTML中的对象"></p>
+<p> <strong>在浏览器显示HTML时，它会注意到需要获取其他地址内容的标签</strong>。这时，<strong>浏览器会发送一个获取请求来重新获得这些文件</strong>。这些都要经历一个和HTML读取类似的过程。所以浏览器会在DNS中查找这些域名，发送请求，重定向等等…</p>
+<p> <strong>但不像动态页面那样，静态文件会允许浏览器对其进行缓存。有的文件可能会不需要与服务器通讯，而从缓存中直接读取。服务器的响应中包含了静态文件保存的期限信息，所以浏览器知道要把它们缓存多长时间。还有，每个响应都可能包含像版本号一样工作的ETag头（被请求变量的实体值），如果浏览器观察到文件的版本 ETag信息已经存在，就马上停止这个文件的传输。</strong></p>
+</li>
+<li><p><strong>浏览器发送异步（AJAX）请求</strong></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNzE3MTEyNjA3MTE1?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="浏览器发送异步（AJAX）请求"></p>
+<p>在Web 2.0伟大精神的指引下，页面显示完成后客户端仍与服务器端保持着联系。</p>
+<p>“AJAX”–“异步JavaScript 和 XML”，把数据从服务器端推送到客户端。因为<strong>HTTP是一个请求-响应协议，所以服务器不能把新消息发给客户，取而代之的是客户端不得不隔几秒就轮询下服务器端看自己有没有新消息。如果当被轮询时服务器没有新消息，它就不理这个客户端。而当尚未超时的情况下收到了该客户的新消息，服务器就会找到未完成的请求，把新消息做为响应返回给客户端。</strong></p>
+</li>
+</ol>
+<p><strong><strong>这篇总结真的很好，学习了。。。</strong></strong></p>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Linux/">Linux</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Network/">Network</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/06/30/ugly-number/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">剑指Offer——（33）丑数</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/06/30/observer-listener-mode/">
+                        <span class="hidden-mobile">设计模式——观察者监听者模式</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "【转】What really happens when you navigate to a URL&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/self.jpeg">
+  <link rel="icon" type="image/png" href="/img/self.jpeg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>传输控制协议TCP（Transmission Control Protocol）报文格式 - kongkong</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>kongkong</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-06-30 20:41">
+      2020年6月30日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      13
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2020年6月30日 晚上
+                
+              </p>
+            
+            <article class="markdown-body">
+              <p><strong>* <em>这篇总结一下TCP协议的内容和特点。。→_→</em> *</strong></p>
+<ol>
+<li>TCP协议的特点</li>
+</ol>
+<ul>
+<li><p>TCP是<strong>面向连接</strong>的运输层协议：<strong>先建立连接，再传输数据，最后释放连接</strong></p>
+</li>
+<li><p>每一条TCP连接只能有两个端点，每一条TCP连接只能是<strong>点对点</strong>的</p>
+</li>
+<li><p>TCP提供<strong>可靠交付的服务</strong>：通过TCP传输的数据，<strong>无差错、不丢失、不重复、按序到达</strong></p>
+</li>
+<li><p>TCP提供<strong>全双工服务</strong>：<strong>TCP连接双方都设有发送缓存、接收缓存用来临时存放双向通信的数据。TCP在合适的时候将数据发送或应用程序在合适的时候读取数据</strong></p>
+</li>
+<li><p><strong>面向字节流</strong>：流入到进程或从进程流出的字节序列，<strong>TCP把应用程序交下来的数据看成一连串的无结构的字节流</strong></p>
+</li>
+</ul>
+<ol start="2">
+<li>TCP的连接</li>
+</ol>
+<ul>
+<li><p>TCP的连接的端点叫做<strong>套接字（socket）</strong>，<strong>端口号拼接到IP地址即构成了套接字</strong></p>
+</li>
+<li><p><strong>套接字 socket = （IP地址：端口号）</strong></p>
+</li>
+<li><p>同一个IP地址可以有多个不同的TCP连接，同一个端口号也可以出现在多个不同的TCP连接中</p>
+</li>
+</ul>
+<ol start="3">
+<li>TCP报文段首部格式</li>
+</ol>
+<ul>
+<li><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwNjMwMTYxNTE5NjM2?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="TCP报文段首部格式"></p>
+</li>
+<li><p><strong>源端口和目的端口</strong>：各占2个字节，分别写入源端口号和目的端口号</p>
+</li>
+<li><p><strong>序号</strong>：占4字节，序号范围[0，(2^32) - 1]。<strong>序号增加到 (2^32) - 1后，下一个序号就又回到0</strong>。在TCP连接中<strong>传送的字节流中的每一个字节都按顺序编号</strong>。整个要传送的字节流的起始序号必须在连接建立时设置。<strong>序号字段值指本报文段所发送的数据的第一个字节的序号</strong></p>
+</li>
+<li><p><strong>确认号</strong>：占4字节，<strong>是期望收到对方下一个报文段的第一个数据字节的序号</strong>。<strong>若确认号为N，则说明序号N-1为止的所有数据都以正确收到</strong></p>
+</li>
+<li><p><strong>数据偏移</strong>：占4位，指出<strong>TCP报文段的数据起始处距离TCP报文段的起始处的距离</strong>，即<strong>TCP报文段的首部长度</strong>。其单位为4字节，所以<strong>数据偏移的最大值为60字节</strong>，即TCP首部最大长度（<strong>选项长度不能超过40字节</strong>）</p>
+</li>
+<li><p><strong>保留</strong>：占6位，保留今后使用，<strong>目前应置为0</strong></p>
+</li>
+<li><p><strong>紧急URG（URGent）：仅当URG=1时紧急字段有效，表明紧急指针字段有效。告诉系统此报文段有紧急数据，应尽快传送，而不要按照原来的排列顺序来传送。发送方TCP把把紧急数据插入到本报文段数据的最前面，而在紧急数据后面的仍为普通数据，此时与紧急指针字段（Urgent Pointer）配合使用</strong></p>
+</li>
+<li><p><strong>确认ACK（ACKnowledgment）：仅当ACK=1时确认号字段有效，在连接建立后所有传送的报文段都必须把ACK置1</strong></p>
+</li>
+<li><p><strong>推送PSH（PuSH）：仅当PSH=1时推送字段有效，发送方将PSH置1，并立即创建一个报文段发送出去，接收方收到PSH=1的报文段，就尽快交付接收应用程序，而不在等到整个缓存都填满后再向上交付，当接收方的接收窗口为零时，也可以发送</strong></p>
+</li>
+<li><p><strong>复位RST（ReSeT）：仅当RST=1时复位字段有效，表明TCP连接中出现严重差错，必须释放连接，然后再重新建立运输连接</strong>。还用来拒绝非法的报文段或拒绝打开一个连接</p>
+</li>
+<li><p><strong>同步SYN（SYNchronization）：仅当SYN=1时同步字段有效，在连接建立时用来同步序号。当SYN=1且ACK=0时，表明这是一个连接请求报文段。当SYN=1且ACK=1时，表明这一个对方同意建立连接的响应报文段。</strong></p>
+</li>
+<li><p><strong>终止FIN（FINis）：仅当FIN=1时终止字段有效，用来释放一个连接，当FIN=1时表明此报文段的发送方的数据已发送完毕，并要求释放连接</strong></p>
+</li>
+<li><p><strong>窗口</strong>：占2字节，窗口值[0，2^(16) - 1]。指<strong>发送本报文段的一方的接收窗口大小，告诉对方现在允许对方发送的数据量</strong>，即窗口值作为接收方让发送方设置其发送窗口的依据。TCP规定即使为零窗口，也要接收零窗口探测报文、确认报文段和携带紧急数据的报文段</p>
+</li>
+<li><p><strong>检验和</strong>：占2字节，<strong>检验范围包括首部和数据</strong>。计算检验和时，在<strong>TCP报文段的前面加上12字节的伪首部</strong>。接收方收到此报文段后，仍要加上伪首部计算检验和</p>
+</li>
+<li><p><strong>紧急指针</strong>：占2字节，<strong>紧急指针仅在URG=1时才有意义，指出本报文段中的紧急数据的字节数，即紧急数据的末尾在报文段中的位置。当紧急数据处理完后，TCP就告诉应用程序恢复到正常操作。窗口值为零时也可发送紧急数据</strong></p>
+</li>
+<li><p><strong>选项</strong>：长度可变，最长可达40字节</p>
+</li>
+</ul>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Linux/">Linux</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Network/">Network</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/06/30/sliding-window/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">TCP可靠传输——滑动窗口</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/06/30/user-datagram-protocol/">
+                        <span class="hidden-mobile">用户数据报协议UDP（User Datagram Protocol）报文格式</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "传输控制协议TCP（Transmission Control Protocol）报文格式&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
