@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/self.jpeg">
+  <link rel="icon" type="image/png" href="/img/self.jpeg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>【转】C++11标准新特性：右值引用与转移语义 - kongkong</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>kongkong</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-07-01 21:11">
+      2020年7月1日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.1k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      38
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2020年7月1日 晚上
+                
+              </p>
+            
+            <article class="markdown-body">
+              <p><strong>* <em>碰巧看到这篇文章。。。学习了。。。→_→</em> *</strong></p>
+<p><strong>原文链接请戳传送门</strong>：<a href="https://www.ibm.com/developerworks/cn/aix/library/1307_lisl_c11/index.html" target="_blank" rel="noopener"><strong>C++11标准新特性：右值引用与转移语义</strong></a></p>
+<ol>
+<li><p><strong>新特性的目的</strong></p>
+<ul>
+<li><p>右值引用 (Rvalue Referene) 是 C++ 新标准 (C++11, 11 代表 2011 年 ) 中引入的新特性 , 它实现了转移语义 (Move Sementics) 和精确传递 (Perfect Forwarding)。</p>
+</li>
+<li><p>它的主要目的有两个方面</p>
+<ul>
+<li><p>消除两个对象交互时不必要的对象拷贝，节省运算存储资源，提高效率。</p>
+</li>
+<li><p>能够更简洁明确地定义泛型函数。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>左值与右值的定义</strong></p>
+<ul>
+<li><p>C++( 包括 C) 中所有的表达式和变量要么是左值，要么是右值。<strong>通俗的左值的定义就是非临时对象，那些可以在多条语句中使用的对象。</strong>所有的变量都满足这个定义，在多条代码中都可以使用，都是左值。<strong>右值是指临时的对象，它们只在当前的语句中有效。</strong></p>
+<p>  如简单的赋值语句 <code>int i = 0;</code><br>  在这条语句中，<strong>i 是左值，0 是临时值，就是右值</strong>。在下面的代码中，i 可以被引用，0 就不可以了。立即数都是右值。</p>
+</li>
+<li><p><strong>右值也可以出现在赋值表达式的左边，但是不能作为赋值的对象，因为右值只在当前语句有效，赋值没有意义</strong>。</p>
+<p>  如<code>((i&gt;0) ? i : j) = 1;</code><br>  在这个例子中，0 作为右值出现在了”=”的左边。但是<strong>赋值对象是 i 或者 j，都是左值。</strong></p>
+</li>
+<li><p><strong>在 C++11 之前，右值是不能被引用的，最大限度就是用常量引用绑定一个右值</strong>，如<code>const int &amp;a = 1;</code></p>
+<p>  <strong>在这种情况下，右值不能被修改的。但是实际上右值是可以被修改的</strong>，如<code>T().set().get();</code></p>
+<p>  T 是一个类，set 是一个函数为 T 中的一个变量赋值，get 用来取出这个变量的值。在这句中，T() 生成一个临时对象，就是右值，set() 修改了变量的值，也就修改了这个右值。</p>
+<p>  既然右值可以被修改，那么就可以实现右值引用。右值引用能够方便地解决实际工程中的问题，实现非常有吸引力的解决方案。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>左值和右值的语法符号</strong></p>
+<p> <strong>左值的声明符号为”&amp;”， 为了和左值区分，右值的声明符号为”&amp;&amp;”。</strong></p>
+ <pre><code class="hljs cpp"><span class="hljs-comment">//运行结果</span>
+<span class="hljs-comment">//LValue processed: 0 </span>
+<span class="hljs-comment">//RValue processed: 1</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">process_value</span><span class="hljs-params">(<span class="hljs-keyword">int</span>&amp; i)</span> </span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-built_in">std</span>::<span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-string">"LValue processed: "</span> &lt;&lt; i &lt;&lt; <span class="hljs-built_in">std</span>::<span class="hljs-built_in">endl</span>; 
+&#125; 
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">process_value</span><span class="hljs-params">(<span class="hljs-keyword">int</span>&amp;&amp; i)</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-built_in">std</span>::<span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-string">"RValue processed: "</span> &lt;&lt; i &lt;&lt; <span class="hljs-built_in">std</span>::<span class="hljs-built_in">endl</span>; 
+&#125; 
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">int</span> a = <span class="hljs-number">0</span>; 
+    process_value(a); 
+    process_value(<span class="hljs-number">1</span>); 
+&#125;</code></pre>
+
+<p> Process_value 函数被重载，分别接受左值和右值。由输出结果可以看出，临时对象是作为右值处理的。</p>
+<p> <strong>但是如果临时对象通过一个接受右值的函数传递给另一个函数时，就会变成左值，因为这个临时对象在传递过程中，变成了命名对象。</strong></p>
+ <pre><code class="hljs cpp"><span class="hljs-comment">//运行结果</span>
+<span class="hljs-comment">//LValue processed: 0 </span>
+<span class="hljs-comment">//RValue processed: 1 </span>
+<span class="hljs-comment">//LValue processed: 2</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">process_value</span><span class="hljs-params">(<span class="hljs-keyword">int</span>&amp; i)</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-built_in">std</span>::<span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-string">"LValue processed: "</span> &lt;&lt; i &lt;&lt; <span class="hljs-built_in">std</span>::<span class="hljs-built_in">endl</span>; 
+&#125; 
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">process_value</span><span class="hljs-params">(<span class="hljs-keyword">int</span>&amp;&amp; i)</span></span>
+<span class="hljs-function"></span>&#123; 
+	<span class="hljs-built_in">std</span>::<span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-string">"RValue processed: "</span> &lt;&lt; i &lt;&lt; <span class="hljs-built_in">std</span>::<span class="hljs-built_in">endl</span>; 
+&#125; 
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">forward_value</span><span class="hljs-params">(<span class="hljs-keyword">int</span>&amp;&amp; i)</span></span>
+<span class="hljs-function"></span>&#123;
+	process_value(i); 
+&#125; 
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">int</span> a = <span class="hljs-number">0</span>; 
+    process_value(a); 
+    process_value(<span class="hljs-number">1</span>); 
+    forward_value(<span class="hljs-number">2</span>); 
+&#125;</code></pre>
+
+<p> 虽然 2 这个立即数在函数 forward_value 接收时是右值，但到了 process_value 接收时，变成了左值。</p>
+</li>
+<li><p><strong>转移语义的定义</strong></p>
+<ul>
+<li><p><strong>右值引用是用来支持转移语义的。转移语义可以将资源 ( 堆，系统对象等 ) 从一个对象转移到另一个对象，这样能够减少不必要的临时对象的创建、拷贝以及销毁，能够大幅度提高 C++ 应用程序的性能。临时对象的维护 ( 创建和销毁 ) 对性能有严重影响。</strong></p>
+</li>
+<li><p>转移语义是和拷贝语义相对的，可以类比文件的剪切与拷贝，当我们将文件从一个目录拷贝到另一个目录时，速度比剪切慢很多。</p>
+</li>
+<li><p>通过转移语义，临时对象中的资源能够转移其它的对象里。</p>
+</li>
+<li><p>在现有的 C++ 机制中，我们可以定义拷贝构造函数和赋值函数。<strong>要实现转移语义，需要定义转移构造函数，还可以定义转移赋值操作符。对于右值的拷贝和赋值会调用转移构造函数和转移赋值操作符。如果转移构造函数和转移拷贝操作符没有定义，那么就遵循现有的机制，拷贝构造函数和赋值操作符会被调用。</strong></p>
+</li>
+<li><p><strong>普通的函数和操作符也可以利用右值引用操作符实现转移语义。</strong></p>
+</li>
+</ul>
+</li>
+<li><p><strong>实现转移构造函数和转移赋值函数</strong></p>
+<p> 以一个简单的 string 类为示例，实现拷贝构造函数和拷贝赋值操作符。</p>
+ <pre><code class="hljs cpp"><span class="hljs-comment">//运行结果</span>
+<span class="hljs-comment">//Copy Assignment is called! source: Hello </span>
+<span class="hljs-comment">//Copy Constructor is called! source: World</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyString</span></span>
+<span class="hljs-class">&#123;</span>
+<span class="hljs-keyword">private</span>:
+	<span class="hljs-keyword">char</span>* _data;
+	<span class="hljs-keyword">size_t</span>   _len;
+	<span class="hljs-keyword">void</span> _init_data(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *s)
+	&#123;
+		_data = <span class="hljs-keyword">new</span> <span class="hljs-keyword">char</span>[_len + <span class="hljs-number">1</span>];
+		<span class="hljs-built_in">memcpy</span>(_data, s, _len);
+		_data[_len] = <span class="hljs-string">'\0'</span>;
+	&#125;
+<span class="hljs-keyword">public</span>:
+	MyString()
+	&#123;
+		_data = <span class="hljs-literal">NULL</span>;
+		_len = <span class="hljs-number">0</span>;
+	&#125;
+
+	MyString(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* p)
+	&#123;
+		_len = <span class="hljs-built_in">strlen</span>(p);
+		_init_data(p);
+	&#125;
+
+	MyString(<span class="hljs-keyword">const</span> MyString&amp; str)
+	&#123;
+		_len = str._len;
+		_init_data(str._data);
+		<span class="hljs-built_in">std</span>::<span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-string">"Copy Constructor is called! source: "</span> &lt;&lt; str._data &lt;&lt; <span class="hljs-built_in">std</span>::<span class="hljs-built_in">endl</span>;
+	&#125;
+
+	MyString&amp; <span class="hljs-keyword">operator</span>=(<span class="hljs-keyword">const</span> MyString&amp; str)
+	&#123;
+		<span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span> != &amp;str)
+		&#123;
+			_len = str._len;
+			_init_data(str._data);
+		&#125;
+		<span class="hljs-built_in">std</span>::<span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-string">"Copy Assignment is called! source: "</span> &lt;&lt; str._data &lt;&lt; <span class="hljs-built_in">std</span>::<span class="hljs-built_in">endl</span>;
+		<span class="hljs-keyword">return</span> *<span class="hljs-keyword">this</span>;
+	&#125;
+
+	<span class="hljs-keyword">virtual</span> ~MyString()
+	&#123;
+		<span class="hljs-keyword">if</span> (_data)
+			<span class="hljs-built_in">free</span>(_data);
+	&#125;
+&#125;;
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+	MyString a;
+	a = MyString(<span class="hljs-string">"Hello"</span>);
+	<span class="hljs-built_in">std</span>::<span class="hljs-built_in">vector</span>&lt;MyString&gt; vec;
+	vec.push_back(MyString(<span class="hljs-string">"World"</span>));
+&#125;</code></pre>
+
+<p> 这个 string 类已经基本满足我们演示的需要。在 main 函数中，实现了调用拷贝构造函数的操作和拷贝赋值操作符的操作。<strong>MyString(“Hello”) 和MyString(“World”) 都是临时对象，也就是右值。虽然它们是临时的，但程序仍然调用了拷贝构造和拷贝赋值，造成了没有意义的资源申请和释放的操作。如果能够直接使用临时对象已经申请的资源，既能节省资源，有能节省资源申请和释放的时间。这正是定义转移语义的目的。</strong></p>
+<p> 我们先定义<strong>转移构造函数</strong>。</p>
+ <pre><code class="hljs sqf">MyString(MyString&amp;&amp; <span class="hljs-built_in">str</span>) 
+&#123;
+	std::cout &lt;&lt; <span class="hljs-string">"Move Constructor is called! source: "</span> &lt;&lt; <span class="hljs-built_in">str</span>.<span class="hljs-variable">_data</span> &lt;&lt; std::<span class="hljs-literal">endl</span>;
+	<span class="hljs-variable">_len</span> = <span class="hljs-built_in">str</span>.<span class="hljs-variable">_len</span>;
+	<span class="hljs-variable">_data</span> = <span class="hljs-built_in">str</span>.<span class="hljs-variable">_data</span>;
+	<span class="hljs-built_in">str</span>.<span class="hljs-variable">_len</span> = <span class="hljs-number">0</span>;
+	<span class="hljs-built_in">str</span>.<span class="hljs-variable">_data</span> = NULL;
+&#125;</code></pre>
+
+<p> <strong>和拷贝构造函数类似</strong>，有几点需要注意：</p>
+<ul>
+<li><p><strong>参数（右值）的符号必须是右值引用符号，即“&amp;&amp;”。</strong></p>
+</li>
+<li><p><strong>参数（右值）不可以是常量，因为我们需要修改右值。</strong></p>
+</li>
+<li><p><strong>参数（右值）的资源链接和标记必须修改。否则，右值的析构函数就会释放资源。转移到新对象的资源也就无效了。</strong></p>
+<p>现在我们<strong>定义转移赋值操作符。</strong></p>
+<pre><code class="hljs sqf">MyString&amp; operator=(MyString&amp;&amp; <span class="hljs-built_in">str</span>)
+&#123;
+	std::cout &lt;&lt; <span class="hljs-string">"Move Assignment is called! source: "</span> &lt;&lt; <span class="hljs-built_in">str</span>.<span class="hljs-variable">_data</span> &lt;&lt; std::<span class="hljs-literal">endl</span>;
+	<span class="hljs-keyword">if</span> (this != &amp;<span class="hljs-built_in">str</span>)
+	&#123;
+		<span class="hljs-variable">_len</span> = <span class="hljs-built_in">str</span>.<span class="hljs-variable">_len</span>;
+		<span class="hljs-variable">_data</span> = <span class="hljs-built_in">str</span>.<span class="hljs-variable">_data</span>;
+		<span class="hljs-built_in">str</span>.<span class="hljs-variable">_len</span> = <span class="hljs-number">0</span>;
+		<span class="hljs-built_in">str</span>.<span class="hljs-variable">_data</span> = NULL;
+	&#125;
+	return *this;
+&#125;</code></pre>
+
+<p>这里需要注意的问题和转移构造函数是一样的。</p>
+<p>增加了转移构造函数和转移复制操作符后，我们的程序运行结果为 :</p>
+<pre><code class="hljs pgsql">//<span class="hljs-keyword">Move</span> Assignment <span class="hljs-keyword">is</span> <span class="hljs-keyword">called</span>! source: Hello 
+//<span class="hljs-keyword">Move</span> Constructor <span class="hljs-keyword">is</span> <span class="hljs-keyword">called</span>! source: World</code></pre>
+</li>
+</ul>
+<p> <strong>由此看出，编译器区分了左值和右值，对右值调用了转移构造函数和转移赋值操作符。节省了资源，提高了程序运行的效率。</strong></p>
+<p> <strong>有了右值引用和转移语义，我们在设计和实现类时，对于需要动态申请大量资源的类，应该设计转移构造函数和转移赋值函数，以提高应用程序的效率。</strong></p>
+</li>
+<li><p><strong>标准库函数 std::move</strong></p>
+<p> 既然编译器只对右值引用才能调用转移构造函数和转移赋值函数，而所有命名对象都只能是左值引用，<strong>如果已知一个命名对象不再被使用而想对它调用转移构造函数和转移赋值函数，也就是把一个左值引用当做右值引用来使用</strong>，怎么做呢？<strong>标准库提供了函数 std::move，这个函数以非常简单的方式将左值引用转换为右值引用。</strong></p>
+ <pre><code class="hljs arduino"><span class="hljs-comment">//运行结果</span>
+<span class="hljs-comment">//LValue processed: 0 </span>
+<span class="hljs-comment">//RValue processed: 0</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">ProcessValue</span><span class="hljs-params">(<span class="hljs-keyword">int</span>&amp; i)</span> </span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-built_in">std</span>::<span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-string">"LValue processed: "</span> &lt;&lt; i &lt;&lt; <span class="hljs-built_in">std</span>::<span class="hljs-built_in">endl</span>;
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">ProcessValue</span><span class="hljs-params">(<span class="hljs-keyword">int</span>&amp;&amp; i)</span> </span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-built_in">std</span>::<span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-string">"RValue processed: "</span> &lt;&lt; i &lt;&lt; <span class="hljs-built_in">std</span>::<span class="hljs-built_in">endl</span>;
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">int</span> a = <span class="hljs-number">0</span>;
+	ProcessValue(a);
+	ProcessValue(<span class="hljs-built_in">std</span>::<span class="hljs-built_in">move</span>(a));
+&#125;</code></pre>
+
+<p> std::move在提高 swap 函数的的性能上非常有帮助，一般来说，swap函数的通用定义如下：</p>
+ <pre><code class="hljs angelscript">template &lt;<span class="hljs-keyword">class</span> <span class="hljs-symbol">T</span>&gt; <span class="hljs-symbol">swap</span>(<span class="hljs-symbol">T</span>&amp; <span class="hljs-symbol">a, <span class="hljs-symbol">T</span></span>&amp; <span class="hljs-symbol">b</span>)
+&#123;
+	T tmp(a);   <span class="hljs-comment">// copy a to tmp </span>
+	a = b;      <span class="hljs-comment">// copy b to a </span>
+	b = tmp;    <span class="hljs-comment">// copy tmp to b </span>
+&#125;</code></pre>
+
+<p> 有了 std::move，swap 函数的定义变为 :</p>
+ <pre><code class="hljs arduino"><span class="hljs-keyword">template</span> &lt;<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">T</span>&gt; <span class="hljs-title">swap</span>(<span class="hljs-title">T</span>&amp; <span class="hljs-title">a</span>, <span class="hljs-title">T</span>&amp; <span class="hljs-title">b</span>)</span>
+<span class="hljs-class">&#123;</span>
+	<span class="hljs-function">T <span class="hljs-title">tmp</span><span class="hljs-params">(<span class="hljs-built_in">std</span>::<span class="hljs-built_in">move</span>(a))</span></span>; <span class="hljs-comment">// move a to tmp </span>
+	a = <span class="hljs-built_in">std</span>::<span class="hljs-built_in">move</span>(b);    <span class="hljs-comment">// move b to a </span>
+	b = <span class="hljs-built_in">std</span>::<span class="hljs-built_in">move</span>(tmp);  <span class="hljs-comment">// move tmp to b </span>
+&#125;</code></pre>
+
+<p> <strong>通过 std::move，一个简单的 swap 函数就避免了 3 次不必要的拷贝操作。</strong></p>
+</li>
+<li><p><strong>精确传递 (Perfect Forwarding)</strong></p>
+<p> 本文采用精确传递表达这个意思。”Perfect Forwarding”也被翻译成完美转发，精准转发等，说的都是一个意思。</p>
+<p> <strong>精确传递适用于这样的场景：需要将一组参数原封不动的传递给另一个函数。</strong></p>
+<p> “原封不动”不仅仅是参数的值不变，在 C++ 中，除了参数值之外，还有一下两组属性：<strong>左值／右值和 const/non-const</strong>。 </p>
+<p> <strong>精确传递就是在参数传递过程中，所有这些属性和参数值都不能改变。在泛型函数中，这样的需求非常普遍。</strong></p>
+<p> 下面举例说明。函数 forward_value 是一个泛型函数，它将一个参数传递给另一个函数 process_value。</p>
+<p> forward_value 的定义为：</p>
+ <pre><code class="hljs cpp"><span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">typename</span> T&gt; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">forward_value</span><span class="hljs-params">(<span class="hljs-keyword">const</span> T&amp; val)</span></span>
+<span class="hljs-function"></span>&#123;
+	process_value(val);
+&#125;
+<span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">typename</span> T&gt; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">forward_value</span><span class="hljs-params">(T&amp; val)</span> </span>
+<span class="hljs-function"></span>&#123;
+	process_value(val);
+&#125;</code></pre>
+
+<p> <strong>函数 forward_value 为每一个参数必须重载两种类型，T&amp; 和 const T&amp;，否则，下面四种不同类型参数的调用中就不能同时满足  :</strong></p>
+ <pre><code class="hljs reasonml"><span class="hljs-built_in">int</span> a = <span class="hljs-number">0</span>;
+const <span class="hljs-built_in">int</span> &amp;b = <span class="hljs-number">1</span>;
+forward<span class="hljs-constructor">_value(<span class="hljs-params">a</span>)</span>; <span class="hljs-comment">// int&amp; </span>
+forward<span class="hljs-constructor">_value(<span class="hljs-params">b</span>)</span>; <span class="hljs-comment">// const int&amp; </span>
+forward<span class="hljs-constructor">_value(2)</span>; <span class="hljs-comment">// int&amp;</span></code></pre>
+
+<p> <strong>对于一个参数就要重载两次，也就是函数重载的次数和参数的个数是一个正比的关系。这个函数的定义次数对于程序员来说，是非常低效的。</strong>我们看看右值引用如何帮助我们解决这个问题  :</p>
+ <pre><code class="hljs cpp"><span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">typename</span> T&gt; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">forward_value</span><span class="hljs-params">(T&amp;&amp; val)</span></span>
+<span class="hljs-function"></span>&#123;
+	process_value(val);
+&#125;</code></pre>
+
+<p> <strong>只需要定义一次，接受一个右值引用的参数，就能够将所有的参数类型原封不动的传递给目标函数。四种不用类型参数的调用都能满足，参数的左右值属性和 const/non-cosnt 属性完全传递给目标函数 process_value</strong>。这个解决方案不是简洁优雅吗？</p>
+ <pre><code class="hljs reasonml"><span class="hljs-built_in">int</span> a = <span class="hljs-number">0</span>;
+const <span class="hljs-built_in">int</span> &amp;b = <span class="hljs-number">1</span>;
+forward<span class="hljs-constructor">_value(<span class="hljs-params">a</span>)</span>; <span class="hljs-comment">// int&amp; </span>
+forward<span class="hljs-constructor">_value(<span class="hljs-params">b</span>)</span>; <span class="hljs-comment">// const int&amp; </span>
+forward<span class="hljs-constructor">_value(2)</span>; <span class="hljs-comment">// int&amp;&amp;</span></code></pre>
+
+<p> <strong>C++11 中定义的 T&amp;&amp; 的推导规则为：</strong></p>
+<ul>
+<li><p><strong>右值实参为右值引用，左值实参仍然为左值引用。</strong></p>
+<p>一句话，就是参数的属性不变。这样也就完美的实现了参数的完整传递。</p>
+</li>
+</ul>
+<p> <strong>右值引用，表面上看只是增加了一个引用符号，但它对 C++ 软件设计和类库的设计有非常大的影响。它既能简化代码，又能提高程序运行效率。</strong>每一个 C++ 软件设计师和程序员都应该理解并能够应用它。<strong>我们在设计类的时候如果有动态申请的资源，也应该设计转移构造函数和转移拷贝函数。在设计类库时，还应该考虑 std::move 的使用场景并积极使用它。</strong></p>
+</li>
+<li><p><strong>总结</strong></p>
+<p> 右值引用和转移语义是 C++ 新标准中的一个重要特性。每一个专业的 C++ 开发人员都应该掌握并应用到实际项目中。在有机会重构代码时，也应该思考是否可以应用新也行。在使用之前，需要检查一下编译器的支持情况。</p>
+</li>
+</ol>
+<p><strong>* <em>学习了。。。从IBM 为 AIX 和 UNIX 用户提供的文章、教程和技术资源中看到的。。。嗯。。。select没总结完。。。→_→</em> *</strong></p>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Language/">Language</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/C/">C++</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/07/01/anatomy-of-select-kernel-source-code/">
+                        <span class="hidden-mobile">IO复用——select内核源代码剖析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "【转】C++11标准新特性：右值引用与转移语义&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

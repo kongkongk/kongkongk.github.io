@@ -168,27 +168,27 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/29/symbols-references-COMMON-blocks/">链接、装载与库——符号、引用、COMMON块</a>
+      <a class="index-header" href="/2020/06/30/timer/">TCP中的四种计时器</a>
 
-      <a href="/2020/06/29/symbols-references-COMMON-blocks/" class="index-excerpt">
+      <a href="/2020/06/30/timer/" class="index-excerpt">
         
         
           
         
-        <div>* 好久都没更这个了。。。请叫我拖更大魔王。。。→_→ *
-* 这一篇看下来，对符号的理解更深了。。。 *
+        <div>* 经过两天的总结，已经总结了大部分运输层的知识原理，那今天就再来看看TCP中的四种定时器。。。→_→ *
 
-在链接过程中，目标文件之间相互拼合实际上是目标文件之间对函数和变量的地址的引用。
-在链接中，将函数和变量称为符号（Symbol），函数名和变量名为符号名（Symbol Name）。 
+超时重传计时器（Retransmission Timeout Timer）（与超时重传相关）
 
 
-符号表（Symbol Table）每一个目标文件都有一个符号表（Symbol Table），表中记录目</div>
+A向B发送一个数据报文段，为了保证可靠传输，A会为这个数据报文段设置一个超时重传计时器（Retransmission Timeout Timer）
+
+如果在超时重传时间内，A收到了B的确认报文</div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
           </div>
         
         
@@ -203,7 +203,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E9%93%BE%E6%8E%A5%E3%80%81%E8%A3%85%E8%BD%BD%E4%B8%8E%E5%BA%93/">链接、装载与库</a>
+              <a href="/tags/Network/">Network</a>
             
           </div>
         
@@ -215,22 +215,436 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/29/arrangement-of-strings/">剑指Offer——（27）字符串的排列</a>
+      <a class="index-header" href="/2020/06/30/three-handshake-and-four-waves/">TCP三次握手与四次挥手的过程及原因</a>
 
-      <a href="/2020/06/29/arrangement-of-strings/" class="index-excerpt">
+      <a href="/2020/06/30/three-handshake-and-four-waves/" class="index-excerpt">
+        
+        
+          
+        
+        <div>* 本篇文章来彻彻底底的分析一下TCP三次握手与四次挥手的过程及原因。。。→_→ *
+
+TCP的连接建立——三次握手
+
+
+
+
+最初两端的TCP进程都处于CLOSED（关闭）状态。A主动打开连接，B被动打开连接
+
+B的TCP服务器进程创建传输控制块TCB（Transmission Control Block），然后处于LISTEN（收听）状态，准备接受客户端的连接请求
+
+A的TCP客户端进程也创建传</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Linux/">Linux</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Network/">Network</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/30/fast-retransmission-and-fast-recovery/">TCP拥塞控制——快重传与快恢复</a>
+
+      <a href="/2020/06/30/fast-retransmission-and-fast-recovery/" class="index-excerpt">
+        
+        
+          
+        
+        <div>* TCP可靠传输中不仅有慢开始与拥塞避免相结合，还有快重传与快恢复相结合。。。→_→ *
+
+快重传（Fast Retransmit）
+
+
+要求接收方每收到一个失序的报文段后就立即发出重复确认而不是等待自己发送数据时才捎带确认
+
+发送方只要一连收到三个重复确认就立即重传对方尚未收到的报文段，而不必等待设置的重传计时器到期
+
+
+
+有的快重传实现把开始时的拥塞窗口cwnd设置为ssthresh+3*M</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Linux/">Linux</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Network/">Network</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/30/slow-start-and-congestion-avoidance/">TCP拥塞控制——慢开始与拥塞避免AIMD</a>
+
+      <a href="/2020/06/30/slow-start-and-congestion-avoidance/" class="index-excerpt">
+        
+        
+          
+        
+        <div>* 之前总结了TCP拥塞控制的原理， 这次来看看具体的设计算法——慢开始与拥塞避免。。。→_→ *
+
+拥塞窗口cwnd（Congestion Window）
+
+
+发送方维持一个叫做拥塞窗口的状态变量，拥塞窗口的大小取决于网络的拥塞程度且动态变化。发送方让自己的发送窗口等于拥塞窗口，如果还考虑接收方的接受能力，那么发送窗口还可能小于拥塞窗口
+
+发送方控制拥塞窗口的原则：只要网络没有出现拥塞，就增大拥</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Linux/">Linux</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Network/">Network</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/30/congestion-control/">TCP拥塞控制原理</a>
+
+      <a href="/2020/06/30/congestion-control/" class="index-excerpt">
+        
+        
+          
+        
+        <div>* TCP可靠传输是为了提高点对点的数据传输效率，而真实网络情况非常复杂，所以使用拥塞控制进一步提高网络利用率。这篇总结一下TCP拥塞控制的原理。。→_→ *
+
+拥塞控制的定义：在某段时间，若对网络中某一资源的需求超过了该资源所能提供的可用部分，网络的性能就会变坏，这种情况就叫做拥塞（Congestion）。拥塞控制是为了防止过多的数据注入到网络，使网络中的路由器或链路不致过载
+
+拥塞控制与流量控</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Linux/">Linux</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Network/">Network</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/30/flow-control/">TCP可靠传输——流量控制</a>
+
+      <a href="/2020/06/30/flow-control/" class="index-excerpt">
+        
+        
+          
+        
+        <div>* TCP还使用流量控制来保证可靠传输。。→_→ *
+
+流量控制（Flow Control）的含义
+
+
+流量控制就是让发送方的发送速率不要太快，让接收方来得及接收
+
+利用滑动窗口实现流量控制，告诉对方下一次我能接收的最大数据长度
+
+
+
+发送方的发送窗口不能超过接收方给出的接收窗口的数值。TCP的窗口单位是字节，不是报文段
+
+
+
+流量控制中出现的问题
+
+B向A发送零窗口报文段后不久，B的接收缓存有了</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Linux/">Linux</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Network/">Network</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/30/sliding-window/">TCP可靠传输——滑动窗口</a>
+
+      <a href="/2020/06/30/sliding-window/" class="index-excerpt">
+        
+        
+          
+        
+        <div>* TCP协议保证可靠的数据传输。。使用哪些方法来保证呢。。？来瞧瞧滑动窗口。。→_→ *
+
+滑动窗口的定义
+
+
+TCP滑动窗口以字节为单位
+
+
+
+发送窗口表示，在没有收到接收方的确认时，发送方可以把窗口内的数据都发送出去。发送过的数据在未收到确认之前都必须暂时保留，以便超时重传使用
+
+
+发送窗口的位置由窗口前沿和后沿共同决定。
+
+后沿不动——没有收到新的确认
+
+后沿前移——收到了新的确认
+
+前沿</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Linux/">Linux</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Network/">Network</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/30/transmission-control-protocol/">传输控制协议TCP（Transmission Control Protocol）报文格式</a>
+
+      <a href="/2020/06/30/transmission-control-protocol/" class="index-excerpt">
+        
+        
+          
+        
+        <div>* 这篇总结一下TCP协议的内容和特点。。→_→ *
+
+TCP协议的特点
+
+
+TCP是面向连接的运输层协议：先建立连接，再传输数据，最后释放连接
+
+每一条TCP连接只能有两个端点，每一条TCP连接只能是点对点的
+
+TCP提供可靠交付的服务：通过TCP传输的数据，无差错、不丢失、不重复、按序到达
+
+TCP提供全双工服务：TCP连接双方都设有发送缓存、接收缓存用来临时存放双向通信的数据。TCP在合适的</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Linux/">Linux</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Network/">Network</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/30/user-datagram-protocol/">用户数据报协议UDP（User Datagram Protocol）报文格式</a>
+
+      <a href="/2020/06/30/user-datagram-protocol/" class="index-excerpt">
+        
+        
+          
+        
+        <div>* 运输层两大主要协议之一。。。UDP。。这篇总结一下UDP协议的内容和特点。。→_→ *
+
+UDP协议的特点
+
+
+UDP是无连接的，即传输数据时不需要建立或释放连接，减少了开销和发送数据之前的时延
+
+UDP使用尽最大努力交付，即不保证可靠交付
+
+UDP是面向报文的。对应用程序交下来的报文在添加首部后就向下交付IP层。对应用层交下来的报文即不合并也不拆分，而是保留这些报文的边界。即UDP一次交付一</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Linux/">Linux</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Network/">Network</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/30/arrange-the-squares-to-the-smallest-number/">剑指Offer——（32）把数组排成最小的数</a>
+
+      <a href="/2020/06/30/arrange-the-squares-to-the-smallest-number/" class="index-excerpt">
         
         
           
         
         <div>题目描述：
 
-输入一个字符串,按字典序打印出该字符串中字符的所有排列。例如输入字符串abc,则打印出由字符a,b,c所能排列出来的所有字符串abc,acb,bac,bca,cab和cba。                                                                                                          </div>
+输入一个正整数数组，把数组里所有数字拼接起来排成一个数，打印能拼接出的所有数字中最小的一个。例如输入数组{3，32，321}，则打印出这三个数字能排成的最小数字为321323。
+
+实现如下：
+//要将所有元素组合成一个最小的数
+//那么组合的相邻元素之间都是num1num2的形式
+//所以使用库函数的sort将各个元素以strCompare的条件进行排序
+//strCompare的条</div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
           </div>
         
         
@@ -246,395 +660,6 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/29/binary-search-tree-and-doubly-linked-list/">剑指Offer——（26）二叉搜索树与双向链表</a>
-
-      <a href="/2020/06/29/binary-search-tree-and-doubly-linked-list/" class="index-excerpt">
-        
-        
-          
-        
-        <div>题目描述：
-
-输入一棵二叉搜索树，将该二叉搜索树转换成一个排序的双向链表。要求不能创建任何新的结点，只能调整树中结点指针的指向。
-
-实现如下：
-//二叉搜索树的结构特点：根的左子树的节点值都小于根节点值，右子树的节点值都大于根节点值
-//构建一个有序的双向链表可以利用left作为前驱、right作为后继
-//       5
-//   4      7
-// 2   3  6    8
-//2⇿3</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/29/complex-linked-list-replication/">剑指Offer——（25）复杂链表的复制</a>
-
-      <a href="/2020/06/29/complex-linked-list-replication/" class="index-excerpt">
-        
-        
-          
-        
-        <div>题目描述：
-
-输入一个复杂链表（每个节点中有节点值，以及两个指针，一个指向下一个节点，另一个特殊指针指向任意一个节点），返回结果为复制后复杂链表的head。（注意，输出结果中请不要返回参数中的节点引用，否则判题程序会直接返回空）
-
-实现如下：
-
-//老样子，在线测试用例依旧是无头链表。。。→_→
-//本题可以利用辅助内存以空间换取时间
-//第一次遍历：在原链表的每一个节点之后添加一个与它值相同的新</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/29/binary-tree-path-with-a-certain-value/">剑指Offer——（24）二叉树中和为某一值的路径</a>
-
-      <a href="/2020/06/29/binary-tree-path-with-a-certain-value/" class="index-excerpt">
-        
-        
-          
-        
-        <div>题目描述：
-
-输入一颗二叉树和一个整数，打印出二叉树中结点值的和为输入整数的所有路径。路径定义为从树的根结点开始往下一直到叶结点所经过的结点形成一条路径。
-
-实现如下：
-//路径定义为从树的根结点开始往下一直到叶结点所经过的结点形成一条路径
-//所以必须是root到叶节点的和
-//模拟一个栈，但在线用例要求将路径以vector的形式存储，所以只能使用vetor的push_back和pop模拟
-//</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/29/postorder-traversal-sequence-of-binary-search-tree/">剑指Offer——（23）二叉搜索树的后序遍历序列</a>
-
-      <a href="/2020/06/29/postorder-traversal-sequence-of-binary-search-tree/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* 最近几天被推荐参加互联网+比赛，一直忙着团队前期工作。。拖更了。。 *题目描述：
-
-输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历的结果。如果是则输出Yes,否则输出No。假设输入的数组的任意两个数字都互不相同。
-
-实现如下：
-//找规律
-//      8
-//  6      10
-//5   7  9    11
-//&#123;5，7，6，9，11，10，8&#125;
-//</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/29/algorithm-analysis-and-implementation-of-checkerboard-covering-problem/">棋盘覆盖问题算法分析与实现（递归）</a>
-
-      <a href="/2020/06/29/algorithm-analysis-and-implementation-of-checkerboard-covering-problem/" class="index-excerpt">
-        
-        
-          
-        
-        <div>昨天上传的代码，经过再次测试发现有问题，其中对边界、终止条件的判断都有错误。。。→_→，今天重新改正，对之前看过代码的童鞋表示sorry。。。（2017.5.13 16：24）
-问题描述：
-
-在一个2^k×2^k （k≥0）个方格组成的棋盘中，恰有一个方格与其他方格不同，称该方格为特殊方格。显然，特殊方格在棋盘中可能出现的位置有4^k种，因而有4^k种不同的棋盘。棋盘覆盖问题（chess cove</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Leetcode/">Leetcode</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/29/algorithm-analysis-and-implementation-of-integer-partition-problem/">整数划分问题算法分析与实现（递归）</a>
-
-      <a href="/2020/06/29/algorithm-analysis-and-implementation-of-integer-partition-problem/" class="index-excerpt">
-        
-        
-          
-        
-        <div>问题描述：
-
-把一个正整数n写成多个大于等于1且小于等于其本身的整数的和，则其中各加数所构成的集合为n的一个划分。把一个正整数n写成为 n=m1+m2+…+mi。其中，mi为正整数，并且1≤mi≤n；{m1，m2，…，mi}为n的一个划分。如{m1，m2，…，mi}果中的最大值不超过m，即max(m1，m2，…，mi)≤m，则称它属于n的一个m划分。
-
-关于整数划分和生成函数的具体概念请戳传送门：</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Leetcode/">Leetcode</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/29/algorithm-analysis-and-Implementation-of-seeking-subset-problem/">求子集问题算法分析与实现（递归、非递归）</a>
-
-      <a href="/2020/06/29/algorithm-analysis-and-Implementation-of-seeking-subset-problem/" class="index-excerpt">
-        
-        
-          
-        
-        <div>问题描述：
-
-若有数字集合{1，2，3}，则其子集为NULL、{1}、{2}、{3}、{1，2}、{1，3}、{2，3}、{1，2，3}。现给定数组，求其的全部子集。
-
-实现如下：
-//非递归
-//&#123;1，2，3&#125;
-// 0  0  0
-// 0  0  1
-// 0  1  0
-// 0  1  1
-// 1  0  0
-// 1  0  1
-// 1  1  0
-// 1  </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Leetcode/">Leetcode</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/29/algorithm-analysis-and-implementation-of-full-classification-problem/">全排列问题算法分析与实现（递归、非递归）</a>
-
-      <a href="/2020/06/29/algorithm-analysis-and-implementation-of-full-classification-problem/" class="index-excerpt">
-        
-        
-          
-        
-        <div>问题描述：
-
-若有数字集合{1，2，3}，则其全排列为123、132、213、231、321、312。现给定字符数组，求其字符的全排列。
-
-实现如下：
-//1.递归方法
-//如例，其全排列可以分成
-//1-&gt;&#123;2,3&#125;
-//2-&gt;&#123;1,3&#125;
-//3-&gt;&#123;2,1&#125;
-//再递归求其剩余字符的全排列
-//重点在于如何交换字符
-</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Leetcode/">Leetcode</a>
             
           </div>
         
@@ -646,7 +671,7 @@
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/3/"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/5/"><i class="iconfont icon-arrowright"></i></a>
+      <a class="extend prev" rel="prev" href="/page/3/"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/5/"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
   

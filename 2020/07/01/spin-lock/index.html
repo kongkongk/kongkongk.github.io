@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/self.jpeg">
+  <link rel="icon" type="image/png" href="/img/self.jpeg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>Linux内核中的互斥操作（2）——自旋锁 - kongkong</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>kongkong</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-07-01 21:03">
+      2020年7月1日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      782 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      10
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2020年7月1日 晚上
+                
+              </p>
+            
+            <article class="markdown-body">
+              <p><strong>* <em>本篇来看看多次在内核中出现的spin_lock——自旋锁，到底是个什么东西。。。→_→</em> *</strong></p>
+<ol>
+<li><p><strong>内核中的spin_lock()</strong></p>
+<ul>
+<li><p><strong>spin_lock()源代码</strong></p>
+<pre><code class="hljs cs">
+<span class="hljs-function"><span class="hljs-keyword">static</span> inline <span class="hljs-keyword">void</span> <span class="hljs-title">spin_lock</span>(<span class="hljs-params">spinlock_t *<span class="hljs-keyword">lock</span></span>)<span class="hljs-comment">//自旋锁的类型定义见下方</span></span>
+<span class="hljs-function"></span>	&#123;
+	<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> SPINLOCK_DEBUG</span>
+		__label__ here;
+	here:
+		<span class="hljs-keyword">if</span> (<span class="hljs-keyword">lock</span>-&gt;magic != SPINLOCK_MAGIC) &#123;
+	printk(<span class="hljs-string">"eip: %p\n"</span>, &amp;&amp;here);
+			BUG();
+		&#125;
+	<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+		__asm__ __volatile__(
+			spin_lock_string<span class="hljs-comment">//进入宏函数spin_lock_string，传参数lock-&gt;lock</span>
+			:<span class="hljs-string">"=m"</span> (<span class="hljs-keyword">lock</span>-&gt;<span class="hljs-keyword">lock</span>) : : <span class="hljs-string">"memory"</span>);
+	&#125;</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li><p><strong>自旋锁的类型定义</strong></p>
+  <pre><code class="hljs cpp"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> &#123;</span>
+		<span class="hljs-keyword">volatile</span> <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span> lock;<span class="hljs-comment">//不考虑调试时，自旋锁就是一个无符号整形，volatile保证编译器不进行过度优化</span>
+	<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> SPINLOCK_DEBUG</span>
+		<span class="hljs-keyword">unsigned</span> magic;
+	<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+	&#125; <span class="hljs-keyword">spinlock_t</span>;</code></pre>
+
+<ul>
+<li><p><strong>spin_lock_string宏函数</strong></p>
+<pre><code class="hljs lsl">#define spin_lock_string \
+	<span class="hljs-string">"<span class="hljs-subst">\n</span>1:<span class="hljs-subst">\t</span>"</span> \
+	<span class="hljs-string">"lock ; decb %0<span class="hljs-subst">\n</span><span class="hljs-subst">\t</span>"</span> \ <span class="hljs-comment">//decb指令涉及读-改-写操作，所以lock总线保证该条指令的原子性，%0就是传入的参数lock-&gt;lock，decb指令将lock-&gt;lock减1，结果非负表示加锁成功，直接返回</span>
+	<span class="hljs-string">"js 2f<span class="hljs-subst">\n</span>"</span> \ 
+	<span class="hljs-string">".section .text.lock,<span class="hljs-subst">\"</span>ax<span class="hljs-subst">\"</span><span class="hljs-subst">\n</span>"</span> \
+	<span class="hljs-string">"2:<span class="hljs-subst">\t</span>"</span> \ <span class="hljs-comment">//结果为负，循环测试lock-&gt;lock的值</span>
+	<span class="hljs-string">"cmpb $0,%0<span class="hljs-subst">\n</span><span class="hljs-subst">\t</span>"</span> \ <span class="hljs-comment">//将lock-&gt;lock的值与0比较</span>
+	<span class="hljs-string">"rep;nop<span class="hljs-subst">\n</span><span class="hljs-subst">\t</span>"</span> \
+	<span class="hljs-string">"jle 2b<span class="hljs-subst">\n</span><span class="hljs-subst">\t</span>"</span> \ <span class="hljs-comment">//当lock-&gt;lock小于等于0时，继续循环测试</span>
+	<span class="hljs-string">"jmp 1b<span class="hljs-subst">\n</span>"</span> \ <span class="hljs-comment">//当lock-&gt;lock大于0时，跳转到标号1，获取自旋锁</span>
+	<span class="hljs-string">".previous"</span></code></pre></li>
+</ul>
+<p>  <strong>从代码中得知，如果lock-&gt;lock小于等于0，那么就一直循环测试其值，直到lock-&gt;lock大于0。这就相当于让CPU一直空转，做无用功，因此自旋锁应用的地方不能加锁时间太长，否则就会浪费资源。</strong></p>
+</li>
+</ul>
+<ol start="2">
+<li><p><strong>内核中的spin_unlock()</strong></p>
+<ul>
+<li><p><strong>spin_unlock()源代码</strong></p>
+<pre><code class="hljs cs"><span class="hljs-function"><span class="hljs-keyword">static</span> inline <span class="hljs-keyword">void</span> <span class="hljs-title">spin_unlock</span>(<span class="hljs-params">spinlock_t *<span class="hljs-keyword">lock</span></span>)</span>
+<span class="hljs-function"></span>&#123;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> SPINLOCK_DEBUG</span>
+	<span class="hljs-keyword">if</span> (<span class="hljs-keyword">lock</span>-&gt;magic != SPINLOCK_MAGIC)
+		BUG();
+	<span class="hljs-keyword">if</span> (!spin_is_locked(<span class="hljs-keyword">lock</span>))
+		BUG();
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+	__asm__ __volatile__(
+		spin_unlock_string<span class="hljs-comment">//调用spin_unlock_string宏函数，传参数lock-&gt;lock</span>
+		:<span class="hljs-string">"=m"</span> (<span class="hljs-keyword">lock</span>-&gt;<span class="hljs-keyword">lock</span>) : : <span class="hljs-string">"memory"</span>);
+&#125;</code></pre>
+</li>
+<li><p><strong>spin_unlock_string宏函数</strong></p>
+<pre><code class="hljs pgsql"><span class="hljs-meta">#define spin_unlock_string \</span>
+	"movb $1,%0" //%<span class="hljs-number">0</span>就是传入的参数<span class="hljs-keyword">lock</span>-&gt;<span class="hljs-keyword">lock</span>，movb指令将<span class="hljs-keyword">lock</span>-&gt;<span class="hljs-keyword">lock</span>置为<span class="hljs-number">1</span>，movb指令本身就是原子操作，所以不需要<span class="hljs-keyword">lock</span>总线</code></pre>
+</li>
+</ul>
+</li>
+<li><p><strong>内核中的自旋锁具体应用的类型</strong></p>
+<ul>
+<li><p><strong>加锁操作</strong></p>
+<pre><code class="hljs reasonml">
+#define spin<span class="hljs-constructor">_lock_irqsave(<span class="hljs-params">lock</span>, <span class="hljs-params">flags</span>)</span>		<span class="hljs-keyword">do</span> &#123; local<span class="hljs-constructor">_irq_save(<span class="hljs-params">flags</span>)</span>;       spin<span class="hljs-constructor">_lock(<span class="hljs-params">lock</span>)</span>; &#125; <span class="hljs-keyword">while</span> (<span class="hljs-number">0</span>)
+#define spin<span class="hljs-constructor">_lock_irq(<span class="hljs-params">lock</span>)</span>			<span class="hljs-keyword">do</span> &#123; local<span class="hljs-constructor">_irq_disable()</span>;         spin<span class="hljs-constructor">_lock(<span class="hljs-params">lock</span>)</span>; &#125; <span class="hljs-keyword">while</span> (<span class="hljs-number">0</span>)
+#define spin<span class="hljs-constructor">_lock_bh(<span class="hljs-params">lock</span>)</span>			<span class="hljs-keyword">do</span> &#123; local<span class="hljs-constructor">_bh_disable()</span>;          spin<span class="hljs-constructor">_lock(<span class="hljs-params">lock</span>)</span>; &#125; <span class="hljs-keyword">while</span> (<span class="hljs-number">0</span>)</code></pre>
+</li>
+<li><p><strong>去锁操作</strong></p>
+<pre><code class="hljs reasonml">
+#define spin<span class="hljs-constructor">_unlock_irqrestore(<span class="hljs-params">lock</span>, <span class="hljs-params">flags</span>)</span>	<span class="hljs-keyword">do</span> &#123; spin<span class="hljs-constructor">_unlock(<span class="hljs-params">lock</span>)</span>;  local<span class="hljs-constructor">_irq_restore(<span class="hljs-params">flags</span>)</span>; &#125; <span class="hljs-keyword">while</span> (<span class="hljs-number">0</span>)
+#define spin<span class="hljs-constructor">_unlock_irq(<span class="hljs-params">lock</span>)</span>			<span class="hljs-keyword">do</span> &#123; spin<span class="hljs-constructor">_unlock(<span class="hljs-params">lock</span>)</span>;  local<span class="hljs-constructor">_irq_enable()</span>;       &#125; <span class="hljs-keyword">while</span> (<span class="hljs-number">0</span>)
+#define spin<span class="hljs-constructor">_unlock_bh(<span class="hljs-params">lock</span>)</span>			<span class="hljs-keyword">do</span> &#123; spin<span class="hljs-constructor">_unlock(<span class="hljs-params">lock</span>)</span>;  local<span class="hljs-constructor">_bh_enable()</span>;        &#125; <span class="hljs-keyword">while</span> (<span class="hljs-number">0</span>)</code></pre>
+
+<ul>
+<li><strong>不同操作之间的异同</strong></li>
+</ul>
+</li>
+</ul>
+<p> <strong>同：加锁和去锁操作中都是分为两部分，即先执行local_操作——关闭或开启本处理器上的中断响应，再执行_lock操作——防止来自其他处理器的干扰。</strong></p>
+<p> <strong>异：主要区别就在于如何关闭本处理器上的中断响应</strong></p>
+ <pre><code class="hljs less"><span class="hljs-comment">/* For spinlocks etc */</span>
+<span class="hljs-selector-id">#define</span> <span class="hljs-selector-tag">local_irq_save</span>(x)	<span class="hljs-selector-tag">__asm__</span> <span class="hljs-selector-tag">__volatile__</span>(<span class="hljs-string">"pushfl ; popl %0 ; cli"</span>:<span class="hljs-string">"=g"</span> (x): <span class="hljs-comment">/* no input */</span> :<span class="hljs-string">"memory"</span>) <span class="hljs-comment">//通过cli指令关闭中断，且将本处理器的状态标识寄存器通过push和pop操作，保存到参数x中，以便去锁时恢复。状态标志寄存器中的IF标志位反映当前中断的开关状态</span>
+<span class="hljs-selector-id">#define</span> <span class="hljs-selector-tag">local_irq_restore</span>(x)	<span class="hljs-selector-tag">__restore_flags</span>(x) <span class="hljs-comment">//去锁时恢复标识寄存器</span>
+<span class="hljs-selector-id">#define</span> <span class="hljs-selector-tag">local_irq_disable</span>()	<span class="hljs-selector-tag">__cli</span>() <span class="hljs-comment">//直接将标识寄存器的IF标志位清0</span>
+<span class="hljs-selector-id">#define</span> <span class="hljs-selector-tag">local_irq_enable</span>()	<span class="hljs-selector-tag">__sti</span>()</code></pre>
+
+</li>
+</ol>
+<p><strong>* <em>码完吃饭。。。下午继续最后的read_lock和write_lock。。。→_→</em> *</strong></p>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Linux/">Linux</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Kernel/">Kernel</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/07/01/read-write-lock/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Linux内核中的互斥操作（3）——读写锁</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/07/01/signal/">
+                        <span class="hidden-mobile">Linux内核中的互斥操作（1）——信号量</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "Linux内核中的互斥操作（2）——自旋锁&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

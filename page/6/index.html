@@ -168,32 +168,69 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/28/numerical-integer-power/">剑指Offer——（12）数值的整数次方</a>
+      <a class="index-header" href="/2020/06/29/symbols-references-COMMON-blocks/">链接、装载与库——符号、引用、COMMON块</a>
 
-      <a href="/2020/06/28/numerical-integer-power/" class="index-excerpt">
+      <a href="/2020/06/29/symbols-references-COMMON-blocks/" class="index-excerpt">
+        
+        
+          
+        
+        <div>* 好久都没更这个了。。。请叫我拖更大魔王。。。→_→ *
+* 这一篇看下来，对符号的理解更深了。。。 *
+
+在链接过程中，目标文件之间相互拼合实际上是目标文件之间对函数和变量的地址的引用。
+在链接中，将函数和变量称为符号（Symbol），函数名和变量名为符号名（Symbol Name）。 
+
+
+符号表（Symbol Table）每一个目标文件都有一个符号表（Symbol Table），表中记录目</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Linux/">Linux</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%93%BE%E6%8E%A5%E3%80%81%E8%A3%85%E8%BD%BD%E4%B8%8E%E5%BA%93/">链接、装载与库</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/29/arrangement-of-strings/">剑指Offer——（27）字符串的排列</a>
+
+      <a href="/2020/06/29/arrangement-of-strings/" class="index-excerpt">
         
         
           
         
         <div>题目描述：
 
-给定一个double类型的浮点数base和int类型的整数exponent。求base的exponent次方。
-
-实现如下：
-//方法一：循环
-//此题不需要考虑计算后值溢出的情况，即不存在大数情况
-//异常情况：
-//底数为0时-&gt;0.0
-//指数为0时-&gt;1.0(数学定义)
-//指数为负数时，需要考虑先计算指数绝对值的结果，再取倒数
-class Solution 
-&</div>
+输入一个字符串,按字典序打印出该字符串中字符的所有排列。例如输入字符串abc,则打印出由字符a,b,c所能排列出来的所有字符串abc,acb,bac,bca,cab和cba。                                                                                                          </div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
           </div>
         
         
@@ -220,34 +257,30 @@ class Solution
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/28/the-number-of-1s-in-binary/">剑指Offer——（11）二进制中1的个数</a>
+      <a class="index-header" href="/2020/06/29/binary-search-tree-and-doubly-linked-list/">剑指Offer——（26）二叉搜索树与双向链表</a>
 
-      <a href="/2020/06/28/the-number-of-1s-in-binary/" class="index-excerpt">
+      <a href="/2020/06/29/binary-search-tree-and-doubly-linked-list/" class="index-excerpt">
         
         
           
         
         <div>题目描述：
 
-输入一个整数，输出该数二进制表示中1的个数。其中负数用补码表示。
+输入一棵二叉搜索树，将该二叉搜索树转换成一个排序的双向链表。要求不能创建任何新的结点，只能调整树中结点指针的指向。
 
 实现如下：
-//方法一
-//使测试数据x中只有一个1，逐步右移，使这个1从数值最低位到数值最高位与n依次比较
-class Solution 
-&#123;
-public:
-	int NumberOf1(int n) 
-	&#123;
-		int x = 1;
-		int num = 0;
-		for (int i =</div>
+//二叉搜索树的结构特点：根的左子树的节点值都小于根节点值，右子树的节点值都大于根节点值
+//构建一个有序的双向链表可以利用left作为前驱、right作为后继
+//       5
+//   4      7
+// 2   3  6    8
+//2⇿3</div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
           </div>
         
         
@@ -274,29 +307,28 @@ public:
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/28/rectangle-cover/">剑指Offer——（10）矩形覆盖</a>
+      <a class="index-header" href="/2020/06/29/complex-linked-list-replication/">剑指Offer——（25）复杂链表的复制</a>
 
-      <a href="/2020/06/28/rectangle-cover/" class="index-excerpt">
+      <a href="/2020/06/29/complex-linked-list-replication/" class="index-excerpt">
         
         
           
         
         <div>题目描述：
 
-我们可以用21的小矩形横着或者竖着去覆盖更大的矩形。请问用n个21的小矩形无重叠地覆盖一个2*n的大矩形，总共有多少种方法？
+输入一个复杂链表（每个节点中有节点值，以及两个指针，一个指向下一个节点，另一个特殊指针指向任意一个节点），返回结果为复制后复杂链表的head。（注意，输出结果中请不要返回参数中的节点引用，否则判题程序会直接返回空）
 
 实现如下：
-//有两种放置方法
-//1.左边竖着放一个，则还剩下2*(n-1)
-//2.左上角横着放一个，相应左下角也横着放一个，则还剩下2*(n-2)
-//f(n) = f(n-1) + f(n-2)
-//特殊情况：不存在时返回0；2*1时只有竖着放一种情</div>
+
+//老样子，在线测试用例依旧是无头链表。。。→_→
+//本题可以利用辅助内存以空间换取时间
+//第一次遍历：在原链表的每一个节点之后添加一个与它值相同的新</div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
           </div>
         
         
@@ -323,30 +355,28 @@ public:
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/28/abnormal-jump-step/">剑指Offer——（9）变态跳台阶</a>
+      <a class="index-header" href="/2020/06/29/binary-tree-path-with-a-certain-value/">剑指Offer——（24）二叉树中和为某一值的路径</a>
 
-      <a href="/2020/06/28/abnormal-jump-step/" class="index-excerpt">
+      <a href="/2020/06/29/binary-tree-path-with-a-certain-value/" class="index-excerpt">
         
         
           
         
         <div>题目描述：
 
-一只青蛙一次可以跳上1级台阶，也可以跳上2级……它也可以跳上n级。求该青蛙跳上一个n级的台阶总共有多少种跳法。
+输入一颗二叉树和一个整数，打印出二叉树中结点值的和为输入整数的所有路径。路径定义为从树的根结点开始往下一直到叶结点所经过的结点形成一条路径。
 
 实现如下：
-//有n级台阶
-//若跳1级则剩下n-1级，跳法f(n-1)
-//若跳2级则剩下n-2级，跳法f(n-2)
-//若跳3级则剩下n-3级，跳法f(n-3)
-//若跳n-级则剩下1级，跳法f(n-(n-1))，即剩下一个台阶
-//若跳n级则剩下0级，跳法f(0)，</div>
+//路径定义为从树的根结点开始往下一直到叶结点所经过的结点形成一条路径
+//所以必须是root到叶节点的和
+//模拟一个栈，但在线用例要求将路径以vector的形式存储，所以只能使用vetor的push_back和pop模拟
+//</div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
           </div>
         
         
@@ -373,31 +403,30 @@ public:
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/28/jump-the-stairs/">剑指Offer——（8）跳台阶</a>
+      <a class="index-header" href="/2020/06/29/postorder-traversal-sequence-of-binary-search-tree/">剑指Offer——（23）二叉搜索树的后序遍历序列</a>
 
-      <a href="/2020/06/28/jump-the-stairs/" class="index-excerpt">
+      <a href="/2020/06/29/postorder-traversal-sequence-of-binary-search-tree/" class="index-excerpt">
         
         
           
         
-        <div>题目描述：
+        <div>* 最近几天被推荐参加互联网+比赛，一直忙着团队前期工作。。拖更了。。 *题目描述：
 
-一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法。
+输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历的结果。如果是则输出Yes,否则输出No。假设输入的数组的任意两个数字都互不相同。
 
 实现如下：
-//两种跳跃方式：跳1级或跳2级
-//假设有n级台阶，跳1级还剩余n-1级，跳2级还剩余n-2级，那剩余台阶继续选择跳法
-//f(n) = f(n-1) + f(n-2) -&gt; 斐波那契数列
-//n = 1时，1
-//n = 2时，2
-class Solution 
-&#1</div>
+//找规律
+//      8
+//  6      10
+//5   7  9    11
+//&#123;5，7，6，9，11，10，8&#125;
+//</div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
           </div>
         
         
@@ -424,31 +453,23 @@ class Solution
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/28/fibonacci-sequence/">剑指Offer——（7）斐波那契数列</a>
+      <a class="index-header" href="/2020/06/29/algorithm-analysis-and-implementation-of-checkerboard-covering-problem/">棋盘覆盖问题算法分析与实现（递归）</a>
 
-      <a href="/2020/06/28/fibonacci-sequence/" class="index-excerpt">
+      <a href="/2020/06/29/algorithm-analysis-and-implementation-of-checkerboard-covering-problem/" class="index-excerpt">
         
         
           
         
-        <div>题目说明：
+        <div>昨天上传的代码，经过再次测试发现有问题，其中对边界、终止条件的判断都有错误。。。→_→，今天重新改正，对之前看过代码的童鞋表示sorry。。。（2017.5.13 16：24）
+问题描述：
 
-大家都知道斐波那契数列，现在要求输入一个整数n，请你输出斐波那契数列的第n项。n&lt;=39
-
-实现如下：
-//0 1 1 2 3 5 8 13 21...
-//简洁的递归，但是注意消除重复计算项，采用map存储已计算的n的value
-class Solution 
-&#123;
-public:
-	map&lt;int, long long&gt; m;
-	long long nu</div>
+在一个2^k×2^k （k≥0）个方格组成的棋盘中，恰有一个方格与其他方格不同，称该方格为特殊方格。显然，特殊方格在棋盘中可能出现的位置有4^k种，因而有4^k种不同的棋盘。棋盘覆盖问题（chess cove</div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
           </div>
         
         
@@ -463,7 +484,7 @@ public:
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+              <a href="/tags/Leetcode/">Leetcode</a>
             
           </div>
         
@@ -475,27 +496,24 @@ public:
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/28/rotate-the-smallest-number-of-an-array/">剑指Offer——（6）旋转数组的最小数字</a>
+      <a class="index-header" href="/2020/06/29/algorithm-analysis-and-implementation-of-integer-partition-problem/">整数划分问题算法分析与实现（递归）</a>
 
-      <a href="/2020/06/28/rotate-the-smallest-number-of-an-array/" class="index-excerpt">
+      <a href="/2020/06/29/algorithm-analysis-and-implementation-of-integer-partition-problem/" class="index-excerpt">
         
         
           
         
-        <div>题目描述：
+        <div>问题描述：
 
-把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。   输入一个非递减排序的数组的一个旋转，输出旋转数组的最小元素。   例如数组{3,4,5,1,2}为{1,2,3,4,5}的一个旋转，该数组的最小值为1。   NOTE：给出的所有元素都大于0，若数组大小为0，请返回0。
+把一个正整数n写成多个大于等于1且小于等于其本身的整数的和，则其中各加数所构成的集合为n的一个划分。把一个正整数n写成为 n=m1+m2+…+mi。其中，mi为正整数，并且1≤mi≤n；{m1，m2，…，mi}为n的一个划分。如{m1，m2，…，mi}果中的最大值不超过m，即max(m1，m2，…，mi)≤m，则称它属于n的一个m划分。
 
-实现如下：
-//&#123;3,4,5,1,2&#125;
-// l   m   r
-//规</div>
+关于整数划分和生成函数的具体概念请戳传送门：</div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
           </div>
         
         
@@ -510,7 +528,7 @@ public:
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+              <a href="/tags/Leetcode/">Leetcode</a>
             
           </div>
         
@@ -522,34 +540,34 @@ public:
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/28/implement-queue-with-two-stacks/">剑指Offer——（5）用两个栈实现队列</a>
+      <a class="index-header" href="/2020/06/29/algorithm-analysis-and-Implementation-of-seeking-subset-problem/">求子集问题算法分析与实现（递归、非递归）</a>
 
-      <a href="/2020/06/28/implement-queue-with-two-stacks/" class="index-excerpt">
+      <a href="/2020/06/29/algorithm-analysis-and-Implementation-of-seeking-subset-problem/" class="index-excerpt">
         
         
           
         
-        <div>题目描述：
+        <div>问题描述：
 
-用两个栈来实现一个队列，完成队列的Push和Pop操作。 队列中的元素为int类型。
+若有数字集合{1，2，3}，则其子集为NULL、{1}、{2}、{3}、{1，2}、{1，3}、{2，3}、{1，2，3}。现给定数组，求其的全部子集。
 
 实现如下：
-//栈：先进后出 队列：先进先出
-//注意最后一个元素的转移优化
-//两个队列实现一个栈
-//stack1负责入栈，stack2负责出栈
-class Solution
-&#123;
-public:
-	void push(int node) 
-	&#123;
-		stack1.push(</div>
+//非递归
+//&#123;1，2，3&#125;
+// 0  0  0
+// 0  0  1
+// 0  1  0
+// 0  1  1
+// 1  0  0
+// 1  0  1
+// 1  1  0
+// 1  </div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
           </div>
         
         
@@ -564,7 +582,7 @@ public:
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+              <a href="/tags/Leetcode/">Leetcode</a>
             
           </div>
         
@@ -576,27 +594,32 @@ public:
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/28/rebuild-binary-tree/">剑指Offer——（4）重建二叉树</a>
+      <a class="index-header" href="/2020/06/29/algorithm-analysis-and-implementation-of-full-classification-problem/">全排列问题算法分析与实现（递归、非递归）</a>
 
-      <a href="/2020/06/28/rebuild-binary-tree/" class="index-excerpt">
+      <a href="/2020/06/29/algorithm-analysis-and-implementation-of-full-classification-problem/" class="index-excerpt">
         
         
           
         
-        <div>题目描述：
+        <div>问题描述：
 
-输入某二叉树的前序遍历和中序遍历的结果，请重建出该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字。例如输入前序遍历序列{1,2,4,7,3,5,6,8}和中序遍历序列{4,7,2,1,5,3,8,6}，则重建二叉树并返回。
+若有数字集合{1，2，3}，则其全排列为123、132、213、231、321、312。现给定字符数组，求其字符的全排列。
 
 实现如下：
-//前序中序、后序中序都可以重建二叉树，但前序后序不可以，因为只有中序可以区分左子树与右子树
-/*
-pre:&#123;1,2,4,7</div>
+//1.递归方法
+//如例，其全排列可以分成
+//1-&gt;&#123;2,3&#125;
+//2-&gt;&#123;1,3&#125;
+//3-&gt;&#123;2,1&#125;
+//再递归求其剩余字符的全排列
+//重点在于如何交换字符
+</div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
           </div>
         
         
@@ -611,59 +634,7 @@ pre:&#123;1,2,4,7</div>
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/28/print-a-linked-list-from-end-to-end/">剑指Offer——（3）从尾到头打印链表</a>
-
-      <a href="/2020/06/28/print-a-linked-list-from-end-to-end/" class="index-excerpt">
-        
-        
-          
-        
-        <div>题目描述：
-
-输入一个链表，从尾到头打印链表每个节点的值。
-
-实现如下：
-//可以使用stack的先进后出，也可以使用递归，因为已给定函数所以使用递归
-//本题的在线测试用例是无头链表→_→
-/*节点结构体
-struct ListNode 
-&#123;
-	int val;
-    struct ListNode *next;
-    ListNode(int x) : val(x), next(</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+              <a href="/tags/Leetcode/">Leetcode</a>
             
           </div>
         
@@ -675,7 +646,7 @@ struct ListNode
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/5/"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/7/"><i class="iconfont icon-arrowright"></i></a>
+      <a class="extend prev" rel="prev" href="/page/5/"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/7/"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
   

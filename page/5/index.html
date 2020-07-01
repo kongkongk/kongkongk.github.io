@@ -168,34 +168,125 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/28/print-binary-tree-and-level-traversal-from-top-to-bottom/">剑指Offer——（22）从上往下打印二叉树&amp;&amp;层次遍历</a>
+      <a class="index-header" href="/2020/06/29/system-call/">链接、装载与库——系统调用</a>
 
-      <a href="/2020/06/28/print-binary-tree-and-level-traversal-from-top-to-bottom/" class="index-excerpt">
+      <a href="/2020/06/29/system-call/" class="index-excerpt">
+        
+        
+          
+        
+        <div>* 昨天总结了main函数前世今生的问题，跟着源码一步步看。。。今天来看看系统调用是什么。。。→_→ *
+
+系统调用（System Call）是应用程序与操作系统与内核之间的接口
+
+
+系统调用（System Call）的定义
+
+现代操作系统将可能产生冲突的系统资源（包括文件、I/O等设备）保护起来，阻止应用程序直接访问
+
+为了让应用程序有能力访问系统资源，也为了让程序借助操作系统做一些必须由操作系</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Linux/">Linux</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%93%BE%E6%8E%A5%E3%80%81%E8%A3%85%E8%BD%BD%E4%B8%8E%E5%BA%93/">链接、装载与库</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/29/the-past-and-present-of-the-main-function/">链接、装载与库——main函数的前世今生</a>
+
+      <a href="/2020/06/29/the-past-and-present-of-the-main-function/" class="index-excerpt">
+        
+        
+          
+        
+        <div>* 当执行”Hello World“程序时，是从main函数开始执行的吗？答案当然是No，No，No！ *
+一个程序的运行步骤如下：
+
+操作系统在在创建进程后，把控制权交给了程序的入口，这个入口一般是运行库中的某个入口函数
+
+入口函数对运行库和程序运行环境进行初始化，包括堆、I/O、线程、全局变量构造等
+
+入口函数完成初始化后，调用main函数，正式开始执行程序主体部分
+
+main函数执行完毕后，</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Linux/">Linux</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%93%BE%E6%8E%A5%E3%80%81%E8%A3%85%E8%BD%BD%E4%B8%8E%E5%BA%93/">链接、装载与库</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/29/the-number-of-occurrences-of-1-in-the-integer/">剑指Offer——（31）整数中1出现的次数（从1到n整数中1出现的次数）</a>
+
+      <a href="/2020/06/29/the-number-of-occurrences-of-1-in-the-integer/" class="index-excerpt">
         
         
           
         
         <div>题目描述：
 
-从上往下打印出二叉树的每个节点，同层节点从左至右打印。
+求出113的整数中1出现的次数,并算出1001300的整数中1出现的次数？为此他特别数了一下1~13中包含1的数字有1、10、11、12、13因此共出现6次,但是对于后面问题他就没辙了。ACMer希望你们帮帮他,并把问题更加普遍化,可以很快的求出任意非负整数区间中1出现的次数。
 
 实现如下：
-//层次遍历时使用队列容器，保证先进先出
-//分别判断节点的左右孩子是否为空
-//非空就将孩子节点尾插
-//每次都从队头获取打印值、头删出队
-//队列为空时说明遍历结束
-//注意判断root是否合法
-class Solution 
-&#123;
-public:
-	deque&lt;TreeNode*&gt; q;/</div>
+//方法一
+//将所有的数遍历一次，对每一个数的每一位再进行是否为1的判断
+//时间复杂度为</div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
           </div>
         
         
@@ -222,26 +313,70 @@ public:
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/28/stack-push-and-pop-sequence/">剑指Offer——（21）栈的压入、弹出序列</a>
+      <a class="index-header" href="/2020/06/29/computer-network-architecture/">计算机网络体系结构</a>
 
-      <a href="/2020/06/28/stack-push-and-pop-sequence/" class="index-excerpt">
+      <a href="/2020/06/29/computer-network-architecture/" class="index-excerpt">
+        
+        
+          
+        
+        <div>* 这几天开始二刷希仁老师的著作。。。再一次开始感受网络的魅力。。。→_→ *
+
+当一个问题复杂且规模巨大时，可以将其转化为若干较小的局部问题。
+
+网络世界的复杂性难以想象，不同的物理设备、不同的技术、采取不同的协议，这些因素都导致当今的网络结构异常复杂，因此对网络的处理办法采取层次划分的方法。
+
+层次划分的好处：
+
+各层之间相互独立：每一层只实现一种相对独立的功能，它也不需要知道它的下一层如何实</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Linux/">Linux</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Network/">Network</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/29/maximum-sum-of-consecutive-subarrays/">剑指Offer——（30）连续子数组的最大和</a>
+
+      <a href="/2020/06/29/maximum-sum-of-consecutive-subarrays/" class="index-excerpt">
         
         
           
         
         <div>题目描述：
 
-输入两个整数序列，第一个序列表示栈的压入顺序，请判断第二个序列是否为该栈的弹出顺序。假设压入栈的所有数字均不相等。例如序列1,2,3,4,5是某栈的压入顺序，序列4，5,3,2,1是该压栈序列对应的一个弹出序列，但4,3,5,1,2就不可能是该压栈序列的弹出序列。（注意：这两个序列的长度是相等的）
-
-实现如下：
-//模拟栈的push与pop，利用辅助栈
-//在线测试用例中给出了pus</div>
+HZ偶尔会拿些专业问题来忽悠那些非计算机专业的同学。今天测试组开完会后,他又发话了:在古老的一维模式识别中,常常需要计算连续子向量的最大和,当向量全为正数的时候,问题很好解决。但是,如果向量中包含负数,是否应该包含某个负数,并期望旁边的正数会弥补它呢？例如:{6,-3,-2,7,-15,1,2,2},连续子向量的最大和为8(从第0个开始,到第3个为止)。你会不会被他忽悠住？(子向量的</div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
           </div>
         
         
@@ -268,32 +403,29 @@ public:
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/28/the-stack-containing-the-min-function/">剑指Offer——（20）包含min函数的栈</a>
+      <a class="index-header" href="/2020/06/29/the-smallest-k-number/">剑指Offer——（29）最小的k个数</a>
 
-      <a href="/2020/06/28/the-stack-containing-the-min-function/" class="index-excerpt">
+      <a href="/2020/06/29/the-smallest-k-number/" class="index-excerpt">
         
         
           
         
         <div>题目描述：
 
-定义栈的数据结构，请在该类型中实现一个能够得到栈最小元素的min函数。
+输入n个整数，找出其中最小的K个数。例如输入4,5,1,6,2,7,3,8这8个数字，则最小的4个数字是1,2,3,4。
 
 实现如下：
-//利用一个辅助栈，用来存放和数据栈相对应的每层之下的最小值
-//利用minValue存储当前最小值，O(1)
-class Solution 
-&#123;
-public:
-	int minValue = 0;
-	stack&lt;int&gt; assistStack;
-	stack&lt;int</div>
+//测试用例中给出的返回值是有序的。。啧啧。。
+//找到序列中最小的k个数，利用set，对数字进行insert或erase
+//红黑树中查找、插入、删除操作都为 O（logk）
+//最终将set中存储的值返回值vector中
+//方法不改变原vect</div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
           </div>
         
         
@@ -320,35 +452,37 @@ public:
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/28/print-matrix-clockwise/">剑指Offer——（19）顺时针打印矩阵</a>
+      <a class="index-header" href="/2020/06/29/process-heap/">链接、装载与库——进程的堆</a>
 
-      <a href="/2020/06/28/print-matrix-clockwise/" class="index-excerpt">
+      <a href="/2020/06/29/process-heap/" class="index-excerpt">
         
         
           
         
-        <div>题目描述：
+        <div> * 本次只是简要的总结堆的基本情况，具体的函数分析和堆算法分析今后会继续再学习。。。→_→ *
 
-输入一个矩阵，按照从外向里以顺时针的顺序依次打印出每一个数字，例如，如果输入如下矩阵： 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 则依次打印出数字1,2,3,4,8,12,16,15,14,13,9,5,6,7,11,10.
+程序在任意时刻都可能会发出请求，申请或释放一段内存资源，堆由此而生。
 
-实现如下：
-/*
-1 -&gt; 2 -&gt; 3  -&gt;   4
-                  ↓
-5 -</div>
+
+堆(Heap)
+
+
+堆是一块巨大的内存空间，占据虚拟空间的绝大部分。在这片空间里，程序可以请求一块连续内存并自由使用，这块内存在程序主动释放之前一直保持有效
+
+程序向操作系统申请一块适当大小的堆空间，程序自己管理这块空间。管理</div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
           </div>
         
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-category"></i>
             
-              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+              <a href="/categories/Linux/">Linux</a>
             
           </div>
         
@@ -356,7 +490,7 @@ public:
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+              <a href="/tags/%E9%93%BE%E6%8E%A5%E3%80%81%E8%A3%85%E8%BD%BD%E4%B8%8E%E5%BA%93/">链接、装载与库</a>
             
           </div>
         
@@ -368,43 +502,33 @@ public:
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/28/mirror-of-the-binary-tree/">剑指Offer——（18）二叉树的镜像</a>
+      <a class="index-header" href="/2020/06/29/process-stack/">链接、装载与库——进程的栈</a>
 
-      <a href="/2020/06/28/mirror-of-the-binary-tree/" class="index-excerpt">
+      <a href="/2020/06/29/process-stack/" class="index-excerpt">
         
         
           
         
-        <div>题目描述：
+        <div>
+内存是承载程序的介质，是程序进行运算和表达的场所。
 
-操作给定的二叉树，将其变换为源二叉树的镜像。
+未有特殊说明，则默认在32bit操作系统中。
+1. 程序的内存布局操作系统会将内存空间中的一部分分给内核使用，应用程序无法访问这段内存，这段内存被称为内核空间。Windows默认情况将高地址的2GB空间分配给内核，Linux默认情况将高地址的1GB空间分配给内核。剩下的内存空间称为用户空间，用户空间中有许多默认区域。
 
-实现如下：
-//每一个节点都是每一棵子树的根节点，只须交换左右孩子节点即可
-//注意输入空指针防御
-/*输入样例
-二叉树的镜像定义：源二叉树 
-    	    8
-    	   /  \
-    	  6   10
-    	 / \  / \
-    	5  7 9 11
-    	镜像二叉树
-    	    8
-    	  </div>
+栈：栈用于维护函数调用</div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
           </div>
         
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-category"></i>
             
-              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+              <a href="/categories/Linux/">Linux</a>
             
           </div>
         
@@ -412,7 +536,7 @@ public:
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+              <a href="/tags/%E9%93%BE%E6%8E%A5%E3%80%81%E8%A3%85%E8%BD%BD%E4%B8%8E%E5%BA%93/">链接、装载与库</a>
             
           </div>
         
@@ -424,36 +548,38 @@ public:
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/28/tree-substructure/">剑指Offer——（17）树的子结构</a>
+      <a class="index-header" href="/2020/06/29/static-link/">链接、装载与库——静态链接</a>
 
-      <a href="/2020/06/28/tree-substructure/" class="index-excerpt">
+      <a href="/2020/06/29/static-link/" class="index-excerpt">
         
         
           
         
-        <div>题目描述：
+        <div>* 赶紧结束这本书的总结。。太拖了。。→_→ *
+第四章 静态链接1.链接器的空间与地址分配
+链接器为目标文件分配地址和空间可执行文件中的代码段和数据段由输入的目标文件中合并而来。
 
-输入两棵二叉树A，B，判断B是不是A的子结构。（ps：我们约定空树不是任意一个树的子结构）
 
-实现如下：
-//分两步
-//第一步：寻找与B树根节点val相等的A树节点。如果找到进入第二步，否则继续寻找，直到找完A树
-//第二步：以找的节点作为A树子树的根节点，同时遍历两棵树，判断是否所有节点都相同
-//特殊情况：
-//1.进行第二步时注意有可能存在B树大小等于A的子树、B树大小小于A</div>
+按序叠加：直接将各个目标文件依次合并缺点：若有多个目标文件，则可能造成输出文件中有很多零散的段。每个段都有空间对齐要求，可能造成内存空间的大量内部碎片。
+
+相似段合并：将相同性质的段合并到一起
+
+
+
+“.bss”段</div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
           </div>
         
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-category"></i>
             
-              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+              <a href="/categories/Linux/">Linux</a>
             
           </div>
         
@@ -461,7 +587,7 @@ public:
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+              <a href="/tags/%E9%93%BE%E6%8E%A5%E3%80%81%E8%A3%85%E8%BD%BD%E4%B8%8E%E5%BA%93/">链接、装载与库</a>
             
           </div>
         
@@ -473,187 +599,27 @@ public:
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/28/merge-two-sorted-linked-lists/">剑指Offer——（16）合并两个排序的链表</a>
+      <a class="index-header" href="/2020/06/29/more-than-half-of-the-occurrences-in-the-array/">剑指Offer——（28）数组中出现次数超过一半的数字</a>
 
-      <a href="/2020/06/28/merge-two-sorted-linked-lists/" class="index-excerpt">
+      <a href="/2020/06/29/more-than-half-of-the-occurrences-in-the-array/" class="index-excerpt">
         
         
           
         
         <div>题目描述：
 
-输入两个单调递增的链表，输出两个链表合成后的链表，当然我们需要合成后的链表满足单调不减规则。
+数组中有一个数字出现的次数超过数组长度的一半，请找出这个数字。例如输入一个长度为9的数组{1,2,3,2,2,2,5,4,2}。由于数字2在数组中出现了5次，超过数组长度的一半，因此输出2。如果不存在则输出0。
 
 实现如下：
-//本题在线测试用例怎么还是无头节点链表→_→，啊...
-//比较value谁小谁添加到新链表中
-//新链表的头节点指针为newHead，由s指针负责添加信节点
-//特殊情况：
-//1.传入空指针
-//2.任意一个链表添加完毕
-//3.传入的一个链表为空，另一个不为空
-//节点</div>
+//方法一
+//原理：数组中出现次数超过一半的数字，在其有序序列中就是中位数
+//利用partition的作用：将某个数字，放到它应该在的位置，而将其他数分类摆</div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/28/reverse-linked-list/">剑指Offer——（15）反转链表</a>
-
-      <a href="/2020/06/28/reverse-linked-list/" class="index-excerpt">
-        
-        
-          
-        
-        <div>题目描述：
-
-输入一个链表，反转链表后，输出链表的所有元素。
-
-实现如下：
-//此题在线用例还是无头链表→_→
-//1&lt;-2&lt;-3 4-&gt;5
-//   p  s q
-//保证三个指针指向相邻的三个节点
-//健壮性：
-//1.传入空指针
-//2.链表中只有一个节点
-/*节点结构体定义
-struct ListNode 
-&#123;
-	int val;
-	struct ListNod</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/28/the-last-k-th-node-in-the-list/">剑指Offer——（14）链表中倒数第k个结点</a>
-
-      <a href="/2020/06/28/the-last-k-th-node-in-the-list/" class="index-excerpt">
-        
-        
-          
-        
-        <div>题目描述：
-
-输入一个链表，输出该链表中倒数第k个结点。
-
-实现如下：
-//在线测试用例依旧是无头链表→_→
-//最后一个节点定义为倒数第一个节点
-//1-&gt;2-&gt;3-&gt;4-&gt;5
-//p     s
-//      p     s
-//eg.寻找倒数第3个节点 k-1=2
-//要想一次遍历找到倒数第k个节点，关键在于最后一个节点与倒数第k个节点之间相差k-1个节点
-//所以</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/28/adjust-the-array-order-so-that-odd-numbers-are-in-front-of-even-numbers/">剑指Offer——（13）调整数组顺序使奇数位于偶数前面</a>
-
-      <a href="/2020/06/28/adjust-the-array-order-so-that-odd-numbers-are-in-front-of-even-numbers/" class="index-excerpt">
-        
-        
-          
-        
-        <div>题目描述：
-
-输入一个整数数组，实现一个函数来调整该数组中数字的顺序，使得所有的奇数位于数组的前半部分，所有的偶数位于位于数组的后半部分，并保证奇数和奇数，偶数和偶数之间的相对位置不变。
-
-实现如下：
-//很奇怪，竟然加了“保证奇数和奇数，偶数和偶数之间的相对位置不变。”这个条件→_→
-//如果加了这个条件，目前想到的是开辟一个新的vector从array中遍历
-//第一次遍历，将奇数push，第</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
           </div>
         
         
@@ -680,7 +646,7 @@ struct ListNode
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/4/"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/6/"><i class="iconfont icon-arrowright"></i></a>
+      <a class="extend prev" rel="prev" href="/page/4/"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/6/"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
   

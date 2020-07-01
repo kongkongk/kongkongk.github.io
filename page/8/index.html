@@ -168,29 +168,39 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/26/hello-world/">初来乍到，请多多指教</a>
+      <a class="index-header" href="/2020/06/28/numerical-integer-power/">剑指Offer——（12）数值的整数次方</a>
 
-      <a href="/2020/06/26/hello-world/" class="index-excerpt">
+      <a href="/2020/06/28/numerical-integer-power/" class="index-excerpt">
         
         
           
         
-        <div>学习的日子学习，是一个漫长的经历。期间的快乐和苦痛只有自己感受最深。
-学习的路程——道阻且长，但在这路上最大的动力就是内心的信念和兴趣了。
-学习也有一段时间了，其实内心一直反感诸如此类的博客，认为有这时间不如多看看几页书、多想想项目方案。但前天施老师的一句话让我重新思考了这个问题。没错，人也是一种遵循自然法则的生物。到了一定年龄，其实各机能就会到达顶峰，随后而来的就是下滑。这其中最可怕的就是记忆力</div>
+        <div>题目描述：
+
+给定一个double类型的浮点数base和int类型的整数exponent。求base的exponent次方。
+
+实现如下：
+//方法一：循环
+//此题不需要考虑计算后值溢出的情况，即不存在大数情况
+//异常情况：
+//底数为0时-&gt;0.0
+//指数为0时-&gt;1.0(数学定义)
+//指数为负数时，需要考虑先计算指数绝对值的结果，再取倒数
+class Solution 
+&</div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-26
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
           </div>
         
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-category"></i>
             
-              <a href="/categories/Life/">Life</a>
+              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
             
           </div>
         
@@ -198,7 +208,462 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E6%84%9F%E6%83%B3%E9%9A%8F%E7%AC%94/">感想随笔</a>
+              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/28/the-number-of-1s-in-binary/">剑指Offer——（11）二进制中1的个数</a>
+
+      <a href="/2020/06/28/the-number-of-1s-in-binary/" class="index-excerpt">
+        
+        
+          
+        
+        <div>题目描述：
+
+输入一个整数，输出该数二进制表示中1的个数。其中负数用补码表示。
+
+实现如下：
+//方法一
+//使测试数据x中只有一个1，逐步右移，使这个1从数值最低位到数值最高位与n依次比较
+class Solution 
+&#123;
+public:
+	int NumberOf1(int n) 
+	&#123;
+		int x = 1;
+		int num = 0;
+		for (int i =</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/28/rectangle-cover/">剑指Offer——（10）矩形覆盖</a>
+
+      <a href="/2020/06/28/rectangle-cover/" class="index-excerpt">
+        
+        
+          
+        
+        <div>题目描述：
+
+我们可以用21的小矩形横着或者竖着去覆盖更大的矩形。请问用n个21的小矩形无重叠地覆盖一个2*n的大矩形，总共有多少种方法？
+
+实现如下：
+//有两种放置方法
+//1.左边竖着放一个，则还剩下2*(n-1)
+//2.左上角横着放一个，相应左下角也横着放一个，则还剩下2*(n-2)
+//f(n) = f(n-1) + f(n-2)
+//特殊情况：不存在时返回0；2*1时只有竖着放一种情</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/28/abnormal-jump-step/">剑指Offer——（9）变态跳台阶</a>
+
+      <a href="/2020/06/28/abnormal-jump-step/" class="index-excerpt">
+        
+        
+          
+        
+        <div>题目描述：
+
+一只青蛙一次可以跳上1级台阶，也可以跳上2级……它也可以跳上n级。求该青蛙跳上一个n级的台阶总共有多少种跳法。
+
+实现如下：
+//有n级台阶
+//若跳1级则剩下n-1级，跳法f(n-1)
+//若跳2级则剩下n-2级，跳法f(n-2)
+//若跳3级则剩下n-3级，跳法f(n-3)
+//若跳n-级则剩下1级，跳法f(n-(n-1))，即剩下一个台阶
+//若跳n级则剩下0级，跳法f(0)，</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/28/jump-the-stairs/">剑指Offer——（8）跳台阶</a>
+
+      <a href="/2020/06/28/jump-the-stairs/" class="index-excerpt">
+        
+        
+          
+        
+        <div>题目描述：
+
+一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法。
+
+实现如下：
+//两种跳跃方式：跳1级或跳2级
+//假设有n级台阶，跳1级还剩余n-1级，跳2级还剩余n-2级，那剩余台阶继续选择跳法
+//f(n) = f(n-1) + f(n-2) -&gt; 斐波那契数列
+//n = 1时，1
+//n = 2时，2
+class Solution 
+&#1</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/28/fibonacci-sequence/">剑指Offer——（7）斐波那契数列</a>
+
+      <a href="/2020/06/28/fibonacci-sequence/" class="index-excerpt">
+        
+        
+          
+        
+        <div>题目说明：
+
+大家都知道斐波那契数列，现在要求输入一个整数n，请你输出斐波那契数列的第n项。n&lt;=39
+
+实现如下：
+//0 1 1 2 3 5 8 13 21...
+//简洁的递归，但是注意消除重复计算项，采用map存储已计算的n的value
+class Solution 
+&#123;
+public:
+	map&lt;int, long long&gt; m;
+	long long nu</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/28/rotate-the-smallest-number-of-an-array/">剑指Offer——（6）旋转数组的最小数字</a>
+
+      <a href="/2020/06/28/rotate-the-smallest-number-of-an-array/" class="index-excerpt">
+        
+        
+          
+        
+        <div>题目描述：
+
+把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。   输入一个非递减排序的数组的一个旋转，输出旋转数组的最小元素。   例如数组{3,4,5,1,2}为{1,2,3,4,5}的一个旋转，该数组的最小值为1。   NOTE：给出的所有元素都大于0，若数组大小为0，请返回0。
+
+实现如下：
+//&#123;3,4,5,1,2&#125;
+// l   m   r
+//规</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/28/implement-queue-with-two-stacks/">剑指Offer——（5）用两个栈实现队列</a>
+
+      <a href="/2020/06/28/implement-queue-with-two-stacks/" class="index-excerpt">
+        
+        
+          
+        
+        <div>题目描述：
+
+用两个栈来实现一个队列，完成队列的Push和Pop操作。 队列中的元素为int类型。
+
+实现如下：
+//栈：先进后出 队列：先进先出
+//注意最后一个元素的转移优化
+//两个队列实现一个栈
+//stack1负责入栈，stack2负责出栈
+class Solution
+&#123;
+public:
+	void push(int node) 
+	&#123;
+		stack1.push(</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/28/rebuild-binary-tree/">剑指Offer——（4）重建二叉树</a>
+
+      <a href="/2020/06/28/rebuild-binary-tree/" class="index-excerpt">
+        
+        
+          
+        
+        <div>题目描述：
+
+输入某二叉树的前序遍历和中序遍历的结果，请重建出该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字。例如输入前序遍历序列{1,2,4,7,3,5,6,8}和中序遍历序列{4,7,2,1,5,3,8,6}，则重建二叉树并返回。
+
+实现如下：
+//前序中序、后序中序都可以重建二叉树，但前序后序不可以，因为只有中序可以区分左子树与右子树
+/*
+pre:&#123;1,2,4,7</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/28/print-a-linked-list-from-end-to-end/">剑指Offer——（3）从尾到头打印链表</a>
+
+      <a href="/2020/06/28/print-a-linked-list-from-end-to-end/" class="index-excerpt">
+        
+        
+          
+        
+        <div>题目描述：
+
+输入一个链表，从尾到头打印链表每个节点的值。
+
+实现如下：
+//可以使用stack的先进后出，也可以使用递归，因为已给定函数所以使用递归
+//本题的在线测试用例是无头链表→_→
+/*节点结构体
+struct ListNode 
+&#123;
+	int val;
+    struct ListNode *next;
+    ListNode(int x) : val(x), next(</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
             
           </div>
         
@@ -210,7 +675,7 @@
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/7/"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span>
+      <a class="extend prev" rel="prev" href="/page/7/"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/9/"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
   
