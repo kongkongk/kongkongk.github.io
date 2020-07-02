@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/self.jpeg">
+  <link rel="icon" type="image/png" href="/img/self.jpeg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>【转】Linux strace跟踪命令 - kongkong</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>kongkong</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-07-02 21:41">
+      2020年7月2日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.1k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      38
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2020年7月2日 晚上
+                
+              </p>
+            
+            <article class="markdown-body">
+              <p><strong>* <em>遇到了一个问题。。。如何在用户空间跟踪系统调用、信号传递？本篇就来学习学习。。。→_→</em> *</strong></p>
+<h3 id="strace介绍"><a href="#strace介绍" class="headerlink" title="strace介绍"></a><strong>strace介绍</strong></h3><p>strace命令是一个集诊断、调试、统计与一体的工具，我们可以使用strace对应用的系统调用和信号传递的跟踪结果来对应用进行分析，以达到解决问题或者是了解应用工作过程的目的。当然strace与专业的调试工具比如说gdb之类的是没法相比的，因为它不是一个专业的调试器。</p>
+<p>strace的最简单的用法就是执行一个指定的命令，在指定的命令结束之后它也就退出了。在命令执行的过程中，strace会记录和解析命令进程的所有系统调用以及这个进程所接收到的所有的信号值。</p>
+<h3 id="简单用法"><a href="#简单用法" class="headerlink" title="简单用法"></a><strong>简单用法</strong></h3><pre><code class="hljs angelscript"><span class="hljs-symbol">root@</span>ubuntu:/usr# strace cat /dev/<span class="hljs-literal">null</span> 
+execve(<span class="hljs-string">"/bin/cat"</span>, [<span class="hljs-string">"cat"</span>, <span class="hljs-string">"/dev/null"</span>], [<span class="hljs-comment">/* 22 vars */</span>]) = <span class="hljs-number">0</span>
+brk(<span class="hljs-number">0</span>)                                  = <span class="hljs-number">0xab1000</span>
+access(<span class="hljs-string">"/etc/ld.so.nohwcap"</span>, F_OK)      = <span class="hljs-number">-1</span> ENOENT (No such file <span class="hljs-keyword">or</span> directory)
+mmap(NULL, <span class="hljs-number">8192</span>, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, <span class="hljs-number">-1</span>, <span class="hljs-number">0</span>) = <span class="hljs-number">0x7f29379a7000</span>
+access(<span class="hljs-string">"/etc/ld.so.preload"</span>, R_OK)      = <span class="hljs-number">-1</span> ENOENT (No such file <span class="hljs-keyword">or</span> directory)
+...
+brk(<span class="hljs-number">0</span>) = <span class="hljs-number">0xab1000</span>
+brk(<span class="hljs-number">0xad2000</span>) = <span class="hljs-number">0xad2000</span>
+fstat(<span class="hljs-number">1</span>, &#123;st_mode=S_IFCHR|<span class="hljs-number">0620</span>, st_rdev=makedev(<span class="hljs-number">136</span>, <span class="hljs-number">0</span>), ...&#125;) = <span class="hljs-number">0</span>
+open(<span class="hljs-string">"/dev/null"</span>, O_RDONLY) = <span class="hljs-number">3</span>
+fstat(<span class="hljs-number">3</span>, &#123;st_mode=S_IFCHR|<span class="hljs-number">0666</span>, st_rdev=makedev(<span class="hljs-number">1</span>, <span class="hljs-number">3</span>), ...&#125;) = <span class="hljs-number">0</span>
+read(<span class="hljs-number">3</span>, <span class="hljs-string">""</span>, <span class="hljs-number">32768</span>) = <span class="hljs-number">0</span>
+close(<span class="hljs-number">3</span>) = <span class="hljs-number">0</span>
+close(<span class="hljs-number">1</span>) = <span class="hljs-number">0</span>
+close(<span class="hljs-number">2</span>) = <span class="hljs-number">0</span>
+exit_group(<span class="hljs-number">0</span>) = ?</code></pre>
+
+<p>每一行都是一条系统调用，等号左边是系统调用的函数名及其参数，右边是该调用的返回值。</p>
+<p>strace 显示这些调用的参数并返回符号形式的值。strace 从内核接收信息，而且不需要以任何特殊的方式来构建内核</p>
+<pre><code class="hljs mercury">strace -o output.txt -T -tt -e <span class="hljs-keyword">trace</span><span class="hljs-built_in">=</span><span class="hljs-built_in">all</span> -p <span class="hljs-number">28979</span></code></pre>
+
+<p>上面的含义是 跟踪28979进程的所有系统调用（<code>-e trace=all</code>），并统计系统调用的花费时间，以及开始时间（并以可视化的时分秒格式显示），最后将记录结果存在output.txt文件里面。</p>
+<p>在堡垒机等等开发过程中,我们需要记录某用户链接用户的所有操作,可以使用下面方式:</p>
+<pre><code class="hljs stylus">sudo strace -t -<span class="hljs-selector-tag">p</span> <span class="hljs-number">1211</span> -o ssh<span class="hljs-selector-class">.log</span> -f</code></pre>
+
+<h3 id="参数"><a href="#参数" class="headerlink" title="参数"></a><strong>参数</strong></h3><pre><code class="hljs ldif"><span class="hljs-literal">-c 统计每一系统调用的所执行的时间,次数和出错的次数等. </span>
+<span class="hljs-literal">-d 输出strace关于标准错误的调试信息. </span>
+<span class="hljs-literal">-f 跟踪由fork调用所产生的子进程. </span>
+<span class="hljs-literal">-ff 如果提供-o filename,则所有进程的跟踪结果输出到相应的filename.pid中,pid是各进程的进程号. </span>
+<span class="hljs-literal">-F 尝试跟踪vfork调用.在-f时,vfork不被跟踪. </span>
+<span class="hljs-literal">-h 输出简要的帮助信息. </span>
+<span class="hljs-literal">-i 输出系统调用的入口指针. </span>
+<span class="hljs-literal">-q 禁止输出关于脱离的消息. </span>
+<span class="hljs-literal">-r 打印出相对时间关于,,每一个系统调用. </span>
+<span class="hljs-literal">-t 在输出中的每一行前加上时间信息. </span>
+<span class="hljs-literal">-tt 在输出中的每一行前加上时间信息,微秒级. </span>
+<span class="hljs-literal">-ttt 微秒级输出,以秒了表示时间. </span>
+<span class="hljs-literal">-T 显示每一调用所耗的时间. </span>
+<span class="hljs-literal">-v 输出所有的系统调用.一些调用关于环境变量,状态,输入输出等调用由于使用频繁,默认不输出. </span>
+<span class="hljs-literal">-V 输出strace的版本信息. </span>
+<span class="hljs-literal">-x 以十六进制形式输出非标准字符串 </span>
+<span class="hljs-literal">-xx 所有字符串以十六进制形式输出. </span>
+<span class="hljs-literal">-a column </span>
+设置返回值的输出位置.默认 为40. 
+<span class="hljs-literal">-e expr </span>
+指定一个表达式,用来控制如何跟踪.格式如下: 
+[qualifier=][!]value1[,value2]... 
+<span class="hljs-attribute">qualifier只能是 trace,abbrev,verbose,raw,signal,read,write其中之一.value是用来限定的符号或数字.默认的 qualifier是 trace.感叹号是否定符号.例如</span>: 
+<span class="hljs-literal">-eopen等价于 -e trace=open,表示只跟踪open调用.而-etrace!=open表示跟踪除了open以外的其他调用.有两个特殊的符号 all 和 none. </span>
+注意有些shell使用!来执行历史记录里的命令,所以要使用\\. 
+<span class="hljs-literal">-e trace=set </span>
+只跟踪指定的系统 调用.例如:-e trace=open,close,rean,write表示只跟踪这四个系统调用.默认的为set=all. 
+<span class="hljs-literal">-e trace=file </span>
+只跟踪有关文件操作的系统调用. 
+<span class="hljs-literal">-e trace=process </span>
+只跟踪有关进程控制的系统调用. 
+<span class="hljs-literal">-e trace=network </span>
+跟踪与网络有关的所有系统调用. 
+<span class="hljs-literal">-e strace=signal </span>
+跟踪所有与系统信号有关的 系统调用 
+<span class="hljs-literal">-e trace=ipc </span>
+跟踪所有与进程通讯有关的系统调用 
+<span class="hljs-literal">-e abbrev=set </span>
+设定 strace输出的系统调用的结果集.-v 等与 abbrev=none.默认为abbrev=all. 
+<span class="hljs-literal">-e raw=set </span>
+将指 定的系统调用的参数以十六进制显示. 
+<span class="hljs-literal">-e signal=set </span>
+指定跟踪的系统信号.默认为all.如 signal=!SIGIO(或者signal=!io),表示不跟踪SIGIO信号. 
+<span class="hljs-literal">-e read=set </span>
+输出从指定文件中读出 的数据.例如: 
+<span class="hljs-literal">-e read=3,5 </span>
+<span class="hljs-literal">-e write=set </span>
+输出写入到指定文件中的数据. 
+<span class="hljs-literal">-o filename </span>
+将strace的输出写入文件filename 
+<span class="hljs-literal">-p pid </span>
+跟踪指定的进程pid. 
+<span class="hljs-literal">-s strsize </span>
+指定输出的字符串的最大长度.默认为32.文件名一直全部输出. 
+<span class="hljs-literal">-u username </span>
+以username 的UID和GID执行被跟踪的命令</code></pre>
+
+<h3 id="strace案例"><a href="#strace案例" class="headerlink" title="strace案例"></a><strong>strace案例</strong></h3><h4 id="用strace调试程序"><a href="#用strace调试程序" class="headerlink" title="用strace调试程序"></a><strong>用strace调试程序</strong></h4><p>strace是一个必不可少的 调试工具，strace用来监视系统调用。你不仅可以调试一个新开始的程序，也可以调试一个已经在运行的程序（把strace绑定到一个已有的PID上 面）。</p>
+<p>首先让我们看一个真实的例子：启动KDE时出现问题.</p>
+<p>错误信息:</p>
+<pre><code class="hljs sqf"><span class="hljs-variable">_KDE_IceTransSocketCreateListener</span>: failed <span class="hljs-keyword">to</span> bind listener
+<span class="hljs-variable">_KDE_IceTransSocketUNIXCreateListener</span>: ...SocketCreateListener() failed
+<span class="hljs-variable">_KDE_IceTransMakeAllCOTSServerListeners</span>: failed <span class="hljs-keyword">to</span> create listener <span class="hljs-keyword">for</span> <span class="hljs-built_in">local</span>
+
+Cannot establish any listening sockets DCOPServer self-test failed.</code></pre>
+
+<p>对 我来说这个错误信息没有太多意义，只是一个对KDE来说至关重要的负责进程间通信的程序无法启动。我还可以知道这个错误和ICE协议（Inter Client Exchange）有关，除此之外，我不知道什么是KDE启动出错的原因。</p>
+<p>我决定采用strace看一下在启动 dcopserver时到底程序做了什么：</p>
+<pre><code class="hljs armasm"><span class="hljs-keyword">strace </span>-f -F -o ~/dcop-<span class="hljs-keyword">strace.txt </span>dcopserver</code></pre>
+
+<p>这里 -f -F选项告诉strace同时跟踪fork和vfork出来的进程，-o选项把所有strace输出写到~/dcop-strace.txt里 面，dcopserver是要启动和调试的程序。</p>
+<p>再次出现错误之后，我检查了错误输出文件dcop-strace.txt，文件里有很多 系统调用的记录。在程序运行出错前的有关记录如下：</p>
+<pre><code class="hljs lsl">mkdir(<span class="hljs-string">"/tmp/.ICE-unix"</span>, <span class="hljs-number">0777</span>) = <span class="hljs-number">-1</span> EEXIST (File exists)
+lstat64(<span class="hljs-string">"/tmp/.ICE-unix"</span>, &#123;st_mode=S_IFDIR|S_ISVTX|<span class="hljs-number">0755</span>, st_size=<span class="hljs-number">4096</span>, ...&#125;) = <span class="hljs-number">0</span>
+unlink(<span class="hljs-string">"/tmp/.ICE-unix/dcop27207-1066844596"</span>) = <span class="hljs-number">-1</span> ENOENT (No such file or directory)
+bind(<span class="hljs-number">3</span>, &#123;sin_family=AF_UNIX, path=<span class="hljs-string">"/tmp/.ICE-unix/dcop27207-1066844596"</span>&#125;, <span class="hljs-number">38</span>) = <span class="hljs-number">-1</span> EACCES (Permission denied) 
+write(<span class="hljs-number">2</span>, <span class="hljs-string">"_KDE_IceTrans"</span>, <span class="hljs-number">13</span>) = <span class="hljs-number">13</span>
+write(<span class="hljs-number">2</span>, <span class="hljs-string">"SocketCreateListener: failed to "</span>..., <span class="hljs-number">46</span>) = <span class="hljs-number">46</span>
+close(<span class="hljs-number">3</span>) = <span class="hljs-number">0</span> <span class="hljs-number">27207</span> write(<span class="hljs-number">2</span>, <span class="hljs-string">"_KDE_IceTrans"</span>, <span class="hljs-number">13</span>) = <span class="hljs-number">13</span>
+write(<span class="hljs-number">2</span>, <span class="hljs-string">"SocketUNIXCreateListener: ...Soc"</span>..., <span class="hljs-number">59</span>) = <span class="hljs-number">59</span>
+umask(<span class="hljs-number">0</span>) = <span class="hljs-number">0</span> <span class="hljs-number">27207</span> write(<span class="hljs-number">2</span>, <span class="hljs-string">"_KDE_IceTrans"</span>, <span class="hljs-number">13</span>) = <span class="hljs-number">13</span>
+write(<span class="hljs-number">2</span>, <span class="hljs-string">"MakeAllCOTSServerListeners: fail"</span>..., <span class="hljs-number">64</span>) = <span class="hljs-number">64</span>
+write(<span class="hljs-number">2</span>, <span class="hljs-string">"Cannot establish any listening s"</span>..., <span class="hljs-number">39</span>) = <span class="hljs-number">39</span></code></pre>
+
+<p>其中第一行显示程序试图创建/tmp/.ICE-unix目录，权限为0777，这个操作因为目录已经存在而失败了。第二个系统调用（lstat64）检查 了目录状态，并显示这个目录的权限是0755，这里出现了第一个程序运行错误的线索：程序试图创建属性为0777的目录，但是已经存在了一个属性为 0755的目录。第三个系统调用（unlink）试图删除一个文件，但是这个文件并不存在。这并不奇怪，因为这个操作只是试图删掉可能存在的老文件。</p>
+<p>但是，第四行确认了错误所在。他试图绑定到/tmp/.ICE-unix/dcop27207-1066844596，但是出现了拒绝访问错误。. ICE_unix目录的用户和组都是root，并且只有所有者具有写权限。一个非root用户无法在这个目录下面建立文件，如果把目录属性改成0777， 则前面的操作有可能可以执行，而这正是第一步错误出现时进行过的操作。</p>
+<p>所以我运行了chmod 0777 /tmp/.ICE-unix之后KDE就可以正常启动了，问题解决了，用strace进行跟踪调试只需要花很短的几分钟时间跟踪程序运行，然后检查并分 析输出文件。</p>
+<p>说明：运行chmod 0777只是一个测试，一般不要把一个目录设置成所有用户可读写，同时不设置粘滞位(sticky bit)。给目录设置粘滞位可以阻止一个用户随意删除可写目录下面其他人的文件。一般你会发现/tmp目录因为这个原因设置了粘滞位。KDE可以正常启动 之后，运行chmod +t /tmp/.ICE-unix给.ICE_unix设置粘滞位。</p>
+<h4 id="解决依赖库问题"><a href="#解决依赖库问题" class="headerlink" title="解决依赖库问题"></a><strong>解决依赖库问题</strong></h4><p>starce 的另一个用处是解决和动态库相关的问题。当对一个可执行文件运行ldd时，它会告诉你程序使用的动态库和找到动态库的位置。但是如果你正在使用一个比较老 的glibc版本（2.2或更早），你可能会有一个有bug的ldd程序，它可能会报告在一个目录下发现一个动态库，但是真正运行程序时动态连接程序 （/lib/ld-linux.so.2）却可能到另外一个目录去找动态连接库。这通常因为/etc/ld.so.conf和 /etc/ld.so.cache文件不一致，或者/etc/ld.so.cache被破坏。在glibc 2.3.2版本上这个错误不会出现，可能ld-linux的这个bug已经被解决了。</p>
+<p>尽管这样，ldd并不能把所有程序依赖的动态库列出 来，系统调用dlopen可以在需要的时候自动调入需要的动态库，而这些库可能不会被ldd列出来。作为glibc的一部分的NSS（Name Server Switch）库就是一个典型的例子，NSS的一个作用就是告诉应用程序到哪里去寻找系统帐号数据库。应用程序不会直接连接到NSS库，glibc则会通 过dlopen自动调入NSS库。如果这样的库偶然丢失，你不会被告知存在库依赖问题，但这样的程序就无法通过用户名解析得到用户ID了。让我们看一个例子：<br>whoami程序会给出你自己的用户名，这个程序在一些需要知道运行程序的真正用户的脚本程序里面非常有用，whoami的一个示例 输出如下：</p>
+<pre><code class="hljs elixir"><span class="hljs-variable">$ </span>whoami
+root</code></pre>
+
+<p>假设因为某种原因在升 级glibc的过程中负责用户名和用户ID转换的库NSS丢失，我们可以通过把nss库改名来模拟这个环境：</p>
+<pre><code class="hljs crystal">$ mv /<span class="hljs-class"><span class="hljs-keyword">lib</span>/<span class="hljs-title">libnss_files</span>.<span class="hljs-title">so</span>.2 /<span class="hljs-title">lib</span>/<span class="hljs-title">libnss_files</span>.<span class="hljs-title">so</span>.2.<span class="hljs-title">backup</span> </span>
+$ whoami
+<span class="hljs-symbol">whoami:</span> cannot find username <span class="hljs-keyword">for</span> UID <span class="hljs-number">0</span></code></pre>
+
+<p>这里你可以看到，运行whoami时出现了错误，ldd程序的输出不会提供有用的帮助：</p>
+<pre><code class="hljs angelscript">$ ldd /usr/bin/whoami
+libc.so<span class="hljs-number">.6</span> =&gt; /lib/libc.so<span class="hljs-number">.6</span> (<span class="hljs-number">0x4001f000</span>)
+/lib/ld-linux.so<span class="hljs-number">.2</span> =&gt; /lib/ld-linux.so<span class="hljs-number">.2</span> (<span class="hljs-number">0x40000000</span>)</code></pre>
+
+<p>你只会看到whoami依赖Libc.so.6和ld-linux.so.2，它没有给出运行whoami所必须的其他库。这里时用strace跟踪 whoami时的输出：</p>
+<pre><code class="hljs stylus">$ strace -o whoami-strace<span class="hljs-selector-class">.txt</span> whoami
+
+<span class="hljs-function"><span class="hljs-title">open</span><span class="hljs-params">(<span class="hljs-string">"/lib/libnss_files.so.2"</span>, O_RDONLY)</span></span> = -<span class="hljs-number">1</span> ENOENT (No such file or directory)
+<span class="hljs-function"><span class="hljs-title">open</span><span class="hljs-params">(<span class="hljs-string">"/lib/i686/mmx/libnss_files.so.2"</span>, O_RDONLY)</span></span> = -<span class="hljs-number">1</span> ENOENT (No such file or directory)
+<span class="hljs-function"><span class="hljs-title">stat64</span><span class="hljs-params">(<span class="hljs-string">"/lib/i686/mmx"</span>, <span class="hljs-number">0</span>xbffff190)</span></span> = -<span class="hljs-number">1</span> ENOENT (No such file or directory) 
+<span class="hljs-function"><span class="hljs-title">open</span><span class="hljs-params">(<span class="hljs-string">"/lib/i686/libnss_files.so.2"</span>, O_RDONLY)</span></span> = -<span class="hljs-number">1</span> ENOENT (No such file or directory)
+<span class="hljs-function"><span class="hljs-title">stat64</span><span class="hljs-params">(<span class="hljs-string">"/lib/i686"</span>, <span class="hljs-number">0</span>xbffff190)</span></span> = -<span class="hljs-number">1</span> ENOENT (No such file or directory)
+<span class="hljs-function"><span class="hljs-title">open</span><span class="hljs-params">(<span class="hljs-string">"/lib/mmx/libnss_files.so.2"</span>, O_RDONLY)</span></span> = -<span class="hljs-number">1</span> ENOENT (No such file or directory)
+<span class="hljs-function"><span class="hljs-title">stat64</span><span class="hljs-params">(<span class="hljs-string">"/lib/mmx"</span>, <span class="hljs-number">0</span>xbffff190)</span></span> = -<span class="hljs-number">1</span> ENOENT (No such file or directory) 
+<span class="hljs-function"><span class="hljs-title">open</span><span class="hljs-params">(<span class="hljs-string">"/lib/libnss_files.so.2"</span>, O_RDONLY)</span></span> = -<span class="hljs-number">1</span> ENOENT (No such file or directory)
+<span class="hljs-function"><span class="hljs-title">stat64</span><span class="hljs-params">(<span class="hljs-string">"/lib"</span>, &#123;st_mode=S_IFDIR|<span class="hljs-number">0755</span>, st_size=<span class="hljs-number">2352</span>, ...&#125;)</span></span> = <span class="hljs-number">0</span>
+<span class="hljs-function"><span class="hljs-title">open</span><span class="hljs-params">(<span class="hljs-string">"/usr/lib/i686/mmx/libnss_files.so.2"</span>, O_RDONLY)</span></span> = -<span class="hljs-number">1</span> ENOENT (No such file or directory)
+<span class="hljs-function"><span class="hljs-title">stat64</span><span class="hljs-params">(<span class="hljs-string">"/usr/lib/i686/mmx"</span>, <span class="hljs-number">0</span>xbffff190)</span></span> = -<span class="hljs-number">1</span> ENOENT (No such file or directory) 
+<span class="hljs-function"><span class="hljs-title">open</span><span class="hljs-params">(<span class="hljs-string">"/usr/lib/i686/libnss_files.so.2"</span>, O_RDONLY)</span></span> = -<span class="hljs-number">1</span> ENOENT (No such file or directory)</code></pre>
+
+<p>你可以发现在不同目录下面查找libnss.so.2的尝试，但是都失败了。如果没有strace这样的工具，很难发现这个错误是由于缺少动态库造成的。现 在只需要找到libnss.so.2并把它放回到正确的位置就可以了。</p>
+<p>限制strace只跟踪特定的系统调用</p>
+<p>如果你已经知道你要找什么，你可以让strace只跟踪一些类型的系统调用。例如，你需要看看在configure脚本里面执行的程序，你需要监视的系统调 用就是execve。让strace只记录execve的调用用这个命令：</p>
+<pre><code class="hljs armasm"><span class="hljs-keyword">strace </span>-f -o configure-<span class="hljs-keyword">strace.txt </span>-e execve ./configure</code></pre>
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Linux/">Linux</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Tools/">Tools</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/07/02/mtrace-detects-memory-leaks/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Linux mtrace命令检测内存泄漏</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/07/02/epoll/">
+                        <span class="hidden-mobile">IO复用——epoll内核源代码剖析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "【转】Linux strace跟踪命令&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/self.jpeg">
+  <link rel="icon" type="image/png" href="/img/self.jpeg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>Golang语法的踩坑总结（持续更新中） - kongkong</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>kongkong</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-07-02 21:57">
+      2020年7月2日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      50
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2020年7月2日 晚上
+                
+              </p>
+            
+            <article class="markdown-body">
+              <p><strong>* <em>本来这篇是想写docker的基本操作总结的。。。想想还是写这个吧。。。→_→</em> *</strong></p>
+<ul>
+<li><blockquote>
+<p><strong>变量声明使用 := 方式时，左值必须是未声明的，否则会出现编译错误</strong></p>
+</blockquote>
+  <pre><code class="hljs go"><span class="hljs-comment">//.\main.go:8:4: no new variables on left side of :=</span>
+<span class="hljs-keyword">package</span> main
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;
+	<span class="hljs-keyword">var</span> a <span class="hljs-keyword">int</span> = <span class="hljs-number">10</span>
+	<span class="hljs-keyword">var</span> b <span class="hljs-keyword">int</span> = <span class="hljs-number">20</span>
+	b := <span class="hljs-number">30</span>
+
+	fmt.Print(a, b)
+&#125;</code></pre>
+</li>
+<li><blockquote>
+<p><strong>变量声明了，就必须要使用，否则会出现编译错误</strong></p>
+</blockquote>
+  <pre><code class="hljs go"><span class="hljs-comment">//.\main.go:7:6: b declared and not used</span>
+<span class="hljs-keyword">package</span> main
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;
+	<span class="hljs-keyword">var</span> a <span class="hljs-keyword">int</span> = <span class="hljs-number">10</span>
+	<span class="hljs-keyword">var</span> b <span class="hljs-keyword">int</span> = <span class="hljs-number">20</span>
+
+	fmt.Print(a)
+&#125;</code></pre>
+</li>
+<li><blockquote>
+<p><strong>const修饰符的作用范围为同时修饰的所有常量</strong></p>
+</blockquote>
+  <pre><code class="hljs go"><span class="hljs-comment">//.\main.go:7:4: cannot assign to a</span>
+<span class="hljs-comment">//.\main.go:8:4: cannot assign to b</span>
+<span class="hljs-keyword">package</span> main
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;
+	<span class="hljs-keyword">const</span> a, b <span class="hljs-keyword">int</span> = <span class="hljs-number">10</span>, <span class="hljs-number">20</span>
+	a = <span class="hljs-number">10</span>
+	b = <span class="hljs-number">20</span>
+
+	fmt.Print(a, b)
+&#125;</code></pre>
+</li>
+<li><blockquote>
+<p><strong>++自增和- -自减运算符类比C语言，相当于前置的自增和自减，而且go语言中不区分前置或后置</strong></p>
+</blockquote>
+  <pre><code class="hljs go"><span class="hljs-comment">//.\main.go:9:2: syntax error: unexpected ++, expecting &#125;</span>
+<span class="hljs-keyword">package</span> main
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>&#123;
+	<span class="hljs-keyword">var</span> a <span class="hljs-keyword">int</span> = <span class="hljs-number">10</span>
+	<span class="hljs-keyword">var</span> b <span class="hljs-keyword">int</span> = <span class="hljs-number">20</span>
+	
+	++a
+	b++
+	
+	fmt.Print(a, b)
+&#125;</code></pre>
+</li>
+<li><blockquote>
+<p><strong>不能使用++自增或- -自减运算符初始化变量和对变量赋值</strong></p>
+</blockquote>
+  <pre><code class="hljs sql">//.\main.go:7:15: syntax error: unexpected ++ at <span class="hljs-keyword">end</span> <span class="hljs-keyword">of</span> <span class="hljs-keyword">statement</span>
+//.\main.go:<span class="hljs-number">10</span>:<span class="hljs-number">7</span>: syntax <span class="hljs-keyword">error</span>: unexpected ++ <span class="hljs-keyword">at</span> <span class="hljs-keyword">end</span> <span class="hljs-keyword">of</span> <span class="hljs-keyword">statement</span>
+<span class="hljs-keyword">package</span> <span class="hljs-keyword">main</span>
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">"fmt"</span>
+
+func <span class="hljs-keyword">main</span>()&#123;
+	<span class="hljs-keyword">var</span> a <span class="hljs-built_in">int</span> = <span class="hljs-number">10</span>
+	<span class="hljs-keyword">var</span> b <span class="hljs-built_in">int</span> = a++
+	
+	<span class="hljs-keyword">var</span> c <span class="hljs-built_in">int</span> = <span class="hljs-number">20</span>
+	c = a++
+
+	fmt.Print(a, b, c)
+&#125;</code></pre>
+</li>
+<li><blockquote>
+<p><strong>if…else 语句中的 else 必须和 if 的 ‘ } ‘ 在同一行，否则编译错误</strong></p>
+</blockquote>
+  <pre><code class="hljs go"><span class="hljs-comment">//.\main.go:11:2: syntax error: unexpected else, expecting &#125;</span>
+<span class="hljs-keyword">package</span> main
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;
+	<span class="hljs-keyword">var</span> a <span class="hljs-keyword">int</span> = <span class="hljs-number">30</span>
+
+	<span class="hljs-keyword">if</span> a &lt; <span class="hljs-number">20</span> &#123;
+		fmt.Print(<span class="hljs-string">"a&lt;20"</span>)
+	&#125; 
+	<span class="hljs-keyword">else</span> &#123;
+		fmt.Print(<span class="hljs-string">"a&gt;=20"</span>)
+	&#125;
+&#125;</code></pre>
+</li>
+<li><blockquote>
+<p><strong>switch 中的 case和default分支不用添加break</strong></p>
+</blockquote>
+  <pre><code class="hljs go"><span class="hljs-comment">//代码运行成功</span>
+<span class="hljs-keyword">package</span> main
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;
+	<span class="hljs-keyword">var</span> a <span class="hljs-keyword">int</span> = <span class="hljs-number">10</span>
+
+	<span class="hljs-keyword">switch</span> a &#123;
+	<span class="hljs-keyword">case</span> <span class="hljs-number">1</span>:
+		fmt.Println(<span class="hljs-string">"1"</span>)
+	<span class="hljs-keyword">case</span> <span class="hljs-number">2</span>:
+		fmt.Println(<span class="hljs-string">"2"</span>)
+	<span class="hljs-keyword">case</span> <span class="hljs-number">10</span>:
+		fmt.Println(<span class="hljs-string">"10"</span>)
+	<span class="hljs-keyword">default</span>:
+		fmt.Println(<span class="hljs-string">"unknow"</span>)
+	&#125;
+&#125;</code></pre>
+</li>
+<li><blockquote>
+<p><strong>switch 中 也可以不用添加表达式</strong></p>
+</blockquote>
+  <pre><code class="hljs go"><span class="hljs-comment">//代码运行成功</span>
+<span class="hljs-keyword">package</span> main
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;
+	<span class="hljs-keyword">var</span> a <span class="hljs-keyword">int</span> = <span class="hljs-number">10</span>
+
+	<span class="hljs-keyword">switch</span> &#123;
+	<span class="hljs-keyword">case</span> a == <span class="hljs-number">1</span>:
+		fmt.Println(<span class="hljs-string">"1"</span>)
+	<span class="hljs-keyword">case</span> a == <span class="hljs-number">2</span>:
+		fmt.Println(<span class="hljs-string">"2"</span>)
+	<span class="hljs-keyword">case</span> a == <span class="hljs-number">10</span>:
+		fmt.Println(<span class="hljs-string">"10"</span>)
+	<span class="hljs-keyword">default</span>:
+		fmt.Println(<span class="hljs-string">"unknow"</span>)
+	&#125;
+&#125;</code></pre>
+</li>
+<li><blockquote>
+<p><strong>switch的case分支的常量表达式可以同时测试多个值</strong></p>
+</blockquote>
+  <pre><code class="hljs go">
+<span class="hljs-comment">//代码运行成功</span>
+<span class="hljs-keyword">package</span> main
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;
+	<span class="hljs-keyword">var</span> a <span class="hljs-keyword">int</span> = <span class="hljs-number">10</span>
+
+	<span class="hljs-keyword">switch</span> &#123;
+	<span class="hljs-keyword">case</span> a == <span class="hljs-number">1</span>, a == <span class="hljs-number">2</span>:
+		fmt.Println(<span class="hljs-string">"1 or 2"</span>)
+	<span class="hljs-keyword">case</span> a == <span class="hljs-number">10</span>, a == <span class="hljs-number">20</span>:
+		fmt.Println(<span class="hljs-string">"10 or 20"</span>)
+	<span class="hljs-keyword">case</span> a == <span class="hljs-number">100</span>, a == <span class="hljs-number">200</span>:
+		fmt.Println(<span class="hljs-string">"100 or 200"</span>)
+	<span class="hljs-keyword">default</span>:
+		fmt.Println(<span class="hljs-string">"unknow"</span>)
+	&#125;
+&#125;</code></pre>
+</li>
+<li><blockquote>
+<p><strong>switch 语句还可以被用于 type-switch 来判断某个 interface 变量中实际存储的变量类型</strong></p>
+</blockquote>
+  <pre><code class="hljs go"><span class="hljs-keyword">package</span> main
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;
+	<span class="hljs-keyword">var</span> x <span class="hljs-keyword">interface</span>&#123;&#125;
+
+	<span class="hljs-keyword">switch</span> i := x.(<span class="hljs-keyword">type</span>) &#123;
+	<span class="hljs-keyword">case</span> <span class="hljs-literal">nil</span>:
+		fmt.Printf(<span class="hljs-string">"%T"</span>, i)
+	<span class="hljs-keyword">case</span> <span class="hljs-keyword">int</span>:
+		fmt.Printf(<span class="hljs-string">"int"</span>)
+	<span class="hljs-keyword">case</span> <span class="hljs-keyword">float64</span>:
+		fmt.Printf(<span class="hljs-string">"float64"</span>)
+	<span class="hljs-keyword">case</span> <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(<span class="hljs-keyword">int</span>)</span> <span class="hljs-title">float64</span>:</span>
+		fmt.Printf(<span class="hljs-string">"func(int)"</span>)
+	<span class="hljs-keyword">case</span> <span class="hljs-keyword">bool</span>, <span class="hljs-keyword">string</span>:
+		fmt.Printf(<span class="hljs-string">"bool or string"</span>)
+	<span class="hljs-keyword">default</span>:
+		fmt.Printf(<span class="hljs-string">"unknow"</span>)
+	&#125;
+&#125;</code></pre>
+</li>
+<li><blockquote>
+<p><strong>select 语句。。这个现在还没看懂。。先MARK</strong></p>
+</blockquote>
+  <pre><code class="hljs gams"><span class="hljs-function"><span class="hljs-title">Learning</span></span>...</code></pre>
+</li>
+<li><blockquote>
+<p><strong>for循环语句range格式，遍历数组</strong></p>
+</blockquote>
+  <pre><code class="hljs go"><span class="hljs-comment">//i为下标</span>
+<span class="hljs-comment">//x为元素的值</span>
+<span class="hljs-comment">//0 1</span>
+<span class="hljs-comment">//1 2</span>
+<span class="hljs-comment">//2 3</span>
+<span class="hljs-comment">//3 4</span>
+<span class="hljs-comment">//4 5</span>
+<span class="hljs-keyword">package</span> main
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;
+	<span class="hljs-keyword">var</span> number = [<span class="hljs-number">5</span>]<span class="hljs-keyword">int</span>&#123;<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>&#125;
+	<span class="hljs-keyword">for</span> i, x := <span class="hljs-keyword">range</span> number &#123;
+		fmt.Println(i, x)
+	&#125;
+&#125;</code></pre>
+</li>
+<li><blockquote>
+<p><strong>for循环语句和C语言中的while循环语句比较</strong></p>
+</blockquote>
+  <pre><code class="hljs yaml"><span class="hljs-string">//0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span>
+<span class="hljs-string">package</span> <span class="hljs-string">main</span>
+
+<span class="hljs-string">import</span> <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-string">func</span> <span class="hljs-string">main()</span> <span class="hljs-string">&#123;</span>
+	<span class="hljs-string">var</span> <span class="hljs-string">a</span> <span class="hljs-string">int</span> <span class="hljs-string">=</span> <span class="hljs-number">0</span>
+	<span class="hljs-string">for</span> <span class="hljs-string">a</span> <span class="hljs-string">&lt;</span> <span class="hljs-number">10</span> <span class="hljs-string">&#123;</span>
+		<span class="hljs-string">fmt.Printf("%d</span> <span class="hljs-string">", a)</span>
+<span class="hljs-string">		a++</span>
+<span class="hljs-string">	&#125;</span>
+<span class="hljs-string">&#125;</span></code></pre>
+</li>
+<li><blockquote>
+<p><strong>for循环语句和C语言中的for循环语句比较</strong></p>
+</blockquote>
+  <pre><code class="hljs yaml"><span class="hljs-string">//0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span>
+<span class="hljs-string">package</span> <span class="hljs-string">main</span>
+
+<span class="hljs-string">import</span> <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-string">func</span> <span class="hljs-string">main()</span> <span class="hljs-string">&#123;</span>
+	<span class="hljs-string">var</span> <span class="hljs-string">a</span> <span class="hljs-string">int</span> <span class="hljs-string">=</span> <span class="hljs-number">0</span>
+	<span class="hljs-string">for</span> <span class="hljs-string">a</span> <span class="hljs-string">=</span> <span class="hljs-number">0</span><span class="hljs-string">;</span> <span class="hljs-string">a</span> <span class="hljs-string">&lt;</span> <span class="hljs-number">10</span><span class="hljs-string">;</span> <span class="hljs-string">a++</span> <span class="hljs-string">&#123;</span>
+		<span class="hljs-string">fmt.Printf("%d</span> <span class="hljs-string">", a)</span>
+<span class="hljs-string">	&#125;</span>
+<span class="hljs-string">&#125;</span></code></pre>
+</li>
+<li><blockquote>
+<p><strong>函数的结构与C语言中的函数结构有很大不同，函数调用相似</strong></p>
+</blockquote>
+  <pre><code class="hljs kotlin"><span class="hljs-comment">//10 10</span>
+<span class="hljs-comment">//true</span>
+<span class="hljs-keyword">package</span> main
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">"fmt"</span>
+
+func <span class="hljs-function"><span class="hljs-title">fun</span><span class="hljs-params">(num1 *int, num2 *int)</span></span> bool &#123;
+	fmt.Println(*num1, *num2)
+	<span class="hljs-keyword">if</span> *num1 == *num2 &#123;
+		<span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
+	&#125; <span class="hljs-keyword">else</span> &#123;
+		<span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+	&#125;
+&#125;
+
+func main() &#123;
+	<span class="hljs-keyword">var</span> a int = <span class="hljs-number">10</span>
+	<span class="hljs-keyword">var</span> b int = <span class="hljs-number">10</span>
+
+	<span class="hljs-keyword">var</span> flag bool = <span class="hljs-function"><span class="hljs-title">fun</span><span class="hljs-params">(&amp;a, &amp;b)</span></span>
+	fmt.Print(flag)
+&#125;</code></pre>
+</li>
+<li><blockquote>
+<p><strong>函数可以同时返回多个值</strong></p>
+</blockquote>
+  <pre><code class="hljs go"><span class="hljs-comment">//hello world</span>
+<span class="hljs-keyword">package</span> main
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">fun</span><span class="hljs-params">(str1 <span class="hljs-keyword">string</span>, str2 <span class="hljs-keyword">string</span>)</span> <span class="hljs-params">(<span class="hljs-keyword">string</span>, <span class="hljs-keyword">string</span>)</span></span> &#123;
+	<span class="hljs-keyword">return</span> str2, str1
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;
+	str1, str2 := fun(<span class="hljs-string">"world"</span>, <span class="hljs-string">"hello"</span>)
+	fmt.Println(str1, str2)
+&#125;</code></pre>
+</li>
+<li><blockquote>
+<p><strong>函数可以作为值使用，神奇~</strong></p>
+</blockquote>
+  <pre><code class="hljs go"><span class="hljs-comment">//-1</span>
+<span class="hljs-keyword">package</span> main
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;
+	tmp := <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(x <span class="hljs-keyword">int</span>)</span> <span class="hljs-title">int</span></span> &#123;
+		<span class="hljs-keyword">return</span> -x
+	&#125;
+	fmt.Print(tmp(<span class="hljs-number">1</span>))
+&#125;</code></pre>
+</li>
+<li><blockquote>
+<p><strong>函数支持匿名函数，可作为闭包。匿名函数是一个”内联”语句或表达式。匿名函数的优越性在于可以直接使用函数内的变量，不必申明。</strong></p>
+</blockquote>
+  <pre><code class="hljs go"><span class="hljs-comment">//1 2 3</span>
+<span class="hljs-keyword">package</span> main
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">first</span><span class="hljs-params">()</span> <span class="hljs-title">func</span><span class="hljs-params">()</span> <span class="hljs-title">int</span></span> &#123;
+	i := <span class="hljs-number">0</span>
+	<span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">()</span> <span class="hljs-title">int</span></span> &#123;
+		i++
+		<span class="hljs-keyword">return</span> i
+	&#125;
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;
+	tmp := first()
+	fmt.Println(tmp(), tmp(), tmp())
+&#125;</code></pre>
+</li>
+<li><blockquote>
+<p><strong>函数也可以成为自定义类型的一个方法</strong></p>
+</blockquote>
+  <pre><code class="hljs go"><span class="hljs-comment">//10 abc</span>
+<span class="hljs-keyword">package</span> main
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-comment">//自定义类型</span>
+<span class="hljs-keyword">type</span> student <span class="hljs-keyword">struct</span> &#123;
+	num  <span class="hljs-keyword">int</span>
+	name <span class="hljs-keyword">string</span>
+&#125;
+
+<span class="hljs-comment">//方法getNum</span>
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(stu student)</span> <span class="hljs-title">getNum</span><span class="hljs-params">()</span> <span class="hljs-title">int</span></span> &#123;
+	<span class="hljs-keyword">return</span> stu.num
+&#125;
+
+<span class="hljs-comment">//方法getName</span>
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(stu student)</span> <span class="hljs-title">getName</span><span class="hljs-params">()</span> <span class="hljs-title">string</span></span> &#123;
+	<span class="hljs-keyword">return</span> stu.name
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;
+	<span class="hljs-keyword">var</span> st student
+	st.num = <span class="hljs-number">10</span>
+	st.name = <span class="hljs-string">"abc"</span>
+	<span class="hljs-comment">//对象调用其方法</span>
+	fmt.Println(st.getNum(), st.getName())
+&#125;</code></pre>
+</li>
+<li><blockquote>
+<p><strong>数组的声明、初始化、赋值、访问</strong></p>
+</blockquote>
+  <pre><code class="hljs yaml"><span class="hljs-string">//[0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span><span class="hljs-string">]</span>
+<span class="hljs-string">//100</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span> <span class="hljs-string">[100</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span><span class="hljs-string">]</span>
+<span class="hljs-string">package</span> <span class="hljs-string">main</span>
+
+<span class="hljs-string">import</span> <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-string">func</span> <span class="hljs-string">main()</span> <span class="hljs-string">&#123;</span>
+	<span class="hljs-string">var</span> <span class="hljs-string">arr</span> <span class="hljs-string">[10]int</span>
+	<span class="hljs-string">var</span> <span class="hljs-string">number</span> <span class="hljs-string">=</span> <span class="hljs-string">[...]int&#123;0,</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-number">2</span><span class="hljs-string">,</span> <span class="hljs-number">3</span><span class="hljs-string">,</span> <span class="hljs-number">4</span><span class="hljs-string">,</span> <span class="hljs-number">5</span><span class="hljs-string">,</span> <span class="hljs-number">6</span><span class="hljs-string">,</span> <span class="hljs-number">7</span><span class="hljs-string">,</span> <span class="hljs-number">8</span><span class="hljs-string">,</span> <span class="hljs-number">9</span><span class="hljs-string">&#125;</span>
+	<span class="hljs-string">number[0]</span> <span class="hljs-string">=</span> <span class="hljs-number">100</span>
+
+	<span class="hljs-string">fmt.Println(arr)</span>
+	<span class="hljs-string">var</span> <span class="hljs-string">i</span> <span class="hljs-string">int</span> <span class="hljs-string">=</span> <span class="hljs-number">0</span>
+	<span class="hljs-string">for</span> <span class="hljs-string">i</span> <span class="hljs-string">=</span> <span class="hljs-number">0</span><span class="hljs-string">;</span> <span class="hljs-string">i</span> <span class="hljs-string">&lt;</span> <span class="hljs-number">10</span><span class="hljs-string">;</span> <span class="hljs-string">i++</span> <span class="hljs-string">&#123;</span>
+		<span class="hljs-string">fmt.Printf("%d</span> <span class="hljs-string">", number[i])</span>
+<span class="hljs-string">	&#125;</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">	fmt.Println(number)</span>
+<span class="hljs-string">&#125;</span></code></pre>
+</li>
+<li><blockquote>
+<p><strong>二维数组的初始化</strong></p>
+</blockquote>
+  <pre><code class="hljs angelscript"><span class="hljs-comment">//[[1 2 3] [4 5 6] [7 8 9]]</span>
+package main
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">"fmt"</span>
+
+func main() &#123;
+	var number = [<span class="hljs-number">3</span>][<span class="hljs-number">3</span>]<span class="hljs-built_in">int</span>&#123;
+		&#123;<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>&#125;,
+		&#123;<span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>&#125;,
+		&#123;<span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>&#125;&#125;
+	fmt.Println(number)
+&#125;</code></pre>
+</li>
+<li><blockquote>
+<p><strong>函数参数为数组，必须同时显示的写出数组元素个数或同时隐藏数组的元素个数</strong></p>
+</blockquote>
+  <pre><code class="hljs angelscript"><span class="hljs-comment">//0 1 2 3 4 5 6 7 8 9 10</span>
+package main
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">"fmt"</span>
+
+func getNum(number []<span class="hljs-built_in">int</span>) <span class="hljs-built_in">int</span> &#123;
+	var i <span class="hljs-built_in">int</span> = <span class="hljs-number">0</span>
+	<span class="hljs-keyword">for</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10</span>; i++ &#123;
+		fmt.Printf(<span class="hljs-string">"%d "</span>, number[i])
+	&#125;
+	<span class="hljs-keyword">return</span> len(number)
+&#125;
+
+func main() &#123;
+	var number = []<span class="hljs-built_in">int</span>&#123;<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>&#125;
+	num := getNum(number)
+	fmt.Println(num)
+&#125;</code></pre>
+
+  <pre><code class="hljs angelscript"><span class="hljs-comment">//0 1 2 3 4 5 6 7 8 9 10</span>
+package main
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">"fmt"</span>
+
+func getNum(number [<span class="hljs-number">10</span>]<span class="hljs-built_in">int</span>) <span class="hljs-built_in">int</span> &#123;
+	var i <span class="hljs-built_in">int</span> = <span class="hljs-number">0</span>
+	<span class="hljs-keyword">for</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10</span>; i++ &#123;
+		fmt.Printf(<span class="hljs-string">"%d "</span>, number[i])
+	&#125;
+	<span class="hljs-keyword">return</span> len(number)
+&#125;
+
+func main() &#123;
+	var number = [<span class="hljs-number">10</span>]<span class="hljs-built_in">int</span>&#123;<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>&#125;
+	num := getNum(number)
+	fmt.Println(num)
+&#125;</code></pre>
+</li>
+<li><blockquote>
+<p><strong>指针数组的初始化和使用</strong></p>
+</blockquote>
+  <pre><code class="hljs yaml"><span class="hljs-string">//0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span> 
+<span class="hljs-string">package</span> <span class="hljs-string">main</span>
+
+<span class="hljs-string">import</span> <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-string">func</span> <span class="hljs-string">main()</span> <span class="hljs-string">&#123;</span>
+	<span class="hljs-string">var</span> <span class="hljs-string">number</span> <span class="hljs-string">=</span> <span class="hljs-string">[10]int&#123;0,</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-number">2</span><span class="hljs-string">,</span> <span class="hljs-number">3</span><span class="hljs-string">,</span> <span class="hljs-number">4</span><span class="hljs-string">,</span> <span class="hljs-number">5</span><span class="hljs-string">,</span> <span class="hljs-number">6</span><span class="hljs-string">,</span> <span class="hljs-number">7</span><span class="hljs-string">,</span> <span class="hljs-number">8</span><span class="hljs-string">,</span> <span class="hljs-number">9</span><span class="hljs-string">&#125;</span>
+	<span class="hljs-string">var</span> <span class="hljs-string">num</span> <span class="hljs-string">[10]*int</span>
+
+	<span class="hljs-string">for</span> <span class="hljs-string">i</span> <span class="hljs-string">:=</span> <span class="hljs-number">0</span><span class="hljs-string">;</span> <span class="hljs-string">i</span> <span class="hljs-string">&lt;</span> <span class="hljs-number">10</span><span class="hljs-string">;</span> <span class="hljs-string">i++</span> <span class="hljs-string">&#123;</span>
+		<span class="hljs-string">num[i]</span> <span class="hljs-string">=</span> <span class="hljs-string">&amp;number[i]</span>
+	<span class="hljs-string">&#125;</span>
+
+	<span class="hljs-string">for</span> <span class="hljs-string">i</span> <span class="hljs-string">:=</span> <span class="hljs-number">0</span><span class="hljs-string">;</span> <span class="hljs-string">i</span> <span class="hljs-string">&lt;</span> <span class="hljs-number">10</span><span class="hljs-string">;</span> <span class="hljs-string">i++</span> <span class="hljs-string">&#123;</span>
+		<span class="hljs-string">fmt.Printf("%d</span> <span class="hljs-string">", *num[i])</span>
+<span class="hljs-string">	&#125;</span>
+<span class="hljs-string">&#125;</span></code></pre>
+</li>
+<li><blockquote>
+<p><strong>二级指针的初始化和使用</strong></p>
+</blockquote>
+  <pre><code class="hljs go"><span class="hljs-comment">//10 10 10</span>
+<span class="hljs-keyword">package</span> main
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;
+	<span class="hljs-keyword">var</span> i <span class="hljs-keyword">int</span> = <span class="hljs-number">10</span>
+	<span class="hljs-keyword">var</span> ptr1 *<span class="hljs-keyword">int</span> = &amp;i
+	<span class="hljs-keyword">var</span> ptr2 **<span class="hljs-keyword">int</span> = &amp;ptr1
+
+	fmt.Printf(<span class="hljs-string">"%d %d %d"</span>, i, *ptr1, **ptr2)
+&#125;</code></pre>
+</li>
+<li><blockquote>
+<p><strong>结构体的定义和初始化方式，注意结构体变量和结构体指针变量访问结构体成员时只有 . 一种方式，此处和C语言的结构体语法不同</strong></p>
+</blockquote>
+  <pre><code class="hljs reasonml"><span class="hljs-comment">//111</span>
+<span class="hljs-comment">//zhangsan</span>
+<span class="hljs-comment">//man</span>
+<span class="hljs-comment">//20</span>
+<span class="hljs-comment">//111</span>
+<span class="hljs-comment">//zhangsan</span>
+<span class="hljs-comment">//man</span>
+<span class="hljs-comment">//20</span>
+package main
+
+import <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-keyword">type</span> studentInfo <span class="hljs-keyword">struct</span> &#123;
+	id   <span class="hljs-built_in">int</span>
+	name <span class="hljs-built_in">string</span>
+	sex  <span class="hljs-built_in">string</span>
+	age  <span class="hljs-built_in">int</span>
+&#125;
+
+func get<span class="hljs-constructor">Info(<span class="hljs-params">stu</span> <span class="hljs-params">studentInfo</span>)</span> &#123;
+	fmt.<span class="hljs-constructor">Println(<span class="hljs-params">stu</span>.<span class="hljs-params">id</span>)</span>
+	fmt.<span class="hljs-constructor">Println(<span class="hljs-params">stu</span>.<span class="hljs-params">name</span>)</span>
+	fmt.<span class="hljs-constructor">Println(<span class="hljs-params">stu</span>.<span class="hljs-params">sex</span>)</span>
+	fmt.<span class="hljs-constructor">Println(<span class="hljs-params">stu</span>.<span class="hljs-params">age</span>)</span>
+&#125;
+
+func get<span class="hljs-constructor">InfoByPtr(<span class="hljs-params">stuPtr</span> <span class="hljs-operator">*</span><span class="hljs-params">studentInfo</span>)</span> &#123;
+	fmt.<span class="hljs-constructor">Println(<span class="hljs-params">stuPtr</span>.<span class="hljs-params">id</span>)</span>
+	fmt.<span class="hljs-constructor">Println(<span class="hljs-params">stuPtr</span>.<span class="hljs-params">name</span>)</span>
+	fmt.<span class="hljs-constructor">Println(<span class="hljs-params">stuPtr</span>.<span class="hljs-params">sex</span>)</span>
+	fmt.<span class="hljs-constructor">Println(<span class="hljs-params">stuPtr</span>.<span class="hljs-params">age</span>)</span>
+&#125;
+
+func main<span class="hljs-literal">()</span> &#123;
+
+	var stu studentInfo
+	stu.id = <span class="hljs-number">111</span>
+	stu.name = <span class="hljs-string">"zhangsan"</span>
+	stu.sex = <span class="hljs-string">"man"</span>
+	stu.age = <span class="hljs-number">20</span>
+	get<span class="hljs-constructor">Info(<span class="hljs-params">stu</span>)</span>
+	var stuPtr *studentInfo = &amp;stu
+	get<span class="hljs-constructor">InfoByPtr(<span class="hljs-params">stuPtr</span>)</span>
+&#125;</code></pre>
+</li>
+<li><blockquote>
+<p><strong>切片（Slice），长度不固定，可以理解为动态数组。Slice有两个属性：length即当前元素的容量大小，capacity即可以最大容纳元素的容量大小。Slice的定义如下</strong></p>
+</blockquote>
+  <pre><code class="hljs yaml"><span class="hljs-string">//make([]T,</span> <span class="hljs-string">length,</span> <span class="hljs-string">capacity)</span>
+<span class="hljs-string">//len</span> <span class="hljs-string">=</span> <span class="hljs-number">0</span> <span class="hljs-string">cap</span> <span class="hljs-string">=</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-string">slice</span> <span class="hljs-string">=</span> <span class="hljs-string">[]</span>
+<span class="hljs-string">//len</span> <span class="hljs-string">=</span> <span class="hljs-number">10</span> <span class="hljs-string">cap</span> <span class="hljs-string">=</span> <span class="hljs-number">10</span><span class="hljs-string">,</span> <span class="hljs-string">slice</span> <span class="hljs-string">=</span> <span class="hljs-string">[0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span><span class="hljs-string">]</span>
+<span class="hljs-string">//len</span> <span class="hljs-string">=</span> <span class="hljs-number">10</span> <span class="hljs-string">cap</span> <span class="hljs-string">=</span> <span class="hljs-number">10</span><span class="hljs-string">,</span> <span class="hljs-string">slice</span> <span class="hljs-string">=</span> <span class="hljs-string">[0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span><span class="hljs-string">]</span>
+<span class="hljs-string">//len</span> <span class="hljs-string">=</span> <span class="hljs-number">5</span> <span class="hljs-string">cap</span> <span class="hljs-string">=</span> <span class="hljs-number">10</span><span class="hljs-string">,</span> <span class="hljs-string">slice</span> <span class="hljs-string">=</span> <span class="hljs-string">[0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span><span class="hljs-string">]</span>
+<span class="hljs-string">package</span> <span class="hljs-string">main</span>
+
+<span class="hljs-string">import</span> <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-string">func</span> <span class="hljs-string">printSlice(slice</span> <span class="hljs-string">[]int)</span> <span class="hljs-string">&#123;</span>
+	<span class="hljs-string">fmt.Printf("len</span> <span class="hljs-string">=</span> <span class="hljs-string">%d</span> <span class="hljs-string">cap</span> <span class="hljs-string">=</span> <span class="hljs-string">%d,</span> <span class="hljs-string">slice</span> <span class="hljs-string">=</span> <span class="hljs-string">%v\n",</span> <span class="hljs-string">len(slice),</span> <span class="hljs-string">cap(slice),</span> <span class="hljs-string">slice)</span>
+<span class="hljs-string">&#125;</span>
+
+<span class="hljs-string">func</span> <span class="hljs-string">main()</span> <span class="hljs-string">&#123;</span>
+	<span class="hljs-string">var</span> <span class="hljs-string">slice1</span> <span class="hljs-string">[]int</span>
+	<span class="hljs-string">printSlice(slice1)</span>
+
+	<span class="hljs-string">var</span> <span class="hljs-string">slice2</span> <span class="hljs-string">=</span> <span class="hljs-string">make([]int,</span> <span class="hljs-number">10</span><span class="hljs-string">)</span>
+	<span class="hljs-string">printSlice(slice2)</span>
+
+	<span class="hljs-string">var</span> <span class="hljs-string">slice3</span> <span class="hljs-string">=</span> <span class="hljs-string">make([]int,</span> <span class="hljs-number">10</span><span class="hljs-string">,</span> <span class="hljs-number">10</span><span class="hljs-string">)</span>
+	<span class="hljs-string">printSlice(slice3)</span>
+
+	<span class="hljs-string">slice4</span> <span class="hljs-string">:=</span> <span class="hljs-string">make([]int,</span> <span class="hljs-number">5</span><span class="hljs-string">,</span> <span class="hljs-number">10</span><span class="hljs-string">)</span>
+	<span class="hljs-string">printSlice(slice4)</span>
+<span class="hljs-string">&#125;</span></code></pre>
+</li>
+<li><blockquote>
+<p><strong>Slice的初始化如下：startIndex代表起始下标，endIndex代表终止下标，但在初始化时的实际范围是startIndex~endIndex-1。</strong><br><strong>缺省endIndex表示一直到最后一个元素，缺省startIndex表示从第一个元素开始。</strong><br><strong>当startIndex不是从arr[0]开始时，会将新切片的cap值改变为：原cap的值减startIndex。</strong></p>
+</blockquote>
+  <pre><code class="hljs yaml"><span class="hljs-string">//s</span> <span class="hljs-string">:=</span> <span class="hljs-string">arr[startIndex:endIndex]</span> 
+<span class="hljs-string">//len</span> <span class="hljs-string">=</span> <span class="hljs-number">10</span> <span class="hljs-string">cap</span> <span class="hljs-string">=</span> <span class="hljs-number">10</span><span class="hljs-string">,</span> <span class="hljs-string">slice</span> <span class="hljs-string">=</span> <span class="hljs-string">[0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span><span class="hljs-string">]</span>
+<span class="hljs-string">//len</span> <span class="hljs-string">=</span> <span class="hljs-number">10</span> <span class="hljs-string">cap</span> <span class="hljs-string">=</span> <span class="hljs-number">10</span><span class="hljs-string">,</span> <span class="hljs-string">slice</span> <span class="hljs-string">=</span> <span class="hljs-string">[0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span><span class="hljs-string">]</span>
+<span class="hljs-string">//len</span> <span class="hljs-string">=</span> <span class="hljs-number">10</span> <span class="hljs-string">cap</span> <span class="hljs-string">=</span> <span class="hljs-number">10</span><span class="hljs-string">,</span> <span class="hljs-string">slice</span> <span class="hljs-string">=</span> <span class="hljs-string">[0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span><span class="hljs-string">]</span>
+<span class="hljs-string">//len</span> <span class="hljs-string">=</span> <span class="hljs-number">2</span> <span class="hljs-string">cap</span> <span class="hljs-string">=</span> <span class="hljs-number">9</span><span class="hljs-string">,</span> <span class="hljs-string">slice</span> <span class="hljs-string">=</span> <span class="hljs-string">[1</span> <span class="hljs-number">2</span><span class="hljs-string">]</span>
+<span class="hljs-string">//len</span> <span class="hljs-string">=</span> <span class="hljs-number">9</span> <span class="hljs-string">cap</span> <span class="hljs-string">=</span> <span class="hljs-number">9</span><span class="hljs-string">,</span> <span class="hljs-string">slice</span> <span class="hljs-string">=</span> <span class="hljs-string">[1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span><span class="hljs-string">]</span>
+<span class="hljs-string">//len</span> <span class="hljs-string">=</span> <span class="hljs-number">3</span> <span class="hljs-string">cap</span> <span class="hljs-string">=</span> <span class="hljs-number">10</span><span class="hljs-string">,</span> <span class="hljs-string">slice</span> <span class="hljs-string">=</span> <span class="hljs-string">[0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span><span class="hljs-string">]</span>
+<span class="hljs-string">//len</span> <span class="hljs-string">=</span> <span class="hljs-number">2</span> <span class="hljs-string">cap</span> <span class="hljs-string">=</span> <span class="hljs-number">8</span><span class="hljs-string">,</span> <span class="hljs-string">slice</span> <span class="hljs-string">=</span> <span class="hljs-string">[2</span> <span class="hljs-number">3</span><span class="hljs-string">]</span>
+<span class="hljs-string">package</span> <span class="hljs-string">main</span>
+
+<span class="hljs-string">import</span> <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-string">func</span> <span class="hljs-string">printSlice(slice</span> <span class="hljs-string">[]int)</span> <span class="hljs-string">&#123;</span>
+	<span class="hljs-string">fmt.Printf("len</span> <span class="hljs-string">=</span> <span class="hljs-string">%d</span> <span class="hljs-string">cap</span> <span class="hljs-string">=</span> <span class="hljs-string">%d,</span> <span class="hljs-string">slice</span> <span class="hljs-string">=</span> <span class="hljs-string">%v\n",</span> <span class="hljs-string">len(slice),</span> <span class="hljs-string">cap(slice),</span> <span class="hljs-string">slice)</span>
+<span class="hljs-string">&#125;</span>
+
+<span class="hljs-string">func</span> <span class="hljs-string">main()</span> <span class="hljs-string">&#123;</span>
+	<span class="hljs-string">var</span> <span class="hljs-string">slice1</span> <span class="hljs-string">=</span> <span class="hljs-string">[]int&#123;0,</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-number">2</span><span class="hljs-string">,</span> <span class="hljs-number">3</span><span class="hljs-string">,</span> <span class="hljs-number">4</span><span class="hljs-string">,</span> <span class="hljs-number">5</span><span class="hljs-string">,</span> <span class="hljs-number">6</span><span class="hljs-string">,</span> <span class="hljs-number">7</span><span class="hljs-string">,</span> <span class="hljs-number">8</span><span class="hljs-string">,</span> <span class="hljs-number">9</span><span class="hljs-string">&#125;</span>
+	<span class="hljs-string">printSlice(slice1)</span>
+
+	<span class="hljs-string">slice2</span> <span class="hljs-string">:=</span> <span class="hljs-string">[]int&#123;0,</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-number">2</span><span class="hljs-string">,</span> <span class="hljs-number">3</span><span class="hljs-string">,</span> <span class="hljs-number">4</span><span class="hljs-string">,</span> <span class="hljs-number">5</span><span class="hljs-string">,</span> <span class="hljs-number">6</span><span class="hljs-string">,</span> <span class="hljs-number">7</span><span class="hljs-string">,</span> <span class="hljs-number">8</span><span class="hljs-string">,</span> <span class="hljs-number">9</span><span class="hljs-string">&#125;</span>
+	<span class="hljs-string">printSlice(slice2)</span>
+	
+	<span class="hljs-string">//数组arr</span>
+	<span class="hljs-string">var</span> <span class="hljs-string">arr</span> <span class="hljs-string">=</span> <span class="hljs-string">[10]int&#123;0,</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-number">2</span><span class="hljs-string">,</span> <span class="hljs-number">3</span><span class="hljs-string">,</span> <span class="hljs-number">4</span><span class="hljs-string">,</span> <span class="hljs-number">5</span><span class="hljs-string">,</span> <span class="hljs-number">6</span><span class="hljs-string">,</span> <span class="hljs-number">7</span><span class="hljs-string">,</span> <span class="hljs-number">8</span><span class="hljs-string">,</span> <span class="hljs-number">9</span><span class="hljs-string">&#125;</span>
+	<span class="hljs-string">slice3</span> <span class="hljs-string">:=</span> <span class="hljs-string">arr[:]</span>
+	<span class="hljs-string">printSlice(slice3)</span>
+
+	<span class="hljs-string">slice4</span> <span class="hljs-string">:=</span> <span class="hljs-string">arr[1:3]</span>
+	<span class="hljs-string">printSlice(slice4)</span>
+
+	<span class="hljs-string">slice5</span> <span class="hljs-string">:=</span> <span class="hljs-string">arr[1:]</span>
+	<span class="hljs-string">printSlice(slice5)</span>
+
+	<span class="hljs-string">slice6</span> <span class="hljs-string">:=</span> <span class="hljs-string">arr[:3]</span>
+	<span class="hljs-string">printSlice(slice6)</span>
+
+	<span class="hljs-string">slice7</span> <span class="hljs-string">:=</span> <span class="hljs-string">slice5[1:3]</span>
+	<span class="hljs-string">printSlice(slice7)</span>
+<span class="hljs-string">&#125;</span></code></pre>
+</li>
+<li><blockquote>
+<p><strong>未初始化的切片Slice默认为nil，len为0，cap为0</strong></p>
+</blockquote>
+  <pre><code class="hljs go"><span class="hljs-comment">//len = 0, cap = 0, slice = []</span>
+<span class="hljs-comment">//slice is nil</span>
+<span class="hljs-keyword">package</span> main
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">printSlice</span><span class="hljs-params">(slice []<span class="hljs-keyword">int</span>)</span></span> &#123;
+	fmt.Printf(<span class="hljs-string">"len = %d, cap = %d, slice = %v\n"</span>, <span class="hljs-built_in">len</span>(slice), <span class="hljs-built_in">cap</span>(slice), slice)
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;
+	<span class="hljs-keyword">var</span> slice []<span class="hljs-keyword">int</span>
+	printSlice(slice)
+
+	<span class="hljs-keyword">if</span> slice == <span class="hljs-literal">nil</span> &#123;
+		fmt.Printf(<span class="hljs-string">"slice is nil\n"</span>)
+	&#125;
+&#125;</code></pre>
+</li>
+<li><blockquote>
+<p><strong>Slice切片的append()追加和copy()拷贝。</strong><br><strong>当切片长度len等于切片容量cap时，再append()追加数据，此时切片cap容量增长，且默认扩容2倍。</strong></p>
+</blockquote>
+  <pre><code class="hljs go"><span class="hljs-comment">//len = 0, cap = 0, slice = []</span>
+<span class="hljs-comment">//len = 1, cap = 1, slice = [0]</span>
+<span class="hljs-comment">//len = 2, cap = 2, slice = [0 1]</span>
+<span class="hljs-comment">//len = 5, cap = 6, slice = [0 1 2 3 4]</span>
+<span class="hljs-comment">//len = 5, cap = 12, slice = [0 1 2 3 4]</span>
+<span class="hljs-keyword">package</span> main
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">printSlice</span><span class="hljs-params">(slice []<span class="hljs-keyword">int</span>)</span></span> &#123;
+	fmt.Printf(<span class="hljs-string">"len = %d, cap = %d, slice = %v\n"</span>, <span class="hljs-built_in">len</span>(slice), <span class="hljs-built_in">cap</span>(slice), slice)
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;
+	<span class="hljs-keyword">var</span> slice []<span class="hljs-keyword">int</span>
+	printSlice(slice)
+	
+	<span class="hljs-comment">//此时cap默认扩容2倍</span>
+	slice = <span class="hljs-built_in">append</span>(slice, <span class="hljs-number">0</span>)
+	printSlice(slice)
+	
+	<span class="hljs-comment">//此时cap默认扩容2倍</span>
+	slice = <span class="hljs-built_in">append</span>(slice, <span class="hljs-number">1</span>)
+	printSlice(slice)
+	
+	<span class="hljs-comment">//此时cap扩容规则出现变化，同时append追加多个数据时，cap会扩容到向上最近的偶数数值，以减少cap容量的浪费</span>
+	slice = <span class="hljs-built_in">append</span>(slice, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>)
+	printSlice(slice)
+
+	slice2 := <span class="hljs-built_in">make</span>([]<span class="hljs-keyword">int</span>, <span class="hljs-built_in">len</span>(slice), <span class="hljs-built_in">cap</span>(slice)*<span class="hljs-number">2</span>)
+	<span class="hljs-built_in">copy</span>(slice2, slice)
+	printSlice(slice2)
+&#125;</code></pre>
+</li>
+<li><blockquote>
+<p><strong>Slice切片的append()并没有改变参数中的原切片，而是改变了接受返回值的切片</strong></p>
+</blockquote>
+  <pre><code class="hljs yaml"><span class="hljs-string">//[1</span> <span class="hljs-number">2</span> <span class="hljs-number">8</span> <span class="hljs-number">4</span><span class="hljs-string">]</span>
+<span class="hljs-string">//[1</span> <span class="hljs-number">2</span> <span class="hljs-number">8</span> <span class="hljs-number">4</span><span class="hljs-string">]</span>
+<span class="hljs-string">//[1</span> <span class="hljs-number">2</span> <span class="hljs-number">8</span> <span class="hljs-number">4</span><span class="hljs-string">]</span>
+<span class="hljs-string">//[1</span> <span class="hljs-number">2</span> <span class="hljs-number">9</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span><span class="hljs-string">]</span>
+<span class="hljs-string">package</span> <span class="hljs-string">main</span>
+
+<span class="hljs-string">import</span> <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-string">func</span> <span class="hljs-string">main()</span> <span class="hljs-string">&#123;</span>
+	<span class="hljs-string">original</span> <span class="hljs-string">:=</span> <span class="hljs-string">[]int&#123;1,</span> <span class="hljs-number">2</span><span class="hljs-string">,</span> <span class="hljs-number">3</span><span class="hljs-string">,</span> <span class="hljs-number">4</span><span class="hljs-string">&#125;</span> <span class="hljs-string">//a</span> <span class="hljs-string">slice</span> <span class="hljs-string">with</span> <span class="hljs-string">a</span> <span class="hljs-string">len</span> <span class="hljs-string">and</span> <span class="hljs-string">cap</span> <span class="hljs-string">of</span> <span class="hljs-number">4</span>
+	<span class="hljs-string">other</span> <span class="hljs-string">:=</span> <span class="hljs-string">original</span>
+	<span class="hljs-string">other[2]</span> <span class="hljs-string">=</span> <span class="hljs-number">8</span>
+	<span class="hljs-string">fmt.Println(original)</span>
+	<span class="hljs-string">fmt.Println(other)</span>
+
+	<span class="hljs-string">other</span> <span class="hljs-string">=</span> <span class="hljs-string">append(original,</span> <span class="hljs-number">5</span><span class="hljs-string">)</span>
+	<span class="hljs-string">other[2]</span> <span class="hljs-string">=</span> <span class="hljs-number">9</span>
+	<span class="hljs-string">fmt.Println(original)</span>
+	<span class="hljs-string">fmt.Println(other)</span>
+<span class="hljs-string">&#125;</span></code></pre>
+</li>
+<li><blockquote>
+<p>range（范围）用来循环迭代array（数组）、slice（切片）、channel（通道）、map（集合）</p>
+</blockquote>
+  <pre><code class="hljs go"><span class="hljs-comment">//slice</span>
+<span class="hljs-keyword">package</span> main
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>&#123;
+	nums := []<span class="hljs-keyword">int</span>&#123;<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>&#125;
+	sum := <span class="hljs-number">0</span>
+	<span class="hljs-keyword">for</span> _, num := <span class="hljs-keyword">range</span> nums&#123;
+		sum += num
+	&#125;
+	fmt.Print(sum)
+&#125;</code></pre>
+  <pre><code class="hljs go"><span class="hljs-comment">//slice</span>
+<span class="hljs-keyword">package</span> main
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>&#123;
+	kvs := <span class="hljs-keyword">map</span>[<span class="hljs-keyword">string</span>]<span class="hljs-keyword">string</span>&#123;<span class="hljs-string">"1"</span>: <span class="hljs-string">"one"</span>, <span class="hljs-string">"2"</span>: <span class="hljs-string">"two"</span>&#125;
+
+	<span class="hljs-keyword">for</span> k, v := <span class="hljs-keyword">range</span> kvs&#123;
+		fmt.Printf(<span class="hljs-string">"%s -&gt; %s\n"</span>, k, v)
+	&#125;
+&#125;</code></pre>
+</li>
+<li><blockquote>
+<p>map是无序的键值对集合，delete函数删除map中的元素</p>
+</blockquote>
+  <pre><code class="hljs go"><span class="hljs-keyword">package</span> main
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">"fmt"</span>
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>&#123;
+	<span class="hljs-comment">//定义map集合</span>
+	<span class="hljs-keyword">var</span> studentName <span class="hljs-keyword">map</span>[<span class="hljs-keyword">int</span>]<span class="hljs-keyword">string</span>
+	<span class="hljs-comment">//初始化创建集合</span>
+	studentName = <span class="hljs-built_in">make</span>(<span class="hljs-keyword">map</span>[<span class="hljs-keyword">int</span>]<span class="hljs-keyword">string</span>)
+
+	studentName[<span class="hljs-number">0</span>] = <span class="hljs-string">"zhangsan"</span>
+	studentName[<span class="hljs-number">1</span>] = <span class="hljs-string">"lisi"</span>
+	studentName[<span class="hljs-number">2</span>] = <span class="hljs-string">"wangwu"</span>
+	<span class="hljs-comment">//由于map是hash表实现的，所以每次的迭代结果不确定</span>
+	<span class="hljs-keyword">for</span> ID := <span class="hljs-keyword">range</span> studentName&#123;
+		fmt.Printf(<span class="hljs-string">"%d -&gt; %s\n"</span>, ID, studentName[ID])
+	&#125;
+	<span class="hljs-comment">//删除key为0的元素</span>
+	<span class="hljs-built_in">delete</span>(studentName, <span class="hljs-number">0</span>)
+	fmt.Println(<span class="hljs-string">"delete"</span>, <span class="hljs-number">0</span>)
+
+	<span class="hljs-keyword">for</span> ID := <span class="hljs-keyword">range</span> studentName&#123;
+		fmt.Printf(<span class="hljs-string">"%d -&gt; %s\n"</span>, ID, studentName[ID])
+	&#125;
+&#125;</code></pre>
+</li>
+<li><blockquote>
+<p>interface接口，和JAVA中的接口相似</p>
+</blockquote>
+  <pre><code class="hljs go"><span class="hljs-keyword">package</span> main
+
+<span class="hljs-keyword">import</span> (
+	<span class="hljs-string">"fmt"</span>
+)
+
+<span class="hljs-keyword">type</span> Action <span class="hljs-keyword">interface</span>&#123;
+	sleep()
+	eat()
+&#125;
+
+<span class="hljs-keyword">type</span> Human <span class="hljs-keyword">struct</span>&#123;
+
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(hum Human)</span> <span class="hljs-title">sleep</span><span class="hljs-params">()</span></span>&#123;
+	fmt.Println(<span class="hljs-string">"human sleeping"</span>)
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(hum Human)</span> <span class="hljs-title">eat</span><span class="hljs-params">()</span></span>&#123;
+	fmt.Println(<span class="hljs-string">"human eating"</span>)
+&#125;
+
+<span class="hljs-keyword">type</span> Dog <span class="hljs-keyword">struct</span>&#123;
+
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(dog Dog)</span> <span class="hljs-title">sleep</span><span class="hljs-params">()</span></span>&#123;
+	fmt.Println(<span class="hljs-string">"dog sleeping"</span>)
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(dog Dog)</span> <span class="hljs-title">eat</span><span class="hljs-params">()</span></span>&#123;
+	fmt.Println(<span class="hljs-string">"dog eating"</span>)
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>&#123;
+
+	<span class="hljs-keyword">var</span> action Action
+
+	action = <span class="hljs-built_in">new</span>(Human)
+	action.sleep()
+
+	action = <span class="hljs-built_in">new</span>(Dog)
+	action.eat()
+&#125;</code></pre>
+</li>
+<li><blockquote>
+<p>错误处理</p>
+</blockquote>
+  <pre><code class="hljs go"><span class="hljs-keyword">package</span> main
+
+<span class="hljs-keyword">import</span> (
+	<span class="hljs-string">"fmt"</span>
+)
+
+<span class="hljs-comment">// 定义一个 DivideError 结构</span>
+<span class="hljs-keyword">type</span> DivideError <span class="hljs-keyword">struct</span> &#123;
+	dividee <span class="hljs-keyword">int</span>
+	divider <span class="hljs-keyword">int</span>
+&#125;
+
+<span class="hljs-comment">// 实现 `error` 接口</span>
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(de *DivideError)</span> <span class="hljs-title">Error</span><span class="hljs-params">()</span> <span class="hljs-title">string</span></span> &#123;
+	strFormat := <span class="hljs-string">`</span>
+<span class="hljs-string">    Cannot proceed, the divider is zero.</span>
+<span class="hljs-string">    dividee: %d</span>
+<span class="hljs-string">    divider: 0</span>
+<span class="hljs-string">`</span>
+	<span class="hljs-keyword">return</span> fmt.Sprintf(strFormat, de.dividee)
+&#125;
+
+<span class="hljs-comment">// 定义 `int` 类型除法运算的函数</span>
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">Divide</span><span class="hljs-params">(varDividee <span class="hljs-keyword">int</span>, varDivider <span class="hljs-keyword">int</span>)</span> <span class="hljs-params">(result <span class="hljs-keyword">int</span>, errorMsg <span class="hljs-keyword">string</span>)</span></span> &#123;
+	<span class="hljs-keyword">if</span> varDivider == <span class="hljs-number">0</span> &#123;
+		dData := DivideError&#123;
+			dividee: varDividee,
+			divider: varDivider,
+		&#125;
+		errorMsg = dData.Error()
+		<span class="hljs-keyword">return</span>
+		&#125; <span class="hljs-keyword">else</span> &#123;
+		<span class="hljs-keyword">return</span> varDividee / varDivider, <span class="hljs-string">"no error"</span>
+	&#125;
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;
+
+	<span class="hljs-comment">// 正常情况</span>
+	result, errorMsg := Divide(<span class="hljs-number">100</span>, <span class="hljs-number">10</span>)
+
+	<span class="hljs-keyword">if</span> errorMsg == <span class="hljs-string">"no error"</span> &#123;
+		fmt.Println(<span class="hljs-string">"100/10 = "</span>, result, errorMsg)
+	&#125;
+	<span class="hljs-comment">// 当被除数为零的时候会返回错误信息</span>
+	result, errorMsg = Divide(<span class="hljs-number">100</span>, <span class="hljs-number">0</span>)
+
+	<span class="hljs-keyword">if</span> errorMsg != <span class="hljs-string">"no error"</span> &#123;
+		fmt.Println(<span class="hljs-string">"errorMsg is: "</span>, result, errorMsg)
+	&#125;
+&#125;</code></pre></li>
+</ul>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Language/">Language</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Golang/">Golang</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/07/02/dex-principle-analysis/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">kubernetes dex 原理机制分析</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/07/02/git-cmd/">
+                        <span class="hidden-mobile">Git常用命令</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "Golang语法的踩坑总结（持续更新中）&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

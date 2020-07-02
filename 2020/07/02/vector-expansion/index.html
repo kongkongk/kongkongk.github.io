@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/self.jpeg">
+  <link rel="icon" type="image/png" href="/img/self.jpeg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>vector扩容问题源代码剖析 - kongkong</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>kongkong</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-07-02 21:36">
+      2020年7月2日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      18
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2020年7月2日 晚上
+                
+              </p>
+            
+            <article class="markdown-body">
+              <p><strong>* <em>之前只知道理论。。。今天就来深入剖析一下源代码。。。→_→</em> *</strong></p>
+<p><strong>了解POD数据类型请戳传送门——</strong><a href="http://blog.csdn.net/kongkongkkk/article/details/77414410" target="_blank" rel="noopener"><strong>什么是POD数据类型？</strong></a></p>
+<p>直接从vector的push_back进。。。</p>
+<pre><code class="hljs sqf"> <span class="hljs-comment">//stl\Stl_vector.h</span>
+ <span class="hljs-comment">//尾插</span>
+ void push_back(const <span class="hljs-variable">_Tp</span>&amp; <span class="hljs-variable">__x</span>) &#123;
+<span class="hljs-comment">//先检查是否还有备用空间</span>
+   <span class="hljs-keyword">if</span> (<span class="hljs-variable">_M_finish</span> != <span class="hljs-variable">_M_end_of_storage</span>) &#123;
+     <span class="hljs-comment">//如果有，就直接在备用空间上构造元素</span>
+     <span class="hljs-comment">//construct定义在下面</span>
+     construct(<span class="hljs-variable">_M_finish</span>, <span class="hljs-variable">__x</span>); 
+     ++<span class="hljs-variable">_M_finish</span>; <span class="hljs-comment">//调整水位高高度</span>
+   &#125;
+   <span class="hljs-keyword">else</span> 
+     <span class="hljs-comment">//此时已没有备用空间</span>
+     <span class="hljs-comment">//_M_insert_aux定义在下面</span>
+     <span class="hljs-variable">_M_insert_aux</span>(end(), <span class="hljs-variable">__x</span>);
+ &#125;</code></pre>
+
+<pre><code class="hljs sqf"><span class="hljs-comment">//stl\Stl_vector.h</span>
+template &lt;class <span class="hljs-variable">_Tp</span>, class <span class="hljs-variable">_Alloc</span>&gt;
+void 
+vector&lt;<span class="hljs-variable">_Tp</span>, <span class="hljs-variable">_Alloc</span>&gt;::<span class="hljs-variable">_M_insert_aux</span>(iterator <span class="hljs-variable">__position</span>, const <span class="hljs-variable">_Tp</span>&amp; <span class="hljs-variable">__x</span>)
+&#123;
+  <span class="hljs-comment">//如果此时还有备用空间</span>
+  <span class="hljs-keyword">if</span> (<span class="hljs-variable">_M_finish</span> != <span class="hljs-variable">_M_end_of_storage</span>) &#123;
+    <span class="hljs-comment">//在备用空间起始处构造一个元素，并以vector最后一个元素值为初始值</span>
+    construct(<span class="hljs-variable">_M_finish</span>, *(<span class="hljs-variable">_M_finish</span> - <span class="hljs-number">1</span>));
+    ++<span class="hljs-variable">_M_finish</span>; <span class="hljs-comment">//调整水位</span>
+    <span class="hljs-variable">_Tp</span> <span class="hljs-variable">__x_copy</span> = <span class="hljs-variable">__x</span>; 
+    copy_backward(<span class="hljs-variable">__position</span>, <span class="hljs-variable">_M_finish</span> - <span class="hljs-number">2</span>, <span class="hljs-variable">_M_finish</span> - <span class="hljs-number">1</span>);
+    *<span class="hljs-variable">__position</span> = <span class="hljs-variable">__x_copy</span>;
+  &#125;
+  <span class="hljs-keyword">else</span> &#123; <span class="hljs-comment">//此时没有备用空间</span>
+    <span class="hljs-comment">//计算原vector的大小</span>
+    const size_type <span class="hljs-variable">__old_size</span> = <span class="hljs-built_in">size</span>();
+    <span class="hljs-comment">//如果原大小为0，则配置1个元素</span>
+    <span class="hljs-comment">//如果原大小不为0，则配置原大小的2倍</span>
+    const size_type <span class="hljs-variable">__len</span> = <span class="hljs-variable">__old_size</span> != <span class="hljs-number">0</span> ? <span class="hljs-number">2</span> * <span class="hljs-variable">__old_size</span> : <span class="hljs-number">1</span>;
+    iterator <span class="hljs-variable">__new_start</span> = <span class="hljs-variable">_M_allocate</span>(<span class="hljs-variable">__len</span>);
+    iterator <span class="hljs-variable">__new_finish</span> = <span class="hljs-variable">__new_start</span>;
+    <span class="hljs-variable">__STL_TRY</span> &#123;
+      <span class="hljs-comment">//将原vector的内容拷贝到新vector</span>
+      <span class="hljs-comment">//uninitialized_copy定义在下面</span>
+      <span class="hljs-variable">__new_finish</span> = uninitialized_copy(<span class="hljs-variable">_M_start</span>, <span class="hljs-variable">__position</span>, <span class="hljs-variable">__new_start</span>);
+      <span class="hljs-comment">//为新元素设定初始值为x</span>
+      construct(<span class="hljs-variable">__new_finish</span>, <span class="hljs-variable">__x</span>);
+      <span class="hljs-comment">//调整水位</span>
+      ++<span class="hljs-variable">__new_finish</span>;
+      <span class="hljs-comment">//将原vector的备用空间中的内容也拷贝到新vector中</span>
+      <span class="hljs-variable">__new_finish</span> = uninitialized_copy(<span class="hljs-variable">__position</span>, <span class="hljs-variable">_M_finish</span>, <span class="hljs-variable">__new_finish</span>);
+    &#125;
+    <span class="hljs-variable">__STL_UNWIND</span>((destroy(<span class="hljs-variable">__new_start</span>,<span class="hljs-variable">__new_finish</span>), 
+                  <span class="hljs-variable">_M_deallocate</span>(<span class="hljs-variable">__new_start</span>,<span class="hljs-variable">__len</span>)));
+    <span class="hljs-comment">//析构并释放原vector</span>
+    <span class="hljs-comment">//destroy定义在下面</span>
+    destroy(begin(), end());
+    <span class="hljs-variable">_M_deallocate</span>(<span class="hljs-variable">_M_start</span>, <span class="hljs-variable">_M_end_of_storage</span> - <span class="hljs-variable">_M_start</span>);
+    <span class="hljs-comment">//调整迭代器，指向新vector</span>
+    <span class="hljs-variable">_M_start</span> = <span class="hljs-variable">__new_start</span>;
+    <span class="hljs-variable">_M_finish</span> = <span class="hljs-variable">__new_finish</span>;
+    <span class="hljs-variable">_M_end_of_storage</span> = <span class="hljs-variable">__new_start</span> + <span class="hljs-variable">__len</span>;
+  &#125;
+&#125;</code></pre>
+
+<pre><code class="hljs angelscript"><span class="hljs-comment">//stl\Stl_uninitialized.h</span>
+<span class="hljs-comment">//如果推导出的是POD类型，就采用针对POD最有效率的复制方法，即执行以下函数</span>
+<span class="hljs-comment">//__true_type是由函数模板参数的推导机制得到的</span>
+template &lt;<span class="hljs-keyword">class</span> <span class="hljs-symbol">_InputIter, <span class="hljs-symbol">class</span></span> <span class="hljs-symbol">_ForwardIter</span>&gt;
+<span class="hljs-symbol">inline</span> <span class="hljs-symbol">_ForwardIter</span> 
+<span class="hljs-symbol">__uninitialized_copy_aux</span>(<span class="hljs-symbol">_InputIter</span> <span class="hljs-symbol">__first, <span class="hljs-symbol">_InputIter</span></span> <span class="hljs-symbol">__last,</span>
+                         <span class="hljs-symbol">_ForwardIter</span> <span class="hljs-symbol">__result,</span>
+                         <span class="hljs-symbol">__true_type</span>)
+&#123;
+  <span class="hljs-comment">//调用STL的copy()算法，其底层使用memmove()函数，直接按照内存字节进行复制</span>
+  <span class="hljs-keyword">return</span> copy(__first, __last, __result);
+&#125;
+
+<span class="hljs-comment">//如果是non-POD类型，即执行以下函数</span>
+template &lt;<span class="hljs-keyword">class</span> <span class="hljs-symbol">_InputIter, <span class="hljs-symbol">class</span></span> <span class="hljs-symbol">_ForwardIter</span>&gt;
+<span class="hljs-symbol">_ForwardIter</span> 
+<span class="hljs-symbol">__uninitialized_copy_aux</span>(<span class="hljs-symbol">_InputIter</span> <span class="hljs-symbol">__first, <span class="hljs-symbol">_InputIter</span></span> <span class="hljs-symbol">__last,</span>
+                         <span class="hljs-symbol">_ForwardIter</span> <span class="hljs-symbol">__result,</span>
+                         <span class="hljs-symbol">__false_type</span>)
+&#123;
+  <span class="hljs-comment">//获取输出端的欲初始化的起始处</span>
+  _ForwardIter __cur = __result;
+  __STL_TRY &#123;
+    <span class="hljs-comment">//依次从输出端的欲初始化的起始处开始构造元素</span>
+    <span class="hljs-keyword">for</span> ( ; __first != __last; ++__first, ++__cur)
+      <span class="hljs-comment">//一个一个的进行元素构造，而不是像POD一样，直接进行内存字节的复制</span>
+      <span class="hljs-comment">//_Construct定义在下面</span>
+      _Construct(&amp;*__cur, *__first);
+    <span class="hljs-keyword">return</span> __cur;
+  &#125;
+  __STL_UNWIND(_Destroy(__result, __cur));
+&#125;
+
+
+template &lt;<span class="hljs-keyword">class</span> <span class="hljs-symbol">_InputIter, <span class="hljs-symbol">class</span></span> <span class="hljs-symbol">_ForwardIter, <span class="hljs-symbol">class</span></span> <span class="hljs-symbol">_Tp</span>&gt;
+<span class="hljs-symbol">inline</span> <span class="hljs-symbol">_ForwardIter</span>
+<span class="hljs-symbol">__uninitialized_copy</span>(<span class="hljs-symbol">_InputIter</span> <span class="hljs-symbol">__first, <span class="hljs-symbol">_InputIter</span></span> <span class="hljs-symbol">__last,</span>
+                     <span class="hljs-symbol">_ForwardIter</span> <span class="hljs-symbol">__result, <span class="hljs-symbol">_Tp</span></span>*)
+&#123;
+  <span class="hljs-comment">//萃取出迭代器result的value type</span>
+  <span class="hljs-comment">//然后判断该value type是否为POD，关于POD会在另一篇文章中详细解释</span>
+  <span class="hljs-comment">//编译器会将_Is_POD()的结果，作参数推导</span>
+  <span class="hljs-comment">//__uninitialized_copy_aux定义在上面</span>
+  <span class="hljs-keyword">typedef</span> typename __type_traits&lt;_Tp&gt;::is_POD_type _Is_POD;
+  <span class="hljs-keyword">return</span> __uninitialized_copy_aux(__first, __last, __result, _Is_POD());
+&#125;
+
+<span class="hljs-comment">//uninitialized_copy将内存的配置与对象的构造行为分离开来</span>
+<span class="hljs-comment">//C++标准规格书要求uninitialized_copy具有"commit or rollback"语义</span>
+<span class="hljs-comment">//即要么构造出所有必要元素，要么当有任何一个copy construct失败时，就不构造任何东西</span>
+<span class="hljs-comment">//迭代器__first指向输入端的起始位置</span>
+<span class="hljs-comment">//迭代器__last指向输入端的结束位置，前闭后开区间</span>
+<span class="hljs-comment">//迭代器__result指向输出端的起始处，即欲初始化的起始处</span>
+template &lt;<span class="hljs-keyword">class</span> <span class="hljs-symbol">_InputIter, <span class="hljs-symbol">class</span></span> <span class="hljs-symbol">_ForwardIter</span>&gt;
+<span class="hljs-symbol">inline</span> <span class="hljs-symbol">_ForwardIter</span>
+  <span class="hljs-symbol">uninitialized_copy</span>(<span class="hljs-symbol">_InputIter</span> <span class="hljs-symbol">__first, <span class="hljs-symbol">_InputIter</span></span> <span class="hljs-symbol">__last,</span>
+                     <span class="hljs-symbol">_ForwardIter</span> <span class="hljs-symbol">__result</span>)
+&#123;
+  <span class="hljs-comment">//利用__VALUE_TYPE()取出__result的value type</span>
+  <span class="hljs-comment">//__uninitialized_copy定义在上面</span>
+  <span class="hljs-keyword">return</span> __uninitialized_copy(__first, __last, __result,
+                              __VALUE_TYPE(__result));
+&#125;</code></pre>
+
+<pre><code class="hljs angelscript"><span class="hljs-comment">//stl\Stl_construct.h</span>
+template &lt;<span class="hljs-keyword">class</span> <span class="hljs-symbol">_T1, <span class="hljs-symbol">class</span></span> <span class="hljs-symbol">_T2</span>&gt;
+<span class="hljs-symbol">inline</span> <span class="hljs-symbol">void</span> <span class="hljs-symbol">_Construct</span>(<span class="hljs-symbol">_T1</span>* <span class="hljs-symbol">__p, <span class="hljs-symbol">const</span></span> <span class="hljs-symbol">_T2</span>&amp; <span class="hljs-symbol">__value</span>) &#123;
+  <span class="hljs-comment">//构造以T1为类型，值为__value的元素</span>
+  new ((<span class="hljs-built_in">void</span>*) __p) _T1(__value);
+&#125;</code></pre>
+
+<pre><code class="hljs angelscript"><span class="hljs-comment">//stl\Stl_construct.h</span>
+template &lt;<span class="hljs-keyword">class</span> <span class="hljs-symbol">_Tp</span>&gt;
+<span class="hljs-symbol">inline</span> <span class="hljs-symbol">void</span> <span class="hljs-symbol">destroy</span>(<span class="hljs-symbol">_Tp</span>* <span class="hljs-symbol">__pointer</span>) &#123;
+  _Destroy(__pointer);
+&#125;
+
+<span class="hljs-comment">//析构并释放元素与内存</span>
+template &lt;<span class="hljs-keyword">class</span> <span class="hljs-symbol">_ForwardIterator</span>&gt;
+<span class="hljs-symbol">inline</span> <span class="hljs-symbol">void</span> <span class="hljs-symbol">destroy</span>(<span class="hljs-symbol">_ForwardIterator</span> <span class="hljs-symbol">__first, <span class="hljs-symbol">_ForwardIterator</span></span> <span class="hljs-symbol">__last</span>) &#123;
+  <span class="hljs-comment">//_Destroy定义在下面</span>
+  _Destroy(__first, __last);
+&#125;</code></pre>
+
+<pre><code class="hljs angelscript"><span class="hljs-comment">//stl\Stl_construct.h</span>
+template &lt;<span class="hljs-keyword">class</span> <span class="hljs-symbol">_Tp</span>&gt;
+<span class="hljs-symbol">inline</span> <span class="hljs-symbol">void</span> <span class="hljs-symbol">_Destroy</span>(<span class="hljs-symbol">_Tp</span>* <span class="hljs-symbol">__pointer</span>) &#123;
+  <span class="hljs-comment">//调用每个迭代器所指数据类型的析构函数</span>
+  __pointer-&gt;~_Tp();
+&#125;
+
+<span class="hljs-comment">//如果为__false_type，即non-trivial destructor，那么就遍历整个范围，对每一个对象都调用一个参数的destroy()</span>
+template &lt;<span class="hljs-keyword">class</span> <span class="hljs-symbol">_ForwardIterator</span>&gt;
+<span class="hljs-symbol">void</span>
+<span class="hljs-symbol">__destroy_aux</span>(<span class="hljs-symbol">_ForwardIterator</span> <span class="hljs-symbol">__first, <span class="hljs-symbol">_ForwardIterator</span></span> <span class="hljs-symbol">__last, <span class="hljs-symbol">__false_type</span></span>)
+&#123;
+  <span class="hljs-comment">//遍历整个范围，依次析构每个对象</span>
+  <span class="hljs-comment">//destroy定义在上面</span>
+  <span class="hljs-keyword">for</span> ( ; __first != __last; ++__first)
+    destroy(&amp;*__first);
+&#125;
+
+<span class="hljs-comment">//如果为__true_type，即trivial destructor，那么析构其实什么都不做</span>
+template &lt;<span class="hljs-keyword">class</span> <span class="hljs-symbol">_ForwardIterator</span>&gt; 
+<span class="hljs-symbol">inline</span> <span class="hljs-symbol">void</span> <span class="hljs-symbol">__destroy_aux</span>(<span class="hljs-symbol">_ForwardIterator, <span class="hljs-symbol">_ForwardIterator</span>, <span class="hljs-symbol">__true_type</span></span>) &#123;&#125;
+
+template &lt;<span class="hljs-keyword">class</span> <span class="hljs-symbol">_ForwardIterator, <span class="hljs-symbol">class</span></span> <span class="hljs-symbol">_Tp</span>&gt;
+<span class="hljs-symbol">inline</span> <span class="hljs-symbol">void</span> 
+<span class="hljs-symbol">__destroy</span>(<span class="hljs-symbol">_ForwardIterator</span> <span class="hljs-symbol">__first, <span class="hljs-symbol">_ForwardIterator</span></span> <span class="hljs-symbol">__last, <span class="hljs-symbol">_Tp</span></span>*)
+&#123;
+  <span class="hljs-comment">//判断元素的数值类型value type是否有trivial destructor</span>
+  <span class="hljs-comment">//准备将[first, last)范围内的所有对象析构，但不知道这个范围有多大</span>
+  <span class="hljs-comment">//如果很大的话，而每一个对象的析构函数都是trivial destructor，那么每一次调用都是对效率的伤害</span>
+  <span class="hljs-comment">//所以使用了value_type()获取了迭代器所指对象的类型</span>
+  <span class="hljs-comment">//再利用__type_traits&lt;_Tp&gt;判断该类型的析构函数是否为trivial destructor</span>
+  <span class="hljs-comment">//根据__type_traits&lt;_Tp&gt;选择最合适的析构方法</span>
+  <span class="hljs-keyword">typedef</span> typename __type_traits&lt;_Tp&gt;::has_trivial_destructor
+          _Trivial_destructor;
+  <span class="hljs-comment">//__destroy_aux定义在上面</span>
+  __destroy_aux(__first, __last, _Trivial_destructor());
+&#125;
+
+template &lt;<span class="hljs-keyword">class</span> <span class="hljs-symbol">_ForwardIterator</span>&gt;
+<span class="hljs-symbol">inline</span> <span class="hljs-symbol">void</span> <span class="hljs-symbol">_Destroy</span>(<span class="hljs-symbol">_ForwardIterator</span> <span class="hljs-symbol">__first, <span class="hljs-symbol">_ForwardIterator</span></span> <span class="hljs-symbol">__last</span>) &#123;
+  <span class="hljs-comment">//使用__VALUE_TYPE获取迭代器__first所指对象的value type</span>
+  <span class="hljs-comment">//__destroy定义在上面</span>
+  __destroy(__first, __last, __VALUE_TYPE(__first));
+&#125;</code></pre>
+
+<p><strong>* <em>码完收工。。。一会把POD和trivial destruct总结一下。。。→_→</em> *</strong></p>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Language/">Language</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/C/">C++</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/07/02/POD-data-type/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">什么是POD数据类型？</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/07/02/poll/">
+                        <span class="hidden-mobile">IO复用——poll机制内核源代码剖析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "vector扩容问题源代码剖析&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

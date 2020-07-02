@@ -168,483 +168,486 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/30/timer/">TCP中的四种计时器</a>
+      <a class="index-header" href="/2020/07/01/snd-two-numbers-for-s/">剑指Offer——（41）和为S的两个数字</a>
 
-      <a href="/2020/06/30/timer/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* 经过两天的总结，已经总结了大部分运输层的知识原理，那今天就再来看看TCP中的四种定时器。。。→_→ *
-
-超时重传计时器（Retransmission Timeout Timer）（与超时重传相关）
-
-
-A向B发送一个数据报文段，为了保证可靠传输，A会为这个数据报文段设置一个超时重传计时器（Retransmission Timeout Timer）
-
-如果在超时重传时间内，A收到了B的确认报文</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Linux/">Linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Network/">Network</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/30/three-handshake-and-four-waves/">TCP三次握手与四次挥手的过程及原因</a>
-
-      <a href="/2020/06/30/three-handshake-and-four-waves/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* 本篇文章来彻彻底底的分析一下TCP三次握手与四次挥手的过程及原因。。。→_→ *
-
-TCP的连接建立——三次握手
-
-
-
-
-最初两端的TCP进程都处于CLOSED（关闭）状态。A主动打开连接，B被动打开连接
-
-B的TCP服务器进程创建传输控制块TCB（Transmission Control Block），然后处于LISTEN（收听）状态，准备接受客户端的连接请求
-
-A的TCP客户端进程也创建传</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Linux/">Linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Network/">Network</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/30/fast-retransmission-and-fast-recovery/">TCP拥塞控制——快重传与快恢复</a>
-
-      <a href="/2020/06/30/fast-retransmission-and-fast-recovery/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* TCP可靠传输中不仅有慢开始与拥塞避免相结合，还有快重传与快恢复相结合。。。→_→ *
-
-快重传（Fast Retransmit）
-
-
-要求接收方每收到一个失序的报文段后就立即发出重复确认而不是等待自己发送数据时才捎带确认
-
-发送方只要一连收到三个重复确认就立即重传对方尚未收到的报文段，而不必等待设置的重传计时器到期
-
-
-
-有的快重传实现把开始时的拥塞窗口cwnd设置为ssthresh+3*M</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Linux/">Linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Network/">Network</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/30/slow-start-and-congestion-avoidance/">TCP拥塞控制——慢开始与拥塞避免AIMD</a>
-
-      <a href="/2020/06/30/slow-start-and-congestion-avoidance/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* 之前总结了TCP拥塞控制的原理， 这次来看看具体的设计算法——慢开始与拥塞避免。。。→_→ *
-
-拥塞窗口cwnd（Congestion Window）
-
-
-发送方维持一个叫做拥塞窗口的状态变量，拥塞窗口的大小取决于网络的拥塞程度且动态变化。发送方让自己的发送窗口等于拥塞窗口，如果还考虑接收方的接受能力，那么发送窗口还可能小于拥塞窗口
-
-发送方控制拥塞窗口的原则：只要网络没有出现拥塞，就增大拥</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Linux/">Linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Network/">Network</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/30/congestion-control/">TCP拥塞控制原理</a>
-
-      <a href="/2020/06/30/congestion-control/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* TCP可靠传输是为了提高点对点的数据传输效率，而真实网络情况非常复杂，所以使用拥塞控制进一步提高网络利用率。这篇总结一下TCP拥塞控制的原理。。→_→ *
-
-拥塞控制的定义：在某段时间，若对网络中某一资源的需求超过了该资源所能提供的可用部分，网络的性能就会变坏，这种情况就叫做拥塞（Congestion）。拥塞控制是为了防止过多的数据注入到网络，使网络中的路由器或链路不致过载
-
-拥塞控制与流量控</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Linux/">Linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Network/">Network</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/30/flow-control/">TCP可靠传输——流量控制</a>
-
-      <a href="/2020/06/30/flow-control/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* TCP还使用流量控制来保证可靠传输。。→_→ *
-
-流量控制（Flow Control）的含义
-
-
-流量控制就是让发送方的发送速率不要太快，让接收方来得及接收
-
-利用滑动窗口实现流量控制，告诉对方下一次我能接收的最大数据长度
-
-
-
-发送方的发送窗口不能超过接收方给出的接收窗口的数值。TCP的窗口单位是字节，不是报文段
-
-
-
-流量控制中出现的问题
-
-B向A发送零窗口报文段后不久，B的接收缓存有了</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Linux/">Linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Network/">Network</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/30/sliding-window/">TCP可靠传输——滑动窗口</a>
-
-      <a href="/2020/06/30/sliding-window/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* TCP协议保证可靠的数据传输。。使用哪些方法来保证呢。。？来瞧瞧滑动窗口。。→_→ *
-
-滑动窗口的定义
-
-
-TCP滑动窗口以字节为单位
-
-
-
-发送窗口表示，在没有收到接收方的确认时，发送方可以把窗口内的数据都发送出去。发送过的数据在未收到确认之前都必须暂时保留，以便超时重传使用
-
-
-发送窗口的位置由窗口前沿和后沿共同决定。
-
-后沿不动——没有收到新的确认
-
-后沿前移——收到了新的确认
-
-前沿</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Linux/">Linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Network/">Network</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/30/transmission-control-protocol/">传输控制协议TCP（Transmission Control Protocol）报文格式</a>
-
-      <a href="/2020/06/30/transmission-control-protocol/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* 这篇总结一下TCP协议的内容和特点。。→_→ *
-
-TCP协议的特点
-
-
-TCP是面向连接的运输层协议：先建立连接，再传输数据，最后释放连接
-
-每一条TCP连接只能有两个端点，每一条TCP连接只能是点对点的
-
-TCP提供可靠交付的服务：通过TCP传输的数据，无差错、不丢失、不重复、按序到达
-
-TCP提供全双工服务：TCP连接双方都设有发送缓存、接收缓存用来临时存放双向通信的数据。TCP在合适的</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Linux/">Linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Network/">Network</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/30/user-datagram-protocol/">用户数据报协议UDP（User Datagram Protocol）报文格式</a>
-
-      <a href="/2020/06/30/user-datagram-protocol/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* 运输层两大主要协议之一。。。UDP。。这篇总结一下UDP协议的内容和特点。。→_→ *
-
-UDP协议的特点
-
-
-UDP是无连接的，即传输数据时不需要建立或释放连接，减少了开销和发送数据之前的时延
-
-UDP使用尽最大努力交付，即不保证可靠交付
-
-UDP是面向报文的。对应用程序交下来的报文在添加首部后就向下交付IP层。对应用层交下来的报文即不合并也不拆分，而是保留这些报文的边界。即UDP一次交付一</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Linux/">Linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Network/">Network</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/30/arrange-the-squares-to-the-smallest-number/">剑指Offer——（32）把数组排成最小的数</a>
-
-      <a href="/2020/06/30/arrange-the-squares-to-the-smallest-number/" class="index-excerpt">
+      <a href="/2020/07/01/snd-two-numbers-for-s/" class="index-excerpt">
         
         
           
         
         <div>题目描述：
 
-输入一个正整数数组，把数组里所有数字拼接起来排成一个数，打印能拼接出的所有数字中最小的一个。例如输入数组{3，32，321}，则打印出这三个数字能排成的最小数字为321323。
+输入一个递增排序的数组和一个数字S，在数组中查找两个数，使得它们的和正好是S。如果有多对数字的和等于S，输出任意一对即可
 
 实现如下：
-//要将所有元素组合成一个最小的数
-//那么组合的相邻元素之间都是num1num2的形式
-//所以使用库函数的sort将各个元素以strCompare的条件进行排序
-//strCompare的条</div>
+//使用两个指针，分别指向排序数组的第一个元素和最后一个元素，它们是最小值和最大值
+//将指针指向的值相加的和与S进行比较
+//如果和比S小，则后移前指针
+//如果和比S大，则前移后指针
+//注意
+//1.有可能不存在和为S的两个数，所有路径都有返回</div>
       </a>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
+            <i class="iconfont icon-date"></i>&nbsp;2020-07-01
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/07/01/numbers-that-appear-only-once-in-the-array/">剑指Offer——（40）数组中只出现一次的数字</a>
+
+      <a href="/2020/07/01/numbers-that-appear-only-once-in-the-array/" class="index-excerpt">
+        
+        
+          
+        
+        <div>题目描述：
+
+一个整型数组里除了两个数字之外，其他的数字都出现了两次。请写程序找出这两个只出现一次的数字。
+
+实现如下：
+//关键点是使用异或位运算符
+//相同的数字异或结果为零
+//如果数组中只有一个数字出现一次，那么异或的遍历这个数组，最后的结果就是那个数字
+//如果此时变成有两个数字都出现了一次，那还按照之前的办法，最后的结果就是这两个数字的异或值
+//解决方法：
+//将数组异或的遍历，求其</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-07-01
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/07/01/balanced-binary-tree/">剑指Offer——（39）平衡二叉树</a>
+
+      <a href="/2020/07/01/balanced-binary-tree/" class="index-excerpt">
+        
+        
+          
+        
+        <div>题目描述：
+
+输入一棵二叉树，判断该二叉树是否是平衡二叉树。
+
+实现如下：
+//如果二叉树中的任意结点的左右子树的深度相差不超过1，那么它就是一棵平衡二叉树
+//利用对二叉树的后序遍历，自底向上的判断是否为平衡二叉树
+//若某一结点不满足条件，则此树不是平衡二叉树
+//若某一结点满足条件，就要计算此结点的深度，为后面的计算做准备
+class Solution 
+&#123;
+public:
+	bo</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-07-01
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/07/01/the-depth-of-the-binary-tree/">剑指Offer——（38）二叉树的深度</a>
+
+      <a href="/2020/07/01/the-depth-of-the-binary-tree/" class="index-excerpt">
+        
+        
+          
+        
+        <div>题目描述：
+
+输入一棵二叉树，求该树的深度。从根结点到叶结点依次经过的结点（含根、叶结点）形成树的一条路径，最长路径的长度为树的深度。
+
+实现如下：
+//这代码真没有什么要说的。。。
+//本题就是树的遍历的应用
+//最长路径的长度为树的深度，所以当节点的左子树深度和右子树深度中的最大值求得后，加1即就是此节点的深度
+class Solution 
+&#123;
+public:
+	int TreeD</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-07-01
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/07/01/abstract-factory-pattern/">设计模式——抽象工厂模式</a>
+
+      <a href="/2020/07/01/abstract-factory-pattern/" class="index-excerpt">
+        
+        
+          
+        
+        <div>* 工厂模式解决了一部分问题，但还有一些缺点，所以这时抽象工厂模式应运而生。。。→_→ *
+在阅读本文之前，需要了解一些知识点。。。请戳传送门——工厂模式
+
+工厂模式与抽象工厂模式的区别
+
+工厂模式中，在工厂子类中无论多么辛苦的制造产品子类，其实它们都同属一个父类
+而在现实生活中，工厂不可能只制造一种产品。所以一个工厂子类有可能制造多种产品子类，而它们来源于不同的父类
+
+
+抽象工厂模式的作用
+
+将</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-07-01
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Design-Patterns/">Design Patterns</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/07/01/factory-mode/">设计模式——工厂模式</a>
+
+      <a href="/2020/07/01/factory-mode/" class="index-excerpt">
+        
+        
+          
+        
+        <div>* 除了单例模式和观察者监听者模式，本篇再介绍一下工厂模式。。。→_→ *
+
+面向对象编程中出现的问题
+
+在面向对象编程中，可能会会由一种父类派生出许许多多的子类。而当我们在使用new实例化一个子类对象之前，也可能需要进行很多提前操作，比如调用其他的方法、获取相应的参数列表的值、在数据库中查询相关信息等
+
+当类型越来越多、名字越来越复杂的时候，每次去实例化一个子类对象时，都要进行很多提前操作，这就</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-07-01
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Design-Patterns/">Design Patterns</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/07/01/number-of-times-the-number-appears-in-the-sorted-array/">剑指Offer——（37）数字在排序数组中出现的次数</a>
+
+      <a href="/2020/07/01/number-of-times-the-number-appears-in-the-sorted-array/" class="index-excerpt">
+        
+        
+          
+        
+        <div>题目描述：
+
+统计一个数字在排序数组中出现的次数。
+
+实现如下：
+方法一
+//利用count计数，时间复杂度O(n)
+class Solution 
+&#123;
+public:
+	int GetNumberOfK(vector&lt;int&gt; data, int k) 
+	&#123;
+		return count(data.begin(), data.end(), k);
+	&#125;</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-07-01
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/07/01/the-first-common-node-of-two-linked-lists/">剑指Offer——（36）两个链表的第一个公共结点</a>
+
+      <a href="/2020/07/01/the-first-common-node-of-two-linked-lists/" class="index-excerpt">
+        
+        
+          
+        
+        <div>题目描述：
+
+输入两个链表，找出它们的第一个公共结点。
+
+实现如下：
+//节点结构体定义
+struct ListNode 
+&#123;
+	int val;
+	struct ListNode *next;
+	ListNode(int x) : val(x), next(NULL) &#123;&#125;
+&#125;;
+
+方法一
+//利用两个栈，从头开始遍历两个链表，将其节点的地址分别存入两个栈</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-07-01
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/07/01/reverse-pair-in-array/">剑指Offer——（35）数组中的逆序对</a>
+
+      <a href="/2020/07/01/reverse-pair-in-array/" class="index-excerpt">
+        
+        
+          
+        
+        <div>题目描述：
+
+在数组中的两个数字，如果前面一个数字大于后面的数字，则这两个数字组成一个逆序对。输入一个数组,求出这个数组中的逆序对的总数P。并将P对1000000007取模的结果输出。即输出P%1000000007
+
+输入描述：
+
+题目保证输入的数组中没有的相同的数字
+
+数据范围：
+
+对于%50的数据,size&lt;=10^4对于%75的数据,size&lt;=10^5对于%100的数据,siz</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-07-01
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/07/01/the-first-character-position-that-appears-only-once/">剑指Offer——（34）第一个只出现一次的字符位置</a>
+
+      <a href="/2020/07/01/the-first-character-position-that-appears-only-once/" class="index-excerpt">
+        
+        
+          
+        
+        <div>题目描述：
+
+在一个字符串(1&lt;=字符串长度&lt;=10000，全部由字母组成)中找到第一个只出现一次的字符,并返回它的位置
+
+实现如下：
+//在线测试用例非常的坑。。。→_→
+//1.需要返回的是下标
+//2.测试用例中区分大小写
+//将所有的字符元素存放到&lt;key, value&gt;中，字符元素值为key，自定义结构体indexAndTime为value
+//indexAndT</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-07-01
           </div>
         
         
@@ -671,7 +674,7 @@ UDP是面向报文的。对应用程序交下来的报文在添加首部后就�
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/3/"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/5/"><i class="iconfont icon-arrowright"></i></a>
+      <a class="extend prev" rel="prev" href="/page/3/"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/5/"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
   

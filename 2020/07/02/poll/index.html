@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/self.jpeg">
+  <link rel="icon" type="image/png" href="/img/self.jpeg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>IO复用——poll机制内核源代码剖析 - kongkong</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>kongkong</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-07-02 21:35">
+      2020年7月2日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.6k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      22
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2020年7月2日 晚上
+                
+              </p>
+            
+            <article class="markdown-body">
+              <p><strong>* <em>select内核源代码已经剖析了，但是有个问题还没有解决。。。面对每一种文件描述符如何进行查询？这就和poll机制有关了。。。这篇就来看看poll机制内核源代码。。。→_→</em> *</strong></p>
+<p><strong>了解select底层实现请戳传送门——</strong><a href="http://blog.csdn.net/kongkongkkk/article/details/77099442" target="_blank" rel="noopener"><strong>IO复用——select内核源代码剖析</strong></a></p>
+<p><strong>每一个进程都会有一个与之对应的files_struct结构，files_struct结构中存储着该进程打开的文件的集合</strong></p>
+<pre><code class="hljs cpp"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">files_struct</span> &#123;</span>
+	<span class="hljs-keyword">atomic_t</span> count;
+	<span class="hljs-keyword">rwlock_t</span> file_lock;
+	<span class="hljs-keyword">int</span> max_fds;
+	<span class="hljs-keyword">int</span> max_fdset;
+	<span class="hljs-keyword">int</span> next_fd;
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file</span> ** <span class="hljs-title">fd</span>;</span>	<span class="hljs-comment">/* current fd array */</span> <span class="hljs-comment">//fd指向fd_array</span>
+	fd_set *close_on_exec;
+	fd_set *open_fds;
+	fd_set close_on_exec_init;
+	fd_set open_fds_init;
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file</span> * <span class="hljs-title">fd_array</span>[<span class="hljs-title">NR_OPEN_DEFAULT</span>];</span> <span class="hljs-comment">//记录该进程打开文件的数组集合</span>
+&#125;;</code></pre>
+
+<p><strong>每一个文件都有与之对应的file_operations类型的文件操作方法</strong></p>
+<pre><code class="hljs cpp"><span class="hljs-comment">//linux-2.4.0\include\linux\Fs.h</span>
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file</span> &#123;</span>
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">list_head</span>	<span class="hljs-title">f_list</span>;</span>
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">dentry</span>		*<span class="hljs-title">f_dentry</span>;</span> <span class="hljs-comment">//dentry结构中的d_inode结构中记录着本文件的等待队列，即监听本文件的进程对应的wait_queue_t结构</span>
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">vfsmount</span>         *<span class="hljs-title">f_vfsmnt</span>;</span>
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_operations</span>	*<span class="hljs-title">f_op</span>;</span> <span class="hljs-comment">//这是很关键的部分，它决定了poll机制是否可用</span>
+	<span class="hljs-keyword">atomic_t</span>		f_count;
+	<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span> 		f_flags;
+	<span class="hljs-keyword">mode_t</span>			f_mode;
+	<span class="hljs-keyword">loff_t</span>			f_pos;
+	<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">long</span> 		f_reada, f_ramax, f_raend, f_ralen, f_rawin;
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">fown_struct</span>	<span class="hljs-title">f_owner</span>;</span>
+	<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span>		f_uid, f_gid;
+	<span class="hljs-keyword">int</span>			f_error;
+
+	<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">long</span>		f_version;
+
+	<span class="hljs-comment">/* needed for tty driver, and maybe others */</span>
+	<span class="hljs-keyword">void</span>			*private_data;
+&#125;;</code></pre>
+
+<p><strong>对文件的操作方法有很多种，而每一种实现在机制上都使用回调函数的方法，其中就包括一种poll操作的回调函数</strong></p>
+<pre><code class="hljs rust"><span class="hljs-comment">//linux-2.4.0\include\linux\Fs.h</span>
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_operations</span></span> &#123;
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">module</span></span> *owner;
+	loff_t (*llseek) (<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file</span></span> *, loff_t, int);
+	ssize_t (*read) (<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file</span></span> *, <span class="hljs-built_in">char</span> *, size_t, loff_t *);
+	ssize_t (*write) (<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file</span></span> *, <span class="hljs-keyword">const</span> <span class="hljs-built_in">char</span> *, size_t, loff_t *);
+	int (*readdir) (<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file</span></span> *, void *, filldir_t);
+	unsigned int (*poll) (<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file</span></span> *, <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">poll_table_struct</span></span> *); <span class="hljs-comment">//poll操作所对应的回调函数，函数的具体实现和文件的类型有关，如果文件不支持poll操作也就无法在select中使用</span>
+	int (*ioctl) (<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">inode</span></span> *, <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file</span></span> *, unsigned int, unsigned long);
+	int (*mmap) (<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file</span></span> *, <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">vm_area_struct</span></span> *);
+	int (*open) (<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">inode</span></span> *, <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file</span></span> *);
+	int (*flush) (<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file</span></span> *);
+	int (*release) (<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">inode</span></span> *, <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file</span></span> *);
+	int (*fsync) (<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file</span></span> *, <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">dentry</span></span> *, int datasync);
+	int (*fasync) (int, <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file</span></span> *, int);
+	int (*lock) (<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file</span></span> *, int, <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_lock</span></span> *);
+	ssize_t (*readv) (<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file</span></span> *, <span class="hljs-keyword">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">iovec</span></span> *, unsigned long, loff_t *);
+	ssize_t (*writev) (<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file</span></span> *, <span class="hljs-keyword">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">iovec</span></span> *, unsigned long, loff_t *);
+&#125;;</code></pre>
+
+<p>在每一种文件的poll操作回调函数中都会调用有poll_wait函数，目的是将监听本文件的进程的对应wait_queue_t结构，添加进本文件的等待队列中</p>
+<pre><code class="hljs reasonml"><span class="hljs-comment">//linux-2.4.0\arch\i386\math-emu\Poly.h</span>
+<span class="hljs-comment">//wait_address记录着本文件的等待队列队头的地址</span>
+<span class="hljs-comment">//p指向该进程的poll_table结构</span>
+extern inline void poll<span class="hljs-constructor">_wait(<span class="hljs-params">struct</span> <span class="hljs-params">file</span> <span class="hljs-operator">*</span> <span class="hljs-params">filp</span>, <span class="hljs-params">wait_queue_head_t</span> <span class="hljs-operator">*</span> <span class="hljs-params">wait_address</span>, <span class="hljs-params">poll_table</span> <span class="hljs-operator">*</span><span class="hljs-params">p</span>)</span>
+&#123;
+	<span class="hljs-keyword">if</span> (p<span class="hljs-operator"> &amp;&amp; </span>wait_address) 
+		<span class="hljs-constructor">__pollwait(<span class="hljs-params">filp</span>, <span class="hljs-params">wait_address</span>, <span class="hljs-params">p</span>)</span>;
+&#125;</code></pre>
+
+<pre><code class="hljs reasonml"><span class="hljs-comment">//linux-2.4.0\arch\i386\math-emu\Poly.h</span>
+void <span class="hljs-constructor">__pollwait(<span class="hljs-params">struct</span> <span class="hljs-params">file</span> <span class="hljs-operator">*</span> <span class="hljs-params">filp</span>, <span class="hljs-params">wait_queue_head_t</span> <span class="hljs-operator">*</span> <span class="hljs-params">wait_address</span>, <span class="hljs-params">poll_table</span> <span class="hljs-operator">*</span><span class="hljs-params">p</span>)</span>
+&#123;
+	<span class="hljs-comment">//table记录当前进程由poll_table_page结构组成的单链的第一个可用结点</span>
+	<span class="hljs-keyword">struct</span> poll_table_page *table = p-&gt;table;
+	
+	<span class="hljs-comment">//如果单链不存在或所有poll_table_page结构的页面都被poll_table_entry结构使用，即没有空闲空间时</span>
+	<span class="hljs-keyword">if</span> (!table<span class="hljs-operator"> || </span><span class="hljs-constructor">POLL_TABLE_FULL(<span class="hljs-params">table</span>)</span>) &#123;
+		<span class="hljs-keyword">struct</span> poll_table_page *new_table;
+		<span class="hljs-comment">//为其分配一个新的页面，扩充其容量</span>
+		new_table = (<span class="hljs-keyword">struct</span> poll_table_page *) <span class="hljs-constructor">__get_free_page(GFP_KERNEL)</span>;
+		<span class="hljs-keyword">if</span> (!new_table) &#123;
+			p-&gt;error = -ENOMEM;
+			<span class="hljs-constructor">__set_current_state(TASK_RUNNING)</span>;
+			return;
+		&#125;
+		<span class="hljs-comment">//设置新poll_table_page结构页面的第一个可用poll_table_entry结构为poll_table_entry结构数组的第一个元素</span>
+		new_table-&gt;entry = new_table-&gt;entries;
+		<span class="hljs-comment">//poll_table_page结构页面的单链表进行更新</span>
+		new_table-&gt;next = table;
+		<span class="hljs-comment">//当前进程的poll_table结构成员进行更新</span>
+		p-&gt;table = new_table;
+		table = new_table;
+	&#125;
+
+	<span class="hljs-comment">/* Add a new entry */</span>
+	&#123;
+		<span class="hljs-comment">//获取当前进程的第一个空闲poll_table_entry结构</span>
+		<span class="hljs-keyword">struct</span> poll_table_entry<span class="hljs-operator"> * </span>entry = table-&gt;entry;
+		<span class="hljs-comment">//更新第一个空闲poll_table_entry结构</span>
+		table-&gt;entry = entry+<span class="hljs-number">1</span>;
+		<span class="hljs-comment">//对该文件的引用计数加1</span>
+	 	get<span class="hljs-constructor">_file(<span class="hljs-params">filp</span>)</span>;
+	 	<span class="hljs-comment">//将此poll_table_entry结构的filp成员设置为该文件</span>
+	 	entry-&gt;filp = filp;
+	 	<span class="hljs-comment">//将此poll_table_entry结构的wait_address成员，即等待队列的队头设置为该文件的等待队列的队头</span>
+		entry-&gt;wait_address = wait_address;
+		<span class="hljs-comment">//将此poll_table_entry结构的wait成员，即每个进程对应的wait_queue_t结构，将其中的task_struck结构设置为当前进程的task_struck</span>
+		<span class="hljs-comment">//init_waitqueue_entry定义在下面</span>
+		init<span class="hljs-constructor">_waitqueue_entry(&amp;<span class="hljs-params">entry</span>-&gt;<span class="hljs-params">wait</span>, <span class="hljs-params">current</span>)</span>;
+		<span class="hljs-comment">//将该进程对应的wait_queue_t结构链入该文件的等待队列中</span>
+		<span class="hljs-comment">//add_wait_queue定义在下面</span>
+		add<span class="hljs-constructor">_wait_queue(<span class="hljs-params">wait_address</span>,&amp;<span class="hljs-params">entry</span>-&gt;<span class="hljs-params">wait</span>)</span>;
+	&#125;
+&#125;</code></pre>
+
+<pre><code class="hljs cpp"><span class="hljs-comment">//linux-2.4.0\include\linux\Wait.h</span>
+<span class="hljs-comment">//在init_waitqueue_entry中，将wait_queue_t结构中p设置为指向当前进程task_struck结构，所以当驱动设备唤醒该文件的等待队列中每一个wait_queue_t结构对应的进程时，就可以从wait_queue_t结构中的p成员找到进程的task_struck结构</span>
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-keyword">void</span> <span class="hljs-title">init_waitqueue_entry</span><span class="hljs-params">(<span class="hljs-keyword">wait_queue_t</span> *q,</span></span>
+<span class="hljs-function"><span class="hljs-params">				 struct task_struct *p)</span></span>
+<span class="hljs-function"></span>&#123;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WAITQUEUE_DEBUG</span>
+	<span class="hljs-keyword">if</span> (!q || !p)
+		WQ_BUG();
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+	q-&gt;flags = <span class="hljs-number">0</span>; <span class="hljs-comment">//wait_queue_t结构的flags置为0</span>
+	q-&gt;task = p;<span class="hljs-comment">//wait_queue_t结构的p设置为指向当前进程的task_struck结构</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WAITQUEUE_DEBUG</span>
+	q-&gt;__magic = (<span class="hljs-keyword">long</span>)&amp;q-&gt;__magic;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+&#125;</code></pre>
+
+<pre><code class="hljs reasonml"><span class="hljs-comment">//linux-2.4.0\kernel\Fork.c</span>
+void add<span class="hljs-constructor">_wait_queue(<span class="hljs-params">wait_queue_head_t</span> <span class="hljs-operator">*</span><span class="hljs-params">q</span>, <span class="hljs-params">wait_queue_t</span> <span class="hljs-operator">*</span> <span class="hljs-params">wait</span>)</span>
+&#123;
+	unsigned long flags;
+
+	wq<span class="hljs-constructor">_write_lock_irqsave(&amp;<span class="hljs-params">q</span>-&gt;<span class="hljs-params">lock</span>, <span class="hljs-params">flags</span>)</span>;
+	wait-&gt;flags = <span class="hljs-number">0</span>; <span class="hljs-comment">//wait_queue_t结构的flags置为0</span>
+	<span class="hljs-constructor">__add_wait_queue(<span class="hljs-params">q</span>, <span class="hljs-params">wait</span>)</span>;<span class="hljs-comment">//将该进程对应的wait_queue_t结构链入该文件的等待队列中</span>
+	wq<span class="hljs-constructor">_write_unlock_irqrestore(&amp;<span class="hljs-params">q</span>-&gt;<span class="hljs-params">lock</span>, <span class="hljs-params">flags</span>)</span>;
+&#125;</code></pre>
+
+<p><strong>通过对Linux内核源代码的剖析，我们对poll机制已经有了深入地了解，现在我们再回到select中，解决最后的问题</strong></p>
+<pre><code class="hljs reasonml"><span class="hljs-comment">//linux-2.4.0\fs\Select.c（部分截取）</span>
+	......
+	for (;;) &#123;
+		set<span class="hljs-constructor">_current_state(TASK_INTERRUPTIBLE)</span>;
+		for (i = <span class="hljs-number">0</span> ; i &lt; n; i++) &#123;
+			unsigned long bit = <span class="hljs-constructor">BIT(<span class="hljs-params">i</span>)</span>;
+			unsigned long mask;
+			<span class="hljs-keyword">struct</span> file *file; <span class="hljs-comment">//记录文件结构体</span>
+
+			off = i<span class="hljs-operator"> / </span>__NFDBITS;
+			<span class="hljs-keyword">if</span> (!(bit &amp; <span class="hljs-constructor">BITS(<span class="hljs-params">fds</span>, <span class="hljs-params">off</span>)</span>))
+				continue;
+			file = fget(i); <span class="hljs-comment">//利用文件描述符从该进程打开的文件描述符数组中，获取对应的文件结构体</span>
+			mask = POLLNVAL;
+			<span class="hljs-keyword">if</span> (file) &#123;
+				mask = DEFAULT_POLLMASK;
+				<span class="hljs-comment">//此时需要判断该文件是否支持操作和poll操作</span>
+				<span class="hljs-keyword">if</span> (file-&gt;f_op<span class="hljs-operator"> &amp;&amp; </span>file-&gt;f_op-&gt;poll)
+					<span class="hljs-comment">//如果支持，就调用该类型文件的poll操作所对应的回调函数，并传入该文件结构体和该进程所对应的wait_queue_t结构，mask记录返回值</span>
+					<span class="hljs-comment">//这一操作就是在剖析select时提到的查询，所以真正的查询由poll回调函数完成</span>
+					mask = file-&gt;f_op-&gt;poll(file, wait);
+				fput(file);
+			&#125;
+			<span class="hljs-keyword">if</span> ((mask &amp; POLLIN_SET)<span class="hljs-operator"> &amp;&amp; </span><span class="hljs-constructor">ISSET(<span class="hljs-params">bit</span>, <span class="hljs-params">__IN</span>(<span class="hljs-params">fds</span>,<span class="hljs-params">off</span>)</span>)) &#123;
+				<span class="hljs-constructor">SET(<span class="hljs-params">bit</span>, <span class="hljs-params">__RES_IN</span>(<span class="hljs-params">fds</span>,<span class="hljs-params">off</span>)</span>);
+				retval++;
+				wait = NULL;
+			&#125;
+			<span class="hljs-keyword">if</span> ((mask &amp; POLLOUT_SET)<span class="hljs-operator"> &amp;&amp; </span><span class="hljs-constructor">ISSET(<span class="hljs-params">bit</span>, <span class="hljs-params">__OUT</span>(<span class="hljs-params">fds</span>,<span class="hljs-params">off</span>)</span>)) &#123;
+				<span class="hljs-constructor">SET(<span class="hljs-params">bit</span>, <span class="hljs-params">__RES_OUT</span>(<span class="hljs-params">fds</span>,<span class="hljs-params">off</span>)</span>);
+				retval++;
+				wait = NULL;
+			&#125;
+			<span class="hljs-keyword">if</span> ((mask &amp; POLLEX_SET)<span class="hljs-operator"> &amp;&amp; </span><span class="hljs-constructor">ISSET(<span class="hljs-params">bit</span>, <span class="hljs-params">__EX</span>(<span class="hljs-params">fds</span>,<span class="hljs-params">off</span>)</span>)) &#123;
+				<span class="hljs-constructor">SET(<span class="hljs-params">bit</span>, <span class="hljs-params">__RES_EX</span>(<span class="hljs-params">fds</span>,<span class="hljs-params">off</span>)</span>);
+				retval++;
+				wait = NULL;
+			&#125;
+		&#125;
+		wait = NULL;
+		<span class="hljs-keyword">if</span> (retval<span class="hljs-operator"> || </span>!__timeout<span class="hljs-operator"> || </span>signal<span class="hljs-constructor">_pending(<span class="hljs-params">current</span>)</span>)
+			break;
+		<span class="hljs-keyword">if</span>(table.error) &#123;
+			retval = table.error;
+			break;
+		&#125;
+		__timeout = schedule<span class="hljs-constructor">_timeout(<span class="hljs-params">__timeout</span>)</span>;
+	&#125;
+	......</code></pre>
+
+<p><strong>* <em>下一篇就来总结epoll喽。。。睡觉。。。→_→</em> *</strong></p>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Linux/">Linux</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Kernel/">Kernel</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/07/02/vector-expansion/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">vector扩容问题源代码剖析</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/07/02/select-function-application-example/">
+                        <span class="hidden-mobile">IO复用——select函数应用实例</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "IO复用——poll机制内核源代码剖析&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

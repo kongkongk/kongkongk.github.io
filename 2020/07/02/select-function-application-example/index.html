@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/self.jpeg">
+  <link rel="icon" type="image/png" href="/img/self.jpeg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>IO复用——select函数应用实例 - kongkong</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>kongkong</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-07-02 21:33">
+      2020年7月2日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      17
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2020年7月2日 晚上
+                
+              </p>
+            
+            <article class="markdown-body">
+              <p><strong>* <em>趁着刚刚总结完select的内核源码。。。现在就来应用一下。。。→_→</em> *</strong></p>
+<p><strong>深入理解select底层原理请戳传送门——</strong><a href="http://blog.csdn.net/kongkongkkk/article/details/77099442" target="_blank" rel="noopener"><strong>IO复用——select内核源代码剖析</strong></a></p>
+<p><strong>本次网络通信socket套接字是基于TCP协议的可靠传输，因为只开了一台虚拟机。。。所以服务器IP地址采用回环地址——127.0.0.1，服务器端口号port为6000</strong></p>
+<p><strong>server</strong></p>
+<pre><code class="hljs arduino"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;unistd.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;assert.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;string.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;sys/select.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;sys/time.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;sys/socket.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;netinet/in.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;arpa/inet.h&gt;</span></span>
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> MAX_FD 10 <span class="hljs-comment">//设定最多监听的文件描述符的数量为10</span></span>
+<span class="hljs-keyword">int</span> fds[MAX_FD]; <span class="hljs-comment">//存储多个文件描述符的数组</span>
+
+<span class="hljs-comment">//初始化文件描述符数组</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">fds_init</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>;
+	<span class="hljs-keyword">for</span>(;i&lt;MAX_FD;i++)
+	&#123;
+		fds[i] = <span class="hljs-number">-1</span>; <span class="hljs-comment">//将所有的元素初始化为-1</span>
+	&#125;
+&#125;
+
+<span class="hljs-comment">//在文件描述符数组中寻找第一个值为-1的元素，即此元素存放新添加的文件描述符</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">fds_add</span><span class="hljs-params">(<span class="hljs-keyword">int</span> fd)</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>;
+	<span class="hljs-keyword">for</span>(;i&lt;MAX_FD;i++)
+	&#123;
+		<span class="hljs-keyword">if</span>(fds[i] == <span class="hljs-number">-1</span>)
+		&#123;
+			fds[i] = fd;
+			<span class="hljs-keyword">break</span>;
+		&#125;
+	&#125;
+&#125;
+
+<span class="hljs-comment">//在文件描述符数组中寻找指定值的元素，将其删除，即将该元素置为-1</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">fds_del</span><span class="hljs-params">(<span class="hljs-keyword">int</span> fd)</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>;
+	<span class="hljs-keyword">for</span>(;i&lt;MAX_FD;i++)
+	&#123;
+		<span class="hljs-keyword">if</span>(fds[i] == fd)
+		&#123;
+			fds[i] = <span class="hljs-number">-1</span>;
+			<span class="hljs-keyword">break</span>;
+		&#125;
+	&#125;
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">int</span> sockfd = socket(AF_INET,SOCK_STREAM,<span class="hljs-number">0</span>);
+	assert(sockfd != <span class="hljs-number">-1</span>);
+
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">sockaddr_in</span> <span class="hljs-title">saddr</span>,<span class="hljs-title">caddr</span>;</span>
+	<span class="hljs-built_in">memset</span>(&amp;saddr,<span class="hljs-number">0</span>,<span class="hljs-keyword">sizeof</span>(saddr));
+	saddr.sin_family = AF_INET;
+	saddr.sin_port = htons(<span class="hljs-number">6000</span>);
+	saddr.sin_addr.s_addr = inet_addr(<span class="hljs-string">"127.0.0.1"</span>);
+
+	<span class="hljs-keyword">int</span> res = bind(sockfd,(struct sockaddr *)&amp;saddr,<span class="hljs-keyword">sizeof</span>(saddr));
+	assert(res != <span class="hljs-number">-1</span>);
+
+	<span class="hljs-built_in">listen</span>(sockfd,<span class="hljs-number">5</span>);
+	
+	<span class="hljs-comment">//这里只对读事件进行验证，所以只定义一个fd_set结构</span>
+	fd_set fdset;
+	<span class="hljs-comment">//初始化存放文件描述符的数组</span>
+	fds_init();
+
+	fds_add(sockfd); <span class="hljs-comment">//将socket也作为要监听的文件描述符</span>
+	
+	<span class="hljs-comment">//服务器开始进入while循环</span>
+	<span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)
+	&#123;
+		<span class="hljs-comment">//因为调用select后，有可能改变文件描述符在fdset位图中的标志，所以每一次开始监听之前都要重新轻灵标志</span>
+		FD_ZERO(&amp;fdset);
+		<span class="hljs-keyword">int</span> maxfd = <span class="hljs-number">-1</span>; <span class="hljs-comment">//记录当前要监听的文件描述符的最大值</span>
+
+		<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>;
+		<span class="hljs-keyword">for</span>(; i &lt; MAX_FD; ++i)
+		&#123;
+			<span class="hljs-keyword">if</span>(fds[i] != <span class="hljs-number">-1</span>) <span class="hljs-comment">//如果文件描述符数组中的元素不为-1，就将此元素设置到fds位图中</span>
+			&#123;
+				FD_SET(fds[i], &amp;fdset);
+				<span class="hljs-keyword">if</span>(fds[i] &gt; maxfd)
+				&#123;
+					maxfd = fds[i];
+				&#125;
+			&#125;
+		&#125;
+		<span class="hljs-comment">//设置浅睡眠时间为5毫秒整</span>
+		<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">timeval</span> <span class="hljs-title">tv</span> = &#123;</span><span class="hljs-number">5</span>,<span class="hljs-number">0</span>&#125;;
+		
+		<span class="hljs-comment">//返回值为一共就绪事件的总和</span>
+		<span class="hljs-keyword">int</span> n = select(maxfd + <span class="hljs-number">1</span>, &amp;fdset, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, &amp;tv);
+		<span class="hljs-keyword">if</span>(n == <span class="hljs-number">-1</span>) <span class="hljs-comment">//如果返回值为-1，表示出错</span>
+		&#123;
+			perror(<span class="hljs-string">"select error"</span>);
+			<span class="hljs-keyword">continue</span>;
+		&#125;
+		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(n == <span class="hljs-number">0</span>) <span class="hljs-comment">//如果返回值为0，表示睡眠期间没有事件就绪，继续循环监听</span>
+		&#123;
+			<span class="hljs-built_in">printf</span>(<span class="hljs-string">"time out\n"</span>);
+			<span class="hljs-keyword">continue</span>;
+		&#125;
+		<span class="hljs-keyword">else</span>
+		&#123;
+			<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>;
+			<span class="hljs-comment">//再一次遍历文件描述符数组，查看哪一个是就绪事件</span>
+			<span class="hljs-keyword">for</span>(; i &lt; MAX_FD; ++i)
+			&#123;
+				<span class="hljs-keyword">if</span>(fds[i] == <span class="hljs-number">-1</span>)
+				&#123;
+					<span class="hljs-keyword">continue</span>;
+				&#125;
+				<span class="hljs-comment">//测试此文件描述符元素在位图中对应的位是否被设置</span>
+				<span class="hljs-keyword">if</span>(FD_ISSET(fds[i], &amp;fdset))
+				&#123;
+					<span class="hljs-comment">//如果就绪的是sockfd，表示有了新连接</span>
+					<span class="hljs-keyword">if</span>(sockfd == fds[i])
+					&#123;
+						<span class="hljs-keyword">int</span> len = <span class="hljs-keyword">sizeof</span>(caddr);
+						<span class="hljs-keyword">int</span> c = accept(sockfd, (struct sockaddr *)&amp;caddr, &amp;len);
+
+						<span class="hljs-keyword">if</span>(c &lt; <span class="hljs-number">0</span>)
+						&#123;
+							<span class="hljs-keyword">continue</span>;
+						&#125;
+						fds_add(c);
+					&#125;
+					<span class="hljs-keyword">else</span> <span class="hljs-comment">//否则就读取就绪事件的数据</span>
+					&#123;
+						<span class="hljs-keyword">char</span> buff[<span class="hljs-number">128</span>] = &#123;<span class="hljs-number">0</span>&#125;;
+						<span class="hljs-comment">//如果返回值小于等于0，表示连接中断或出错</span>
+						<span class="hljs-keyword">if</span>(recv(fds[i], buff, <span class="hljs-number">127</span>, <span class="hljs-number">0</span>) &lt;= <span class="hljs-number">0</span>)
+						&#123;
+							<span class="hljs-comment">//此时需要关闭该连接</span>
+							<span class="hljs-built_in">close</span>(fds[i]);
+							<span class="hljs-comment">//并从文件描述符数组中删除此元素</span>
+							fds_del(fds[i]);
+							<span class="hljs-built_in">printf</span>(<span class="hljs-string">"one client over\n"</span>);
+							<span class="hljs-keyword">continue</span>;
+						&#125;
+						<span class="hljs-built_in">printf</span>(<span class="hljs-string">"read:%s\n"</span>,buff);
+						<span class="hljs-comment">//读取全部数据后，向客户端发送"ok"</span>
+						send(fds[i], <span class="hljs-string">"ok"</span>, <span class="hljs-number">2</span>, <span class="hljs-number">0</span>);
+					&#125;
+				&#125;
+			&#125;
+		&#125;
+	&#125;
+
+	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;</code></pre>
+
+<p><strong>client</strong></p>
+<pre><code class="hljs arduino"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;stdio.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;unistd.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;string.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;assert.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;sys/socket.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;arpa/inet.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;netinet/in.h&gt;</span></span>
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">int</span> sockfd = socket(AF_INET,SOCK_STREAM,<span class="hljs-number">0</span>);
+	assert(sockfd != <span class="hljs-number">-1</span>);
+
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">sockaddr_in</span> <span class="hljs-title">saddr</span>,<span class="hljs-title">caddr</span>;</span>
+	<span class="hljs-built_in">memset</span>(&amp;saddr,<span class="hljs-number">0</span>,<span class="hljs-keyword">sizeof</span>(saddr));
+	saddr.sin_family = AF_INET;
+	saddr.sin_port = htons(<span class="hljs-number">6000</span>);
+	saddr.sin_addr.s_addr = inet_addr(<span class="hljs-string">"127.0.0.1"</span>);
+
+	<span class="hljs-keyword">int</span> res = <span class="hljs-built_in">connect</span>(sockfd,(struct sockaddr*)&amp;saddr,<span class="hljs-keyword">sizeof</span>(saddr));
+	assert(res != <span class="hljs-number">-1</span>);
+	<span class="hljs-built_in">listen</span>(sockfd,<span class="hljs-number">5</span>);
+	<span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)
+	&#123;
+		<span class="hljs-built_in">printf</span>(<span class="hljs-string">"input:\n"</span>);
+		<span class="hljs-comment">//输入缓冲区</span>
+		<span class="hljs-keyword">char</span> buff[<span class="hljs-number">128</span>] = &#123;<span class="hljs-number">0</span>&#125;;
+		fgets(buff,<span class="hljs-number">128</span>,<span class="hljs-built_in">stdin</span>);
+	    
+	    <span class="hljs-comment">//如果输入的数据为"end"，表示要关闭客户端，此时跳出循环</span>
+  		<span class="hljs-keyword">if</span>(<span class="hljs-built_in">strncmp</span>(buff,<span class="hljs-string">"end"</span>,<span class="hljs-number">3</span> ) == <span class="hljs-number">0</span>)
+		&#123; 
+			<span class="hljs-keyword">break</span>;
+		&#125;
+		<span class="hljs-comment">//否则就发送所输入的数据</span>
+		send(sockfd,buff,<span class="hljs-built_in">strlen</span>(buff),<span class="hljs-number">0</span>);
+		<span class="hljs-comment">//再将缓冲区清零</span>
+		<span class="hljs-built_in">memset</span>(buff,<span class="hljs-number">0</span>,<span class="hljs-number">128</span>);
+		<span class="hljs-comment">//接收服务器端的回复</span>
+		recv(sockfd,buff,<span class="hljs-number">127</span>,<span class="hljs-number">0</span>);
+		<span class="hljs-built_in">printf</span>(<span class="hljs-string">"buff = %s\n"</span>,buff);
+	&#125;
+	<span class="hljs-comment">//关闭该连接</span>
+    <span class="hljs-built_in">close</span>(sockfd); 
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;</code></pre>
+
+<p><strong>运行结果</strong></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODE2MjMwMzE1MjQ0?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="IO复用select"></p>
+<p><strong>* <em>其实这些代码是之前写的。。。一会就来总结poll机制。。。→_→</em> *</strong></p>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Linux/">Linux</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Kernel/">Kernel</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/07/02/poll/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">IO复用——poll机制内核源代码剖析</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/07/01/rvalue-reference-and-transfer-semantics/">
+                        <span class="hidden-mobile">【转】C++11标准新特性：右值引用与转移语义</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "IO复用——select函数应用实例&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

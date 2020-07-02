@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/self.jpeg">
+  <link rel="icon" type="image/png" href="/img/self.jpeg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>IO复用——epoll内核源代码剖析 - kongkong</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>kongkong</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-07-02 21:40">
+      2020年7月2日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      5.8k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      86
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2020年7月2日 晚上
+                
+              </p>
+            
+            <article class="markdown-body">
+              <p><strong>* <em>最近拖延症又犯了。。。嗯。。。废话不多说。。。直接上硬货。。。→_→</em> *</strong></p>
+<p><strong>比较select系统调用请戳传送门——</strong><a href="http://blog.csdn.net/kongkongkkk/article/details/77099442" target="_blank" rel="noopener"><strong>select内核源代码剖析</strong></a></p>
+<p><strong>了解poll机制请戳传送门——</strong><a href="http://blog.csdn.net/kongkongkkk/article/details/77273199" target="_blank" rel="noopener"><strong>poll机制内核源代码剖析</strong></a></p>
+<ul>
+<li><strong>epoll_create</strong></li>
+</ul>
+<p>这是Linux_3.0.12内核版本。。。和之前剖析的2.4.0内核版本的系统调用有一些差别。。。所以直接进SYSCALL_DEFINE1。。。</p>
+<pre><code class="hljs gauss"><span class="hljs-comment">//为每一个监听的事件都分配一个epitem数据结构</span>
+<span class="hljs-keyword">struct</span> <span class="hljs-type">epitem</span> &#123;
+	<span class="hljs-comment">/* RB tree node used to link this structure to the eventpoll RB tree */</span>
+	<span class="hljs-comment">//每个epitem都存放在eventpoll中以rbr为根的红黑树中</span>
+	<span class="hljs-comment">//rbn记录epitem在红黑树中的结点</span>
+	<span class="hljs-keyword">struct</span> <span class="hljs-type">rb_node</span> rbn;
+
+	<span class="hljs-comment">/* List header used to link this structure to the eventpoll ready list */</span>
+	<span class="hljs-comment">//每个就绪事件所对应的epitem都链入了eventpoll中的rdllink</span>
+	<span class="hljs-comment">//rdllink记录就绪链表头</span>
+	<span class="hljs-keyword">struct</span> <span class="hljs-type">list_head</span> rdllink;
+
+	<span class="hljs-comment">/*</span>
+<span class="hljs-comment">	 * Works together "struct eventpoll"-&gt;ovflist in keeping the</span>
+<span class="hljs-comment">	 * single linked chain of items.</span>
+<span class="hljs-comment">	 */</span>
+	<span class="hljs-comment">//记录每个epitem在eventpoll数据结构中的ovflist的下一个epitem</span>
+	<span class="hljs-keyword">struct</span> <span class="hljs-type">epitem</span> *next;
+
+	<span class="hljs-comment">/* The file descriptor information this item refers to */</span>
+	<span class="hljs-comment">//epoll_filefd数据结构记录epitem所对应的struct file和fd文件描述符</span>
+	<span class="hljs-keyword">struct</span> <span class="hljs-type">epoll_filefd</span> ffd;
+
+	<span class="hljs-comment">/* Number of active wait queue attached to poll operations */</span>
+	<span class="hljs-comment">//poll操作上的等待队列个数</span>
+	int nwait;
+
+	<span class="hljs-comment">/* List containing poll wait queues */</span>
+	<span class="hljs-comment">//包含等待队列对头的单链表</span>
+	<span class="hljs-keyword">struct</span> <span class="hljs-type">list_head</span> pwqlist;
+
+	<span class="hljs-comment">/* The "container" of this item */</span>
+	<span class="hljs-comment">//记录epitem所属哪一个eventpoll数据结构</span>
+	<span class="hljs-keyword">struct</span> <span class="hljs-type">eventpoll</span> *ep;
+
+	<span class="hljs-comment">/* List header used to link this item to the "struct file" items list */</span>
+	<span class="hljs-comment">//记录epitem所对应的struct file的单链表</span>
+	<span class="hljs-keyword">struct</span> <span class="hljs-type">list_head</span> fllink;
+
+	<span class="hljs-comment">/* The structure that describe the interested events and the source fd */</span>
+	<span class="hljs-comment">//记录epitem对应的epoll_event数据结构，epoll_event是epoll_ctl函数传入的参数 </span>
+	<span class="hljs-keyword">struct</span> <span class="hljs-type">epoll_event</span> event;
+&#125;;</code></pre>
+
+<pre><code class="hljs cpp"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">eventpoll</span> &#123;</span>
+	<span class="hljs-comment">/* Protect the access to this structure */</span>
+	<span class="hljs-keyword">spinlock_t</span> lock;
+
+	<span class="hljs-comment">/*</span>
+<span class="hljs-comment">	 * This mutex is used to ensure that files are not removed</span>
+<span class="hljs-comment">	 * while epoll is using them. This is held during the event</span>
+<span class="hljs-comment">	 * collection loop, the file cleanup path, the epoll file exit</span>
+<span class="hljs-comment">	 * code and the ctl operations.</span>
+<span class="hljs-comment">	 */</span>
+	<span class="hljs-comment">//对事件进行处理时，内核都都会持有这个互斥锁，因此在内核态中epoll的相关操作可以保证是线程安全的</span>
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">mutex</span> <span class="hljs-title">mtx</span>;</span>
+	
+	<span class="hljs-comment">/* Wait queue used by sys_epoll_wait() */</span>
+	<span class="hljs-comment">//调用sys_epoll_wait()时，存放当前进程的等待队列</span>
+	<span class="hljs-keyword">wait_queue_head_t</span> wq;
+
+	<span class="hljs-comment">/* Wait queue used by file-&gt;poll() */</span>
+	<span class="hljs-comment">//此等待队列存放监听事件的poll操作</span>
+	<span class="hljs-keyword">wait_queue_head_t</span> poll_wait;
+
+	<span class="hljs-comment">/* List of ready file descriptors */</span>
+	<span class="hljs-comment">//为每个事件都会分配一个epitem，当事件就绪时其所对应的epitem就会链入rdllist双向链表中</span>
+	<span class="hljs-comment">//epitem数据类型定义在上面</span>
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">list_head</span> <span class="hljs-title">rdllist</span>;</span>
+
+	<span class="hljs-comment">/* RB tree root used to store monitored fd structs */</span>
+	<span class="hljs-comment">//为每个事件都会分配一个epitem，所有的epitem都会存放在这个红黑树中</span>
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">rb_root</span> <span class="hljs-title">rbr</span>;</span>
+
+	<span class="hljs-comment">/*</span>
+<span class="hljs-comment">	 * This is a single linked list that chains all the "struct epitem" that</span>
+<span class="hljs-comment">	 * happened while transferring ready events to userspace w/out</span>
+<span class="hljs-comment">	 * holding -&gt;lock.</span>
+<span class="hljs-comment">	 */</span>
+	<span class="hljs-comment">//就绪事件在转移到用户空间时，发生了就绪事件，其所对应的epitem被链入ovflist双向链表中</span>
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">epitem</span> *<span class="hljs-title">ovflist</span>;</span>
+
+	<span class="hljs-comment">/* The user that created the eventpoll descriptor */</span>
+	<span class="hljs-comment">//保存用户信息，比如资源的上限值</span>
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">user_struct</span> *<span class="hljs-title">user</span>;</span>
+&#125;;</code></pre>
+
+<pre><code class="hljs mel">SYSCALL_DEFINE1(epoll_create1, <span class="hljs-keyword">int</span>, flags)
+&#123;
+	<span class="hljs-keyword">int</span> <span class="hljs-keyword">error</span>;
+	<span class="hljs-comment">//eventpoll是epoll中非常重要的数据结构！每一个epollfd都有一个对应的eventpoll数据结构</span>
+	<span class="hljs-comment">//eventpoll数据结构定义在上面</span>
+	struct eventpoll *ep = NULL;
+
+	<span class="hljs-comment">/* Check the EPOLL_* constant for consistency.  */</span>
+	BUILD_BUG_ON(EPOLL_CLOEXEC != O_CLOEXEC);
+
+	<span class="hljs-keyword">if</span> (flags &amp; ~EPOLL_CLOEXEC)
+		<span class="hljs-keyword">return</span> -EINVAL;
+	<span class="hljs-comment">/*</span>
+<span class="hljs-comment">	 * Create the internal data structure ("struct eventpoll").</span>
+<span class="hljs-comment">	 */</span>
+	<span class="hljs-comment">//初始化一个eventpoll数据结构</span>
+	<span class="hljs-comment">//ep_alloc定义在下面</span>
+	<span class="hljs-keyword">error</span> = ep_alloc(&amp;ep);
+	<span class="hljs-keyword">if</span> (<span class="hljs-keyword">error</span> &lt; <span class="hljs-number">0</span>)
+		<span class="hljs-keyword">return</span> <span class="hljs-keyword">error</span>;
+	<span class="hljs-comment">/*</span>
+<span class="hljs-comment">	 * Creates all the items needed to setup an eventpoll file. That is,</span>
+<span class="hljs-comment">	 * a file structure and a free file descriptor.</span>
+<span class="hljs-comment">	 */</span>
+	<span class="hljs-comment">//创建epollfd</span>
+	<span class="hljs-comment">//因为epollfd并不存在真正对应的文件，所以内核创建了一个虚拟的文件，并为这个虚拟文件分配struct file数据结构</span>
+	<span class="hljs-comment">//参数eventpoll_fops就是file operations，即文件支持的操作</span>
+	<span class="hljs-comment">//关于file operations在之前的poll机制内核源代码剖析一文中已经做了非常深入的解释</span>
+	<span class="hljs-comment">//这里简单解释一下，file operations中的每一个成员都是回调函数指针，对应每一种操作的具体实现</span>
+	<span class="hljs-comment">//epollfd文件实现了三种操作，即release、poll、llseek</span>
+	<span class="hljs-comment">//eventpoll_fops数据结构定义在下面</span>
+	<span class="hljs-comment">//参数ep就是epollfd所对应的eventpoll数据结构，在anon_inode_getfd中，将struct file的private_data成员赋值为ep的地址</span>
+	<span class="hljs-comment">//anon_inode_getfd定义在下面</span>
+	<span class="hljs-keyword">error</span> = anon_inode_getfd(<span class="hljs-string">"[eventpoll]"</span>, &amp;eventpoll_fops, ep,
+				 O_RDWR | (flags &amp; O_CLOEXEC));
+	<span class="hljs-keyword">if</span> (<span class="hljs-keyword">error</span> &lt; <span class="hljs-number">0</span>)
+		ep_free(ep);
+	<span class="hljs-comment">//返回epollfd的值</span>
+	<span class="hljs-keyword">return</span> <span class="hljs-keyword">error</span>;
+&#125;
+
+SYSCALL_DEFINE1(epoll_create, <span class="hljs-keyword">int</span>, <span class="hljs-keyword">size</span>)
+&#123;
+	<span class="hljs-comment">//实际上传入的size参数并没有什么用。。。</span>
+	<span class="hljs-keyword">if</span> (<span class="hljs-keyword">size</span> &lt;= <span class="hljs-number">0</span>)
+		<span class="hljs-keyword">return</span> -EINVAL;
+	<span class="hljs-comment">//sys_epoll_create1定义在上面</span>
+	<span class="hljs-keyword">return</span> sys_epoll_create1(<span class="hljs-number">0</span>);
+&#125;</code></pre>
+
+<pre><code class="hljs reasonml">static <span class="hljs-built_in">int</span> ep<span class="hljs-constructor">_alloc(<span class="hljs-params">struct</span> <span class="hljs-params">eventpoll</span> <span class="hljs-operator">**</span><span class="hljs-params">pep</span>)</span>
+&#123;
+	<span class="hljs-built_in">int</span> error;
+	<span class="hljs-keyword">struct</span> user_struct *user;
+	<span class="hljs-keyword">struct</span> eventpoll *ep;
+	
+	<span class="hljs-comment">//获取当前用户信息</span>
+	user = get<span class="hljs-constructor">_current_user()</span>;
+	error = -ENOMEM;
+	<span class="hljs-comment">//通过kmalloc为eventpoll数据结构分配内存空间</span>
+	ep = kzalloc(sizeof(*ep), GFP_KERNEL);
+	<span class="hljs-keyword">if</span> (unlikely(!ep))
+		goto free_uid;
+	
+	spin<span class="hljs-constructor">_lock_init(&amp;<span class="hljs-params">ep</span>-&gt;<span class="hljs-params">lock</span>)</span>;
+	mutex<span class="hljs-constructor">_init(&amp;<span class="hljs-params">ep</span>-&gt;<span class="hljs-params">mtx</span>)</span>;
+	<span class="hljs-comment">//初始化eventpoll中的wq</span>
+	init<span class="hljs-constructor">_waitqueue_head(&amp;<span class="hljs-params">ep</span>-&gt;<span class="hljs-params">wq</span>)</span>;
+	<span class="hljs-comment">//初始化eventpoll中的poll_wait</span>
+	init<span class="hljs-constructor">_waitqueue_head(&amp;<span class="hljs-params">ep</span>-&gt;<span class="hljs-params">poll_wait</span>)</span>;
+	<span class="hljs-comment">//初始化存放就绪事件所对应的epitem的双向链表</span>
+	<span class="hljs-constructor">INIT_LIST_HEAD(&amp;<span class="hljs-params">ep</span>-&gt;<span class="hljs-params">rdllist</span>)</span>;
+	<span class="hljs-comment">//初始化存放所有事件对应的epiitem的红黑树，初始值为NULL</span>
+	<span class="hljs-comment">//#define RB_ROOT	(struct rb_root) &#123; NULL, &#125;</span>
+	ep-&gt;rbr = RB_ROOT;
+	<span class="hljs-comment">//初始化转移到用户空间之前，存放就绪事件所对应的epitem的双向链表，初始值为-1L</span>
+	<span class="hljs-comment">//#define EP_UNACTIVE_PTR ((void *) -1L)</span>
+	ep-&gt;ovflist = EP_UNACTIVE_PTR;
+	<span class="hljs-comment">//初始化用户信息</span>
+	ep-&gt;user = user;
+	<span class="hljs-comment">//为eventpoll数据结构指针赋值</span>
+	*pep = ep;
+
+	return <span class="hljs-number">0</span>;
+
+free_uid:
+	free<span class="hljs-constructor">_uid(<span class="hljs-params">user</span>)</span>;
+	return error;
+&#125;</code></pre>
+
+<pre><code class="hljs arduino"><span class="hljs-comment">//由此可见epollfd所对应的的匿名文件只实现了三种操作</span>
+<span class="hljs-comment">//release操作为释放epollfd所对应的eventpoll数据结构</span>
+<span class="hljs-comment">//ep_eventpoll_release定义在下面</span>
+<span class="hljs-comment">//poll操作为事件就绪时，调用poll操作对应的回调函数对当前进程进行一些列操作</span>
+<span class="hljs-comment">//ep_eventpoll_poll定义先放一边，在epoll_wait中会详细解释</span>
+<span class="hljs-comment">//llseek操作为获取匿名文件的游标偏移</span>
+<span class="hljs-comment">//noop_llseek定义在下面</span>
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_operations</span> <span class="hljs-title">eventpoll_fops</span> = &#123;</span>
+	.<span class="hljs-built_in">release</span>	= ep_eventpoll_release, 
+	.poll		= ep_eventpoll_poll,
+	.llseek		= noop_llseek,
+&#125;;</code></pre>
+
+<pre><code class="hljs reasonml">static <span class="hljs-built_in">int</span> ep<span class="hljs-constructor">_eventpoll_release(<span class="hljs-params">struct</span> <span class="hljs-params">inode</span> <span class="hljs-operator">*</span><span class="hljs-params">inode</span>, <span class="hljs-params">struct</span> <span class="hljs-params">file</span> <span class="hljs-operator">*</span><span class="hljs-params">file</span>)</span>
+&#123;
+	<span class="hljs-comment">//通过struct file中的成员private_data得到epollfd所对应的eventpoll数据结构</span>
+	<span class="hljs-keyword">struct</span> eventpoll *ep = file-&gt;private_data;
+	<span class="hljs-comment">//释放eventpoll数据结构</span>
+	<span class="hljs-keyword">if</span> (ep)
+		ep<span class="hljs-constructor">_free(<span class="hljs-params">ep</span>)</span>;
+
+	return <span class="hljs-number">0</span>;
+&#125;</code></pre>
+
+<pre><code class="hljs reasonml">loff_t noop<span class="hljs-constructor">_llseek(<span class="hljs-params">struct</span> <span class="hljs-params">file</span> <span class="hljs-operator">*</span><span class="hljs-params">file</span>, <span class="hljs-params">loff_t</span> <span class="hljs-params">offset</span>, <span class="hljs-params">int</span> <span class="hljs-params">origin</span>)</span>
+&#123;
+	<span class="hljs-comment">//返回当前文件的偏移量</span>
+	return file-&gt;f_pos;
+&#125;</code></pre>
+
+<pre><code class="hljs mel"><span class="hljs-keyword">int</span> anon_inode_getfd(const char *name, const struct file_operations *fops,
+		     void *priv, <span class="hljs-keyword">int</span> flags)
+&#123;
+	<span class="hljs-keyword">int</span> <span class="hljs-keyword">error</span>, fd;
+	struct <span class="hljs-keyword">file</span> *<span class="hljs-keyword">file</span>;
+	<span class="hljs-comment">//分配文件描述符，即epollfd</span>
+	<span class="hljs-keyword">error</span> = get_unused_fd_flags(flags);
+	<span class="hljs-keyword">if</span> (<span class="hljs-keyword">error</span> &lt; <span class="hljs-number">0</span>)
+		<span class="hljs-keyword">return</span> <span class="hljs-keyword">error</span>;
+	fd = <span class="hljs-keyword">error</span>;
+	<span class="hljs-comment">//创建匿名文件</span>
+	<span class="hljs-keyword">file</span> = anon_inode_getfile(name, fops, priv, flags);
+	<span class="hljs-keyword">if</span> (IS_ERR(<span class="hljs-keyword">file</span>)) &#123;
+		<span class="hljs-keyword">error</span> = PTR_ERR(<span class="hljs-keyword">file</span>);
+		goto err_put_unused_fd;
+	&#125;
+	<span class="hljs-comment">//将文件描述符fd和匿名文件绑定，即将file_struct中的fdtable的成员fd[fd]赋值为file</span>
+	fd_install(fd, <span class="hljs-keyword">file</span>);
+	<span class="hljs-comment">//返回epollfd的值</span>
+	<span class="hljs-keyword">return</span> fd;
+
+err_put_unused_fd:
+	put_unused_fd(fd);
+	<span class="hljs-keyword">return</span> <span class="hljs-keyword">error</span>;
+&#125;</code></pre>
+
+<ul>
+<li><strong>epoll_ctl</strong></li>
+</ul>
+<pre><code class="hljs rust"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">epoll_event</span></span> &#123;
+	__<span class="hljs-built_in">u32</span> events; <span class="hljs-comment">//epoll事件类型</span>
+	__<span class="hljs-built_in">u64</span> data; <span class="hljs-comment">//指定所要监听的事件的文件描述符</span>
+&#125; EPOLL_PACKED;</code></pre>
+
+<pre><code class="hljs mel"><span class="hljs-comment">//参数epfd就是epoll_create中返回的epollfd</span>
+<span class="hljs-comment">//参数op指定对事件的操作类型，具体分为三种</span>
+<span class="hljs-comment">//#define EPOLL_CTL_ADD 1 添加新的监听事件</span>
+<span class="hljs-comment">//#define EPOLL_CTL_DEL 2 删除监听事件</span>
+<span class="hljs-comment">//#define EPOLL_CTL_MOD 3 修改监听事件</span>
+<span class="hljs-comment">//参数fd就是想要操作的文件描述符</span>
+<span class="hljs-comment">//参数event表示监听的是什么事件类型</span>
+<span class="hljs-comment">//数据可读事件EPOLLIN、高效工作事件模式EPOLLET、事件只被处理一次EPOLLONESHOT</span>
+<span class="hljs-comment">//epoll_event数据结构定义在上面</span>
+SYSCALL_DEFINE4(epoll_ctl, <span class="hljs-keyword">int</span>, epfd, <span class="hljs-keyword">int</span>, op, <span class="hljs-keyword">int</span>, fd,
+		struct epoll_event __user *, <span class="hljs-keyword">event</span>)
+&#123;
+	<span class="hljs-keyword">int</span> <span class="hljs-keyword">error</span>; 
+	<span class="hljs-keyword">int</span> did_lock_epmutex = <span class="hljs-number">0</span>;
+	struct <span class="hljs-keyword">file</span> *<span class="hljs-keyword">file</span>, *tfile;
+	struct eventpoll *ep;
+	struct epitem *epi;
+	struct epoll_event epds;
+
+	<span class="hljs-keyword">error</span> = -EFAULT;
+	<span class="hljs-comment">//ep_op_has_event中为return op != EPOLL_CTL_DEL;即判断op操作是否为删除监听事件</span>
+	<span class="hljs-comment">//从用户拷贝epoll_event数据结构到内核空间</span>
+	<span class="hljs-keyword">if</span> (ep_op_has_event(op) &amp;&amp;
+	    copy_from_user(&amp;epds, <span class="hljs-keyword">event</span>, sizeof(struct epoll_event)))
+		goto error_return;
+
+	<span class="hljs-comment">/* Get the "struct file *" for the eventpoll file */</span>
+	<span class="hljs-keyword">error</span> = -EBADF;
+	<span class="hljs-comment">//获取epollfd所对应的匿名文件struct file数据结构</span>
+	<span class="hljs-keyword">file</span> = fget(epfd);
+	<span class="hljs-keyword">if</span> (!<span class="hljs-keyword">file</span>)
+		goto error_return;
+
+	<span class="hljs-comment">/* Get the "struct file *" for the target file */</span>
+	<span class="hljs-comment">//获取所要操作的文件描述符所对应的struct file数据结构</span>
+	tfile = fget(fd);
+	<span class="hljs-keyword">if</span> (!tfile)
+		goto error_fput;
+
+	<span class="hljs-comment">/* The target file descriptor must support poll */</span>
+	<span class="hljs-keyword">error</span> = -EPERM;
+	<span class="hljs-comment">//判断所要监听的事件是否支持文件操作或poll操作</span>
+	<span class="hljs-keyword">if</span> (!tfile-&gt;f_op || !tfile-&gt;f_op-&gt;poll)
+		goto error_tgt_fput;
+
+	<span class="hljs-comment">/*</span>
+<span class="hljs-comment">	 * We have to check that the file structure underneath the file descriptor</span>
+<span class="hljs-comment">	 * the user passed to us _is_ an eventpoll file. And also we do not permit</span>
+<span class="hljs-comment">	 * adding an epoll file descriptor inside itself.</span>
+<span class="hljs-comment">	 */</span>
+	<span class="hljs-keyword">error</span> = -EINVAL;
+	<span class="hljs-comment">//判断所要监听的事件是否是epollfd本身、判断所要监听的事件是否支持epoll对文件的三种操作</span>
+	<span class="hljs-keyword">if</span> (<span class="hljs-keyword">file</span> == tfile || !is_file_epoll(<span class="hljs-keyword">file</span>))
+		goto error_tgt_fput;
+
+	<span class="hljs-comment">/*</span>
+<span class="hljs-comment">	 * At this point it is safe to assume that the "private_data" contains</span>
+<span class="hljs-comment">	 * our own data structure.</span>
+<span class="hljs-comment">	 */</span>
+	<span class="hljs-comment">//从struct file数据结构中获取eventpoll数据结构</span>
+	ep = <span class="hljs-keyword">file</span>-&gt;private_data;
+
+	<span class="hljs-comment">/*</span>
+<span class="hljs-comment">	 * When we insert an epoll file descriptor, inside another epoll file</span>
+<span class="hljs-comment">	 * descriptor, there is the change of creating closed loops, which are</span>
+<span class="hljs-comment">	 * better be handled here, than in more critical paths.</span>
+<span class="hljs-comment">	 *</span>
+<span class="hljs-comment">	 * We hold epmutex across the loop check and the insert in this case, in</span>
+<span class="hljs-comment">	 * order to prevent two separate inserts from racing and each doing the</span>
+<span class="hljs-comment">	 * insert "at the same time" such that ep_loop_check passes on both</span>
+<span class="hljs-comment">	 * before either one does the insert, thereby creating a cycle.</span>
+<span class="hljs-comment">	 */</span>
+	<span class="hljs-comment">//检查监听的事件是否支持epoll对文件的三种操作且为添加事件</span>
+	<span class="hljs-comment">//当我们插入一个epoll文件描述符时，在另一个epoll文件描述符中，创建闭环，这在这里更好地处理，而不是更关键的路径。</span>
+	<span class="hljs-comment">//在这种情况下，我们保留epmutex的循环检查和插入，以防止两个单独的插入，并且每个插入“同时进行”，使得ep_loop_check在两个插入之前都通过，从而创建一个周期。</span>
+	<span class="hljs-keyword">if</span> (unlikely(is_file_epoll(tfile) &amp;&amp; op == EPOLL_CTL_ADD)) &#123;
+		mutex_lock(&amp;epmutex);
+		did_lock_epmutex = <span class="hljs-number">1</span>;
+		<span class="hljs-keyword">error</span> = -ELOOP;
+		<span class="hljs-keyword">if</span> (ep_loop_check(ep, tfile) != <span class="hljs-number">0</span>)
+			goto error_tgt_fput;
+	&#125;
+
+	mutex_lock_nested(&amp;ep-&gt;mtx, <span class="hljs-number">0</span>);
+
+	<span class="hljs-comment">/*</span>
+<span class="hljs-comment">	 * Try to lookup the file inside our RB tree, Since we grabbed "mtx"</span>
+<span class="hljs-comment">	 * above, we can be sure to be able to use the item looked up by</span>
+<span class="hljs-comment">	 * ep_find() till we release the mutex.</span>
+<span class="hljs-comment">	 */</span>
+	<span class="hljs-comment">//epoll不允许重复添加fd</span>
+	<span class="hljs-comment">//在eventpoll数据结构中的rbr红黑树里，根据监听事件的struct和fd，与每一个epitem中的epoll_filefd数据结构进行比较</span>
+	<span class="hljs-comment">//找到返回监听事件对应的epitem，没有找到返回NULL</span>
+	epi = ep_find(ep, tfile, fd);
+
+	<span class="hljs-keyword">error</span> = -EINVAL;
+	<span class="hljs-comment">//根据对事件的操作进行分类操作</span>
+	<span class="hljs-keyword">switch</span> (op) &#123;
+	<span class="hljs-comment">//添加新的监听事件</span>
+	<span class="hljs-keyword">case</span> EPOLL_CTL_ADD:
+		<span class="hljs-comment">//如果之前不存在此事件才可以添加</span>
+		<span class="hljs-keyword">if</span> (!epi) &#123;
+			<span class="hljs-comment">//添加内核关心的事件类型POLLERR和POLLHUP</span>
+			epds.events |= POLLERR | POLLHUP;
+			<span class="hljs-comment">//真正的添加新的监听事件</span>
+			<span class="hljs-comment">//ep_insert定义在下面</span>
+			<span class="hljs-keyword">error</span> = ep_insert(ep, &amp;epds, tfile, fd);
+		&#125; <span class="hljs-keyword">else</span>
+			<span class="hljs-keyword">error</span> = -EEXIST;
+		<span class="hljs-keyword">break</span>;
+	<span class="hljs-comment">//删除事件</span>
+	<span class="hljs-keyword">case</span> EPOLL_CTL_DEL:
+		<span class="hljs-comment">//如果存在此事件才可以删除</span>
+		<span class="hljs-keyword">if</span> (epi)
+			<span class="hljs-comment">//ep_remove就不剖了。。</span>
+			<span class="hljs-keyword">error</span> = ep_remove(ep, epi);
+		<span class="hljs-keyword">else</span>
+			<span class="hljs-keyword">error</span> = -ENOENT;
+		<span class="hljs-keyword">break</span>;
+	<span class="hljs-comment">//修改事件</span>
+	<span class="hljs-keyword">case</span> EPOLL_CTL_MOD:
+		<span class="hljs-keyword">if</span> (epi) &#123;
+			epds.events |= POLLERR | POLLHUP;
+			<span class="hljs-comment">//ep_modify就不剖了。。。</span>
+			<span class="hljs-keyword">error</span> = ep_modify(ep, epi, &amp;epds);
+		&#125; <span class="hljs-keyword">else</span>
+			<span class="hljs-keyword">error</span> = -ENOENT;
+		<span class="hljs-keyword">break</span>;
+	&#125;
+	mutex_unlock(&amp;ep-&gt;mtx);
+
+error_tgt_fput:
+	<span class="hljs-keyword">if</span> (unlikely(did_lock_epmutex))
+		mutex_unlock(&amp;epmutex);
+
+	fput(tfile);
+error_fput:
+	fput(<span class="hljs-keyword">file</span>);
+error_return:
+
+	<span class="hljs-keyword">return</span> <span class="hljs-keyword">error</span>;
+&#125;</code></pre>
+
+<pre><code class="hljs cpp"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">poll_table_struct</span> &#123;</span>
+	<span class="hljs-comment">//poll_queue_proc就是当监听事件就绪时，对事件进行具体操作的回调函数</span>
+	poll_queue_proc qproc;
+	<span class="hljs-comment">//key记录对监听事件的何种event感兴趣</span>
+	<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">long</span> key;
+&#125; poll_table;</code></pre>
+
+<pre><code class="hljs cpp"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">ep_pqueue</span> &#123;</span>
+	<span class="hljs-comment">//poll_table数据结构和poll回调函数机制有关</span>
+	<span class="hljs-comment">//poll_table数据结构定义在上面</span>
+	poll_table pt; 
+	<span class="hljs-comment">//记录对应的epitem数据结构</span>
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">epitem</span> *<span class="hljs-title">epi</span>;</span>
+&#125;;</code></pre>
+
+<pre><code class="hljs reasonml">static inline void init<span class="hljs-constructor">_poll_funcptr(<span class="hljs-params">poll_table</span> <span class="hljs-operator">*</span><span class="hljs-params">pt</span>, <span class="hljs-params">poll_queue_proc</span> <span class="hljs-params">qproc</span>)</span>
+&#123;
+	<span class="hljs-comment">//初始化poll机制的回调函数</span>
+	pt-&gt;qproc = qproc;
+	<span class="hljs-comment">//初始化感兴趣的事件类型，初值为对所有event都感兴趣</span>
+	pt-&gt;key   = ~<span class="hljs-number">0</span>UL; <span class="hljs-comment">/* all events enabled */</span>
+&#125;</code></pre>
+
+<pre><code class="hljs xl"><span class="hljs-comment">//ep参数为epollfd所对应的eventpoll数据结构</span>
+<span class="hljs-comment">//event参数为新监听事件的epoll事件类型，即epoll_event数据结构</span>
+<span class="hljs-comment">//tfile参数为新监听事件所对应的struct file数据结构</span>
+<span class="hljs-comment">//fd参数为新监听事件的文件描述符</span>
+static int ep_insert(struct eventpoll *ep, struct epoll_event *event,
+		     struct file *tfile, int fd)
+&#123;
+	int error, revents, pwake = <span class="hljs-number">0</span>;
+	unsigned long flags;
+	long user_watches;
+	struct epitem *epi;
+	struct ep_pqueue epq;
+	
+	<span class="hljs-comment">//将当前用户的监听事件数加1</span>
+	<span class="hljs-function"><span class="hljs-title">user_watches</span> = atomic_long_read(&amp;ep-&gt;</span><span class="hljs-function"><span class="hljs-title">user</span>-&gt;</span>epoll_watches);
+	<span class="hljs-comment">//判断是否超过当前用户的最大监听数</span>
+	<span class="hljs-keyword">if</span> (unlikely(user_watches &gt;= max_user_watches))
+		return -ENOSPC;
+	<span class="hljs-comment">//从slab中分配一个epitem数据结构</span>
+	<span class="hljs-keyword">if</span> (!(epi = kmem_cache_alloc(epi_cache, GFP_KERNEL)))
+		return -ENOMEM;
+
+	<span class="hljs-comment">/* Item initialization follow here ... */</span>
+	<span class="hljs-comment">//初始化各个链表</span>
+	INIT_LIST_HEAD(&amp;<span class="hljs-function"><span class="hljs-title">epi</span>-&gt;</span>rdllink);
+	INIT_LIST_HEAD(&amp;<span class="hljs-function"><span class="hljs-title">epi</span>-&gt;</span>fllink);
+	INIT_LIST_HEAD(&amp;<span class="hljs-function"><span class="hljs-title">epi</span>-&gt;</span>pwqlist);
+	<span class="hljs-comment">//记录epitem所对应的eventpoll数据结构</span>
+	<span class="hljs-function"><span class="hljs-title">epi</span>-&gt;</span>ep = ep;
+	<span class="hljs-comment">//在epitem中的epoll_filefd数据结构中记录新监听事件所对应的struct file数据结构和文件描述符fd</span>
+	<span class="hljs-function"><span class="hljs-title">ep_set_ffd</span>(&amp;epi-&gt;</span>ffd, tfile, fd);
+	<span class="hljs-comment">//记录新监听事件，想要监听的事件类型</span>
+	<span class="hljs-function"><span class="hljs-title">epi</span>-&gt;</span>event = *event;
+	<span class="hljs-comment">//poll操作上的等待队列个数初始化为0</span>
+	<span class="hljs-function"><span class="hljs-title">epi</span>-&gt;</span>nwait = <span class="hljs-number">0</span>;
+	<span class="hljs-comment">//初始化epitem在eventpoll中的ovflist链表的后继为(void *) -1L</span>
+	<span class="hljs-function"><span class="hljs-title">epi</span>-&gt;</span>next = EP_UNACTIVE_PTR;
+
+	<span class="hljs-comment">/* Initialize the poll table using the queue callback */</span>
+	<span class="hljs-comment">//记录ep_pqueue中的epitem数据结构</span>
+	<span class="hljs-comment">//epq数据类型为ep_pqueue，ep_pqueue数据结构定义在上面</span>
+	epq.epi = epi;
+	<span class="hljs-comment">//初始化poll_table数据结构</span>
+	<span class="hljs-comment">//init_poll_funcptr定义在上面</span>
+	init_poll_funcptr(&amp;epq.pt, ep_ptable_queue_proc);
+
+	<span class="hljs-comment">/*</span>
+<span class="hljs-comment">	 * Attach the item to the poll hooks and get current event bits.</span>
+<span class="hljs-comment">	 * We can safely use the file* here because its usage count has</span>
+<span class="hljs-comment">	 * been increased by the caller of this function. Note that after</span>
+<span class="hljs-comment">	 * this operation completes, the poll callback can start hitting</span>
+<span class="hljs-comment">	 * the new item.</span>
+<span class="hljs-comment">	 */</span>
+	<span class="hljs-comment">//对监听事件所对应的struct file中的file operation中的poll操作进行初始化，即对poll回调函数进行初始化，详细的poll机制回调函数在之前已经做了详细说明</span>
+	<span class="hljs-comment">//返回值为已经就绪的事件</span>
+	<span class="hljs-function"><span class="hljs-title">revents</span> = tfile-&gt;</span><span class="hljs-function"><span class="hljs-title">f_op</span>-&gt;</span>poll(tfile, &amp;epq.pt);
+
+	<span class="hljs-comment">/*</span>
+<span class="hljs-comment">	 * We have to check if something went wrong during the poll wait queue</span>
+<span class="hljs-comment">	 * install process. Namely an allocation for a wait queue failed due</span>
+<span class="hljs-comment">	 * high memory pressure.</span>
+<span class="hljs-comment">	 */</span>
+	error = -ENOMEM;
+	<span class="hljs-comment">//如果内存不够，有可能导致等待队列分配失败，所以此时需要判断等待队列是否存在</span>
+	<span class="hljs-function"><span class="hljs-title">if</span> (epi-&gt;</span>nwait &lt; <span class="hljs-number">0</span>)
+		goto error_unregister;
+
+	<span class="hljs-comment">/* Add the current item to the list of active epoll hook for this file */</span>
+	<span class="hljs-function"><span class="hljs-title">spin_lock</span>(&amp;tfile-&gt;</span>f_lock);
+	<span class="hljs-comment">//将epitem链入监听事件所对应的strcut file中的f_ep_links成员上</span>
+	<span class="hljs-function"><span class="hljs-title">list_add_tail</span>(&amp;epi-&gt;</span><span class="hljs-function"><span class="hljs-title">fllink</span>, &amp;tfile-&gt;</span>f_ep_links);
+	<span class="hljs-function"><span class="hljs-title">spin_unlock</span>(&amp;tfile-&gt;</span>f_lock);
+
+	<span class="hljs-comment">/*</span>
+<span class="hljs-comment">	 * Add the current item to the RB tree. All RB tree operations are</span>
+<span class="hljs-comment">	 * protected by "mtx", and ep_insert() is called with "mtx" held.</span>
+<span class="hljs-comment">	 */</span>
+	<span class="hljs-comment">//将epitem插入到epollfd所对应的eventpolld中的rbr红黑树中</span>
+	ep_rbtree_insert(ep, epi);
+
+	<span class="hljs-comment">/* We have to drop the new item inside our item list to keep track of it */</span>
+	<span class="hljs-function"><span class="hljs-title">spin_lock_irqsave</span>(&amp;ep-&gt;</span>lock, flags);
+
+	<span class="hljs-comment">/* If the file is already "ready" we drop it inside the ready list */</span>
+	<span class="hljs-comment">//此时判断一下是不是新的监听事件已经就绪且就绪链表为空</span>
+	<span class="hljs-function"><span class="hljs-title">if</span> ((revents &amp; event-&gt;</span><span class="hljs-function"><span class="hljs-title">events</span>) &amp;&amp; !ep_is_linked(&amp;epi-&gt;</span>rdllink)) &#123;
+		<span class="hljs-comment">//将epitem链入就绪链表中</span>
+		<span class="hljs-function"><span class="hljs-title">list_add_tail</span>(&amp;epi-&gt;</span><span class="hljs-function"><span class="hljs-title">rdllink</span>, &amp;ep-&gt;</span>rdllist);
+
+		<span class="hljs-comment">/* Notify waiting tasks that events are available */</span>
+		<span class="hljs-comment">//判断eventpoll中的wq等待队列是否为NULL，如果不为空，就唤醒等待队列上对应的进程</span>
+		<span class="hljs-function"><span class="hljs-title">if</span> (waitqueue_active(&amp;ep-&gt;</span>wq))
+			<span class="hljs-function"><span class="hljs-title">wake_up_locked</span>(&amp;ep-&gt;</span>wq);
+		<span class="hljs-comment">//判断poll_wait等待队列是否为NULL，如果不为NULL，pwake加1</span>
+		<span class="hljs-function"><span class="hljs-title">if</span> (waitqueue_active(&amp;ep-&gt;</span>poll_wait))
+			pwake++;
+	&#125;
+
+	<span class="hljs-function"><span class="hljs-title">spin_unlock_irqrestore</span>(&amp;ep-&gt;</span>lock, flags);
+
+	<span class="hljs-function"><span class="hljs-title">atomic_long_inc</span>(&amp;ep-&gt;</span><span class="hljs-function"><span class="hljs-title">user</span>-&gt;</span>epoll_watches);
+
+	<span class="hljs-comment">/* We have to call this outside the lock */</span>
+	<span class="hljs-keyword">if</span> (pwake)
+		<span class="hljs-function"><span class="hljs-title">ep_poll_safewake</span>(&amp;ep-&gt;</span>poll_wait);
+
+	return <span class="hljs-number">0</span>;
+
+error_unregister:
+	ep_unregister_pollwait(ep, epi);
+
+	<span class="hljs-comment">/*</span>
+<span class="hljs-comment">	 * We need to do this because an event could have been arrived on some</span>
+<span class="hljs-comment">	 * allocated wait queue. Note that we don't care about the ep-&gt;ovflist</span>
+<span class="hljs-comment">	 * list, since that is used/cleaned only inside a section bound by "mtx".</span>
+<span class="hljs-comment">	 * And ep_insert() is called with "mtx" held.</span>
+<span class="hljs-comment">	 */</span>
+	<span class="hljs-function"><span class="hljs-title">spin_lock_irqsave</span>(&amp;ep-&gt;</span>lock, flags);
+	<span class="hljs-function"><span class="hljs-title">if</span> (ep_is_linked(&amp;epi-&gt;</span>rdllink))
+		<span class="hljs-function"><span class="hljs-title">list_del_init</span>(&amp;epi-&gt;</span>rdllink);
+	<span class="hljs-function"><span class="hljs-title">spin_unlock_irqrestore</span>(&amp;ep-&gt;</span>lock, flags);
+
+	kmem_cache_free(epi_cache, epi);
+
+	return error;
+&#125;</code></pre>
+
+<ul>
+<li><strong>epoll_wait</strong></li>
+</ul>
+<pre><code class="hljs mel"><span class="hljs-comment">//参数epfd就是epollfd</span>
+<span class="hljs-comment">//参数events指向一个数组，用来存放最后返回的就绪事件</span>
+<span class="hljs-comment">//参数maxevents表示最多监听多少个事件</span>
+<span class="hljs-comment">//参数timeout表示阻塞时间</span>
+SYSCALL_DEFINE4(epoll_wait, <span class="hljs-keyword">int</span>, epfd, struct epoll_event __user *, events,
+		<span class="hljs-keyword">int</span>, maxevents, <span class="hljs-keyword">int</span>, timeout)
+&#123;
+	<span class="hljs-keyword">int</span> <span class="hljs-keyword">error</span>;
+	struct <span class="hljs-keyword">file</span> *<span class="hljs-keyword">file</span>;
+	struct eventpoll *ep;
+
+	<span class="hljs-comment">/* The maximum number of event must be greater than zero */</span>
+	<span class="hljs-comment">//判断maxevents是否合法</span>
+	<span class="hljs-keyword">if</span> (maxevents &lt;= <span class="hljs-number">0</span> || maxevents &gt; EP_MAX_EVENTS)
+		<span class="hljs-keyword">return</span> -EINVAL;
+
+	<span class="hljs-comment">/* Verify that the area passed by the user is writeable */</span>
+	<span class="hljs-comment">//判断用户传入的events指向的空间是否合法有效</span>
+	<span class="hljs-keyword">if</span> (!access_ok(VERIFY_WRITE, events, maxevents * sizeof(struct epoll_event))) &#123;
+		<span class="hljs-keyword">error</span> = -EFAULT;
+		goto error_return;
+	&#125;
+
+	<span class="hljs-comment">/* Get the "struct file *" for the eventpoll file */</span>
+	<span class="hljs-keyword">error</span> = -EBADF;
+	<span class="hljs-comment">//通过epollfd获得其所对应的struct file数据结构</span>
+	<span class="hljs-keyword">file</span> = fget(epfd);
+	<span class="hljs-keyword">if</span> (!<span class="hljs-keyword">file</span>)
+		goto error_return;
+
+	<span class="hljs-comment">/*</span>
+<span class="hljs-comment">	 * We have to check that the file structure underneath the fd</span>
+<span class="hljs-comment">	 * the user passed to us _is_ an eventpoll file.</span>
+<span class="hljs-comment">	 */</span>
+	<span class="hljs-keyword">error</span> = -EINVAL;
+	<span class="hljs-comment">//判断file文件是否支持epoll对文件的操作</span>
+	<span class="hljs-keyword">if</span> (!is_file_epoll(<span class="hljs-keyword">file</span>))
+		goto error_fput;
+
+	<span class="hljs-comment">/*</span>
+<span class="hljs-comment">	 * At this point it is safe to assume that the "private_data" contains</span>
+<span class="hljs-comment">	 * our own data structure.</span>
+<span class="hljs-comment">	 */</span>
+	<span class="hljs-comment">//struct file中的private_data成员存储着epollfd对应的eventpoll数据结构</span>
+	ep = <span class="hljs-keyword">file</span>-&gt;private_data;
+
+	<span class="hljs-comment">/* Time to fish for events ... */</span>
+	<span class="hljs-comment">//ep_poll的定义在下面</span>
+	<span class="hljs-keyword">error</span> = ep_poll(ep, events, maxevents, timeout);
+
+error_fput:
+	fput(<span class="hljs-keyword">file</span>);
+error_return:
+
+	<span class="hljs-keyword">return</span> <span class="hljs-keyword">error</span>;
+&#125;</code></pre>
+
+<pre><code class="hljs cs"><span class="hljs-comment">//参数ep为epollfd所对应的eventpoll数据结构</span>
+<span class="hljs-comment">//其余参数与epoll_wait参数含义相同</span>
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">ep_poll</span>(<span class="hljs-params"><span class="hljs-keyword">struct</span> eventpoll *ep, <span class="hljs-keyword">struct</span> epoll_event __user *events,</span></span>
+<span class="hljs-function"><span class="hljs-params">		   <span class="hljs-keyword">int</span> maxevents, <span class="hljs-keyword">long</span> timeout</span>)</span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">int</span> res = <span class="hljs-number">0</span>, eavail, timed_out = <span class="hljs-number">0</span>;
+	unsigned <span class="hljs-keyword">long</span> flags;
+	<span class="hljs-keyword">long</span> slack = <span class="hljs-number">0</span>;
+	<span class="hljs-comment">//存放当前进程的等待队列</span>
+	wait_queue_t wait;
+	ktime_t expires, *to = NULL;
+	
+	<span class="hljs-comment">//如果阻塞时间大于0，就将timeout转化为计算机内部的时间</span>
+	<span class="hljs-keyword">if</span> (timeout &gt; <span class="hljs-number">0</span>) &#123;
+		<span class="hljs-keyword">struct</span> timespec end_time = ep_set_mstimeout(timeout);
+
+		slack = select_estimate_accuracy(&amp;end_time);
+		to = &amp;expires;
+		*to = timespec_to_ktime(end_time);
+	&#125;
+	<span class="hljs-comment">//如果阻塞时间等于0，即非阻塞模式就直接调转到check_events执行</span>
+	<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (timeout == <span class="hljs-number">0</span>) &#123;
+		<span class="hljs-comment">/*</span>
+<span class="hljs-comment">		 * Avoid the unnecessary trip to the wait queue loop, if the</span>
+<span class="hljs-comment">		 * caller specified a non blocking operation.</span>
+<span class="hljs-comment">		 */</span>
+		timed_out = <span class="hljs-number">1</span>;
+		spin_lock_irqsave(&amp;ep-&gt;<span class="hljs-keyword">lock</span>, flags);
+		<span class="hljs-keyword">goto</span> check_events;
+	&#125;
+
+fetch_events:
+	spin_lock_irqsave(&amp;ep-&gt;<span class="hljs-keyword">lock</span>, flags);
+	<span class="hljs-comment">//如果eventpoll中的rdllist为空或者ovflist为初始化值EP_UNACTIVE_PTR时，满足条件</span>
+	<span class="hljs-keyword">if</span> (!ep_events_available(ep)) &#123;
+		<span class="hljs-comment">/*</span>
+<span class="hljs-comment">		 * We don't have any available event to return to the caller.</span>
+<span class="hljs-comment">		 * We need to sleep here, and we will be wake up by</span>
+<span class="hljs-comment">		 * ep_poll_callback() when events will become available.</span>
+<span class="hljs-comment">		 */</span>
+		<span class="hljs-comment">//初始化等待队列wait，参数current是一个宏，代表当前进程</span>
+		<span class="hljs-comment">//init_waitqueue_entry定义在下面</span>
+		init_waitqueue_entry(&amp;wait, current);
+		<span class="hljs-comment">//将等待队列wait添加到eventpoll中的wq等待队列中</span>
+		__add_wait_queue_exclusive(&amp;ep-&gt;wq, &amp;wait);
+
+		<span class="hljs-keyword">for</span> (;;) &#123;
+			<span class="hljs-comment">/*</span>
+<span class="hljs-comment">			 * We don't want to sleep if the ep_poll_callback() sends us</span>
+<span class="hljs-comment">			 * a wakeup in between. That's why we set the task state</span>
+<span class="hljs-comment">			 * to TASK_INTERRUPTIBLE before doing the checks.</span>
+<span class="hljs-comment">			 */</span>
+			<span class="hljs-comment">//将当前进程调度后的状态设置为浅睡眠，即可中断睡眠状态</span>
+			set_current_state(TASK_INTERRUPTIBLE);
+			<span class="hljs-comment">//如果此时eventpoll中的rdllist就绪链表不为NULL或ovflist不为EP_UNACTIVE_PTR或timed_out为0，那么就不再调度了，直接break跳出循环</span>
+			<span class="hljs-keyword">if</span> (ep_events_available(ep) || timed_out)
+				<span class="hljs-keyword">break</span>;
+			<span class="hljs-comment">//如果此时收到了信号，那么也不再调度了，直接break跳出循环</span>
+			<span class="hljs-keyword">if</span> (signal_pending(current)) &#123;
+				res = -EINTR;
+				<span class="hljs-keyword">break</span>;
+			&#125;
+
+			spin_unlock_irqrestore(&amp;ep-&gt;<span class="hljs-keyword">lock</span>, flags);
+			<span class="hljs-comment">//当前进程被调度，进入前睡眠状态</span>
+			<span class="hljs-comment">//在此期间，若发生事件就绪或收到信号，就执行poll回调机制</span>
+			<span class="hljs-keyword">if</span> (!schedule_hrtimeout_range(to, slack, HRTIMER_MODE_ABS))
+				timed_out = <span class="hljs-number">1</span>;
+
+			spin_lock_irqsave(&amp;ep-&gt;<span class="hljs-keyword">lock</span>, flags);
+		&#125;
+		<span class="hljs-comment">//此时已从for循环中跳出</span>
+		<span class="hljs-comment">//从eventpoll中的wq等待队列里删除wait等待队列</span>
+		__remove_wait_queue(&amp;ep-&gt;wq, &amp;wait);
+		<span class="hljs-comment">//设置当前进程下一次调度的状态为运行中状态</span>
+		set_current_state(TASK_RUNNING);
+	&#125;
+check_events:
+	<span class="hljs-comment">/* Is it worth to try to dig for events ? */</span>
+	<span class="hljs-comment">//判断此时eventpoll中的rdllist是否为空或者ovflist为初始化值是否为EP_UNACTIVE_PTR</span>
+	eavail = ep_events_available(ep);
+
+	spin_unlock_irqrestore(&amp;ep-&gt;<span class="hljs-keyword">lock</span>, flags);
+
+	<span class="hljs-comment">/*</span>
+<span class="hljs-comment">	 * Try to transfer events to user space. In case we get 0 events and</span>
+<span class="hljs-comment">	 * there's still timeout left over, we go trying again in search of</span>
+<span class="hljs-comment">	 * more luck.</span>
+<span class="hljs-comment">	 */</span>
+	<span class="hljs-comment">//此时尝试将就绪事件传输到用户空间</span>
+	<span class="hljs-comment">//如果我们得到0个就绪事件，还有超时时间，就跳转至fetch_events</span>
+	<span class="hljs-comment">//ep_send_events定义在下面</span>
+	<span class="hljs-keyword">if</span> (!res &amp;&amp; eavail &amp;&amp;
+	    !(res = ep_send_events(ep, events, maxevents)) &amp;&amp; !timed_out)
+		<span class="hljs-keyword">goto</span> fetch_events;
+
+	<span class="hljs-keyword">return</span> res;
+&#125;</code></pre>
+
+<pre><code class="hljs reasonml">static inline void init<span class="hljs-constructor">_waitqueue_entry(<span class="hljs-params">wait_queue_t</span> <span class="hljs-operator">*</span><span class="hljs-params">q</span>, <span class="hljs-params">struct</span> <span class="hljs-params">task_struct</span> <span class="hljs-operator">*</span><span class="hljs-params">p</span>)</span>
+&#123;
+	q-&gt;flags = <span class="hljs-number">0</span>; <span class="hljs-comment">//将等待队列状态初始化为0</span>
+	q-&gt;<span class="hljs-keyword">private</span> = p; <span class="hljs-comment">//将等待队列的成员private指针初始化为p，即当前进程</span>
+	q-&gt;func = default_wake_function; <span class="hljs-comment">//将等待队列的成员func初始化为default_wake_function，即唤醒进程时的函数</span>
+&#125;</code></pre>
+
+<pre><code class="hljs cs"><span class="hljs-comment">//参数含义与ep_poll函数参数相同，不再赘述</span>
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">ep_send_events</span>(<span class="hljs-params"><span class="hljs-keyword">struct</span> eventpoll *ep,</span></span>
+<span class="hljs-function"><span class="hljs-params">			  <span class="hljs-keyword">struct</span> epoll_event __user *events, <span class="hljs-keyword">int</span> maxevents</span>)</span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-comment">//初始化ep_send_events_data数据结构，这个数据结构就只包含maxevents和events</span>
+	<span class="hljs-keyword">struct</span> ep_send_events_data esed;
+
+	esed.maxevents = maxevents;
+	esed.events = events;
+	<span class="hljs-comment">//ep_scan_ready_list定义在下面</span>
+	<span class="hljs-keyword">return</span> ep_scan_ready_list(ep, ep_send_events_proc, &amp;esed, <span class="hljs-number">0</span>);
+&#125;</code></pre>
+
+<pre><code class="hljs xl"><span class="hljs-comment">//参数ep为epollfd所对应的eventpoll</span>
+<span class="hljs-comment">//参数sproc为函数指针，调用时赋值为ep_send_events_proc</span>
+<span class="hljs-comment">//参数priv指向ep_send_events_data数据结构</span>
+<span class="hljs-comment">//参数depth初始化为0</span>
+static int ep_scan_ready_list(struct eventpoll *ep,
+			      int (*sproc)(struct eventpoll *,
+					   struct list_head *, void *),
+			      void *priv,
+			      int depth)
+&#123;
+	int error, pwake = <span class="hljs-number">0</span>;
+	unsigned long flags;
+	struct epitem *epi, *nepi;
+	LIST_HEAD(txlist);
+
+	<span class="hljs-comment">/*</span>
+<span class="hljs-comment">	 * We need to lock this because we could be hit by</span>
+<span class="hljs-comment">	 * eventpoll_release_file() and epoll_ctl().</span>
+<span class="hljs-comment">	 */</span>
+	<span class="hljs-function"><span class="hljs-title">mutex_lock_nested</span>(&amp;ep-&gt;</span>mtx, depth);
+
+	<span class="hljs-comment">/*</span>
+<span class="hljs-comment">	 * Steal the ready list, and re-init the original one to the</span>
+<span class="hljs-comment">	 * empty list. Also, set ep-&gt;ovflist to NULL so that events</span>
+<span class="hljs-comment">	 * happening while looping w/out locks, are not lost. We cannot</span>
+<span class="hljs-comment">	 * have the poll callback to queue directly on ep-&gt;rdllist,</span>
+<span class="hljs-comment">	 * because we want the "sproc" callback to be able to do it</span>
+<span class="hljs-comment">	 * in a lockless way.</span>
+<span class="hljs-comment">	 */</span>
+	<span class="hljs-function"><span class="hljs-title">spin_lock_irqsave</span>(&amp;ep-&gt;</span>lock, flags);
+	<span class="hljs-comment">//此时所有发生就绪事件的epitem都已经链入了eventpoll中的rdllist就绪链表了</span>
+	<span class="hljs-comment">//此时将rdllist就绪链表上的所有元素都转移到txlist中，而rdllist被清空</span>
+	<span class="hljs-function"><span class="hljs-title">list_splice_init</span>(&amp;ep-&gt;</span>rdllist, &amp;txlist);
+	<span class="hljs-comment">//将ovlist置NULL，是因为此时不希望再有新的就绪事件对应的epitem加入到rdllist中</span>
+	<span class="hljs-function"><span class="hljs-title">ep</span>-&gt;</span>ovflist = NULL;
+	<span class="hljs-function"><span class="hljs-title">spin_unlock_irqrestore</span>(&amp;ep-&gt;</span>lock, flags);
+
+	<span class="hljs-comment">/*</span>
+<span class="hljs-comment">	 * Now call the callback function.</span>
+<span class="hljs-comment">	 */</span>
+	<span class="hljs-comment">//此时调用参数传入的回调函数，即ep_send_events_proc</span>
+	<span class="hljs-comment">//ep_send_events_proc定义在下面</span>
+	error = (*sproc)(ep, &amp;txlist, priv);
+
+	<span class="hljs-function"><span class="hljs-title">spin_lock_irqsave</span>(&amp;ep-&gt;</span>lock, flags);
+	<span class="hljs-comment">/*</span>
+<span class="hljs-comment">	 * During the time we spent inside the "sproc" callback, some</span>
+<span class="hljs-comment">	 * other events might have been queued by the poll callback.</span>
+<span class="hljs-comment">	 * We re-insert them inside the main ready-list here.</span>
+<span class="hljs-comment">	 */</span>
+	<span class="hljs-comment">//当调用ep_send_events_proc函数时，即向用户空间传递数据时</span>
+	<span class="hljs-comment">//发生了就绪事件，这些就绪事件对应的epitem都链入了eventpoll中的ovflist</span>
+	<span class="hljs-comment">//现在遍历ovflist链表，依次处理这些epitem</span>
+	<span class="hljs-function"><span class="hljs-title">for</span> (nepi = ep-&gt;</span>ovflist; (epi = nepi) != NULL;
+	     <span class="hljs-function"><span class="hljs-title">nepi</span> = epi-&gt;</span><span class="hljs-function"><span class="hljs-title">next</span>, epi-&gt;</span>next = EP_UNACTIVE_PTR) &#123;
+		<span class="hljs-comment">/*</span>
+<span class="hljs-comment">		 * We need to check if the item is already in the list.</span>
+<span class="hljs-comment">		 * During the "sproc" callback execution time, items are</span>
+<span class="hljs-comment">		 * queued into -&gt;ovflist but the "txlist" might already</span>
+<span class="hljs-comment">		 * contain them, and the list_splice() below takes care of them.</span>
+<span class="hljs-comment">		 */</span>
+		<span class="hljs-comment">//如果epitem存在，就将epitem尾插进rddlist中</span>
+		<span class="hljs-function"><span class="hljs-title">if</span> (!ep_is_linked(&amp;epi-&gt;</span>rdllink))
+			<span class="hljs-function"><span class="hljs-title">list_add_tail</span>(&amp;epi-&gt;</span><span class="hljs-function"><span class="hljs-title">rdllink</span>, &amp;ep-&gt;</span>rdllist);
+	&#125;
+	<span class="hljs-comment">/*</span>
+<span class="hljs-comment">	 * We need to set back ep-&gt;ovflist to EP_UNACTIVE_PTR, so that after</span>
+<span class="hljs-comment">	 * releasing the lock, events will be queued in the normal way inside</span>
+<span class="hljs-comment">	 * ep-&gt;rdllist.</span>
+<span class="hljs-comment">	 */</span>
+	<span class="hljs-comment">//将ovflist置为EP_UNACTIVE_PTR，即((void *) -1L)</span>
+	<span class="hljs-function"><span class="hljs-title">ep</span>-&gt;</span>ovflist = EP_UNACTIVE_PTR;
+
+	<span class="hljs-comment">/*</span>
+<span class="hljs-comment">	 * Quickly re-inject items left on "txlist".</span>
+<span class="hljs-comment">	 */</span>
+	<span class="hljs-comment">//经过ep_send_events_proc对epitem的处理后，有的epitem还未被处理完，将这些epitem重新链入rdllist中</span>
+	<span class="hljs-function"><span class="hljs-title">list_splice</span>(&amp;txlist, &amp;ep-&gt;</span>rdllist);
+	
+	<span class="hljs-comment">//如果rdllist就绪链表不为NULL时</span>
+	<span class="hljs-function"><span class="hljs-title">if</span> (!list_empty(&amp;ep-&gt;</span>rdllist)) &#123;
+		<span class="hljs-comment">/*</span>
+<span class="hljs-comment">		 * Wake up (if active) both the eventpoll wait list and</span>
+<span class="hljs-comment">		 * the -&gt;poll() wait list (delayed after we release the lock).</span>
+<span class="hljs-comment">		 */</span>
+		<span class="hljs-comment">//当wq等待队列wq不为NULL时</span>
+		<span class="hljs-function"><span class="hljs-title">if</span> (waitqueue_active(&amp;ep-&gt;</span>wq))
+			<span class="hljs-comment">//唤醒等待队列wq上的成员，及当前进程</span>
+			<span class="hljs-function"><span class="hljs-title">wake_up_locked</span>(&amp;ep-&gt;</span>wq);
+		<span class="hljs-function"><span class="hljs-title">if</span> (waitqueue_active(&amp;ep-&gt;</span>poll_wait))
+			pwake++;
+	&#125;
+	<span class="hljs-function"><span class="hljs-title">spin_unlock_irqrestore</span>(&amp;ep-&gt;</span>lock, flags);
+
+	<span class="hljs-function"><span class="hljs-title">mutex_unlock</span>(&amp;ep-&gt;</span>mtx);
+
+	<span class="hljs-comment">/* We have to call this outside the lock */</span>
+	<span class="hljs-keyword">if</span> (pwake)
+		<span class="hljs-function"><span class="hljs-title">ep_poll_safewake</span>(&amp;ep-&gt;</span>poll_wait);
+
+	return error;
+&#125;</code></pre>
+
+<pre><code class="hljs xl"><span class="hljs-comment">//参数ep为epollfd所对应的eventpoll</span>
+<span class="hljs-comment">//参数head为txlist</span>
+<span class="hljs-comment">//参数priv为ep_send_events_data数据结构</span>
+static int ep_send_events_proc(struct eventpoll *ep, struct list_head *head,
+			       void *priv)
+&#123;
+	struct ep_send_events_data *esed = priv;
+	int eventcnt;
+	unsigned int revents;
+	struct epitem *epi;
+	struct epoll_event __user *uevent;
+
+	<span class="hljs-comment">/*</span>
+<span class="hljs-comment">	 * We can loop without lock because we are passed a task private list.</span>
+<span class="hljs-comment">	 * Items cannot vanish during the loop because ep_scan_ready_list() is</span>
+<span class="hljs-comment">	 * holding "mtx" during this call.</span>
+<span class="hljs-comment">	 */</span>
+	<span class="hljs-comment">//遍历整个txlist链表</span>
+	<span class="hljs-function"><span class="hljs-title">for</span> (eventcnt = 0, uevent = esed-&gt;</span>events;
+	     !<span class="hljs-function"><span class="hljs-title">list_empty</span>(head) &amp;&amp; eventcnt &lt; esed-&gt;</span>maxevents;) &#123;
+	    <span class="hljs-comment">//获取txlist链表中的第一个节点</span>
+		epi = list_first_entry(head, struct epitem, rdllink);
+		<span class="hljs-comment">//从txlink链表中将epitem删除</span>
+		<span class="hljs-function"><span class="hljs-title">list_del_init</span>(&amp;epi-&gt;</span>rdllink);
+		<span class="hljs-comment">//获取此时，最新的epitem的就绪事件类型</span>
+		<span class="hljs-function"><span class="hljs-title">revents</span> = epi-&gt;</span><span class="hljs-function"><span class="hljs-title">ffd</span>.file-&gt;</span><span class="hljs-function"><span class="hljs-title">f_op</span>-&gt;</span><span class="hljs-function"><span class="hljs-title">poll</span>(epi-&gt;</span>ffd.file, NULL) &amp;
+			<span class="hljs-function"><span class="hljs-title">epi</span>-&gt;</span>event.events;
+
+		<span class="hljs-comment">/*</span>
+<span class="hljs-comment">		 * If the event mask intersect the caller-requested one,</span>
+<span class="hljs-comment">		 * deliver the event to userspace. Again, ep_scan_ready_list()</span>
+<span class="hljs-comment">		 * is holding "mtx", so no operations coming from userspace</span>
+<span class="hljs-comment">		 * can change the item.</span>
+<span class="hljs-comment">		 */</span>
+		<span class="hljs-comment">//再一次判断是否有就绪事件发生</span>
+		<span class="hljs-keyword">if</span> (revents) &#123;
+			<span class="hljs-comment">//将当前的就绪事件拷贝到用户空间中</span>
+			<span class="hljs-comment">//如果此时epitem还没有处理完，就将epitem再链入txlist链表中</span>
+			<span class="hljs-function"><span class="hljs-title">if</span> (__put_user(revents, &amp;uevent-&gt;</span>events) ||
+			    __<span class="hljs-function"><span class="hljs-title">put_user</span>(epi-&gt;</span><span class="hljs-function"><span class="hljs-title">event</span>.<span class="hljs-keyword">data</span>, &amp;uevent-&gt;</span><span class="hljs-keyword">data</span>)) &#123;
+				<span class="hljs-function"><span class="hljs-title">list_add</span>(&amp;epi-&gt;</span>rdllink, head);
+				return eventcnt ? eventcnt : -EFAULT;
+			&#125;
+			eventcnt++;
+			uevent++;
+			<span class="hljs-function"><span class="hljs-title">if</span> (epi-&gt;</span>event.events &amp; EPOLLONESHOT)
+				<span class="hljs-function"><span class="hljs-title">epi</span>-&gt;</span>event.events &amp;= EP_PRIVATE_BITS;
+			<span class="hljs-comment">//判断fd是否为ET模式，如果不是ET模式，就要将自己再一次链入rdllist就绪链表中，这是LT和ET模式本质区别</span>
+			<span class="hljs-comment">//以便下次调用epoll_wait（）会再次检查事件的可用性</span>
+			<span class="hljs-function"><span class="hljs-title">else</span> <span class="hljs-keyword">if</span> (!(epi-&gt;</span>event.events &amp; EPOLLET)) &#123;
+				<span class="hljs-comment">/*</span>
+<span class="hljs-comment">				 * If this file has been added with Level</span>
+<span class="hljs-comment">				 * Trigger mode, we need to insert back inside</span>
+<span class="hljs-comment">				 * the ready list, so that the next call to</span>
+<span class="hljs-comment">				 * epoll_wait() will check again the events</span>
+<span class="hljs-comment">				 * availability. At this point, no one can insert</span>
+<span class="hljs-comment">				 * into ep-&gt;rdllist besides us. The epoll_ctl()</span>
+<span class="hljs-comment">				 * callers are locked out by</span>
+<span class="hljs-comment">				 * ep_scan_ready_list() holding "mtx" and the</span>
+<span class="hljs-comment">				 * poll callback will queue them in ep-&gt;ovflist.</span>
+<span class="hljs-comment">				 */</span>
+				<span class="hljs-function"><span class="hljs-title">list_add_tail</span>(&amp;epi-&gt;</span><span class="hljs-function"><span class="hljs-title">rdllink</span>, &amp;ep-&gt;</span>rdllist);
+			&#125;
+		&#125;
+	&#125;
+
+	return eventcnt;
+&#125;</code></pre>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Linux/">Linux</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Kernel/">Kernel</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/07/02/strace/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">【转】Linux strace跟踪命令</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/07/02/POD-data-type/">
+                        <span class="hidden-mobile">什么是POD数据类型？</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "IO复用——epoll内核源代码剖析&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
