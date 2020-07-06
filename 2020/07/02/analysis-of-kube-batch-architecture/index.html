@@ -163,7 +163,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      65 字
+      410 字
     </span>
   
 
@@ -173,7 +173,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      1
+      4
        分钟
     </span>
   
@@ -213,7 +213,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2020年7月2日 晚上
+                  本文最后更新于：2020年7月6日 晚上
                 
               </p>
             
@@ -221,6 +221,52 @@
               <blockquote>
 <p>2019.12.20 本周五在组内做了一次技术分享，内容关于kube-batch，也在其中阐述了些自我思考。本文记录下分享的主要内容，PPT就不贴上来了。</p>
 </blockquote>
+<p>kube-batch 主要概念</p>
+<ul>
+<li><p>调度器实际上解决的是最优解问题，在 kube-batch 中这个问题就是每一个 Action，原生支持</p>
+<ul>
+<li>allocate（分配）</li>
+<li>backfill（回填）</li>
+<li>reclaim（回收）</li>
+<li>preempt（抢占）</li>
+</ul>
+</li>
+<li><p>如何得到某个问题的最优解呢？需要通过多个维度进行打分，最终综合计算进行判断，在 kube-batch 中每一个维度就对应一个 plugin 具体的求解。针对 job 原生支持 </p>
+<ul>
+<li><p>drf（主导资源均衡算法）</p>
+</li>
+<li><p>gang（批调度）</p>
+</li>
+<li><p>predicates（谓词）</p>
+</li>
+<li><p>priority（job 优先级）</p>
+</li>
+<li><p>nodeorder（node 优先级）</p>
+</li>
+<li><p>conformance（驱逐时判断维度）</p>
+<p>对 queue 原生支持 proportion（队列之间的资源权重）</p>
+</li>
+</ul>
+</li>
+<li><p>session：每一次调度周期都拥有唯一的 session，session 中包含本轮调度时集群中某些资源的SnapShot，包括</p>
+<ul>
+<li><p>Ready Node 信息</p>
+</li>
+<li><p>Queue 信息</p>
+</li>
+<li><p>指定了 podgroup 和 queue 的 job</p>
+<p>同时也包含注册成功的 plugin，不同的 plugin 可以拥有不同维度的调度计算函数</p>
+</li>
+</ul>
+</li>
+<li><p>queue 和 podgroup 是 kube-batch 中的 CRD</p>
+<ul>
+<li>queue 中包含多个 job （可以为 tf-job、spark job 和 batch job，通过 podgroup 进行映射</li>
+<li>一个 job 中可能包含多个 task，映射为 pod</li>
+<li>通过使用 podgroup minMember 保证 job 中最少要调度的 task 个数，即 minMember 用来保证 gang plugin vaild 判断，当job 中所包含的 task 个数少于 minMember 时，将不对此 job 进行批调度</li>
+</ul>
+</li>
+</ul>
 <h1 id="basic-concept"><a href="#basic-concept" class="headerlink" title="basic concept"></a>basic concept</h1><ul>
 <li>Queue</li>
 <li>Job</li>

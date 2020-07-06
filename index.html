@@ -168,6 +168,142 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/07/06/anatomy-of-the-core-source-code-in-kube-batch/">Kube-Batch 核心源码剖析</a>
+
+      <a href="/2020/07/06/anatomy-of-the-core-source-code-in-kube-batch/" class="index-excerpt">
+        
+        
+          
+        
+        <div>剖析源码版本为 v0.5.0，commit 010ef715
+cmd/kube-batch/main.go:54
+if err := app.Run(s); err != nil &#123;
+	fmt.Fprintf(os.Stderr, "%v\n", err)
+	os.Exit(1)
+&#125;
+
+
+
+cmd/kube-batch/app/server.go:133
+leaderelect</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-07-06
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Cloud-Native/">Cloud Native</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Kube-Batch/">Kube-Batch</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/07/06/gang-jobVaildFn-source-code-analysis-in-kube-batch/">Kube-Batch Gang jobVaildFn 源码剖析</a>
+
+      <a href="/2020/07/06/gang-jobVaildFn-source-code-analysis-in-kube-batch/" class="index-excerpt">
+        
+        
+          
+        
+        <div>pkg/scheduler/plugins/gang/gang.go:47
+Session 初始化时，Gang Plugin 将注册 validJobFn。validJobFn 会对每一轮调度的 Job 进行过滤
+func (gp *gangPlugin) OnSessionOpen(ssn *framework.Session) &#123;
+	validJobFn := func(obj in</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-07-06
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Cloud-Native/">Cloud Native</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Kube-Batch/">Kube-Batch</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/07/06/the-relationship-between-job-and-podgroup-in-kube-batch/">Kube-Batch Job 与 podGroup 映射关系</a>
+
+      <a href="/2020/07/06/the-relationship-between-job-and-podgroup-in-kube-batch/" class="index-excerpt">
+        
+        
+          
+        
+        <div>pkg/scheduler/cache/cache.go:318podgroup informer 设置相应的 list-watch 回调处理函数
+kbinformer := kbinfo.NewSharedInformerFactory(sc.kbclient, 0)
+// create informer for PodGroup(v1alpha1) information
+sc.podGrou</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-07-06
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Cloud-Native/">Cloud Native</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Kube-Batch/">Kube-Batch</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
       <a class="index-header" href="/2020/07/02/why-should-I-move-away-from-CSDN-blog/">我为什么要搬离CSDN Blog？</a>
 
       <a href="/2020/07/02/why-should-I-move-away-from-CSDN-blog/" class="index-excerpt">
@@ -318,15 +454,14 @@ CVTE结果：收到书面offer
         <div>
 2019.12.20 本周五在组内做了一次技术分享，内容关于kube-batch，也在其中阐述了些自我思考。本文记录下分享的主要内容，PPT就不贴上来了。
 
-basic concept
-Queue
-Job
-Task
-Podgroup
+kube-batch 主要概念
 
-framework
-One-time scheduling process
+调度器实际上解决的是最优解问题，在 kube-batch 中这个问题就是每一个 Action，原生支持
 
+allocate（分配）
+backfill（回填）
+reclaim（回收）
+preempt（抢占）
 </div>
       </a>
 
@@ -497,161 +632,6 @@ git add 的作用是将文件修改添加到</div>
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/Tools/">Tools</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/07/02/github-ssh-key/">Github添加SSH key时的问题</a>
-
-      <a href="/2020/07/02/github-ssh-key/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* 这是一个小细节。。记录下来。。→_→ *
-
-问题现象
-
-在此处Key部分添加SSH key
-
-需要将用户本地的如下所示文件中的内容复制到Key部分
-~/.ssh/id_rsa.pub
-
-这时问题来了，通过vim打开此文件，复制内容到Key部分进行add，但添加失败，出现如下信息
-
-
-问题原因
-
-
-vim 遵循的是 Linux 的定义，结尾没有 \n 的文本文件不是一个合法的文本文件，因此默认加</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-07-02
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Linux/">Linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Tools/">Tools</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/07/02/unsafe-sizeof-in-golang/">Golang中unsafe.Sizeof()的问题</a>
-
-      <a href="/2020/07/02/unsafe-sizeof-in-golang/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* 今天看到一段代码感觉很奇怪。。。 *
-代码的如下
-package main
-
-import "unsafe"
-const (
-    a = "abc"
-    b = len(a)
-    c = unsafe.Sizeof(a)
-)
-
-func main()&#123;
-    println(a, b, c)
-&#125;
-
-代码运行结果如下
-
-感觉很奇怪。。为什么unsafe.Size</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-07-02
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Language/">Language</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Golang/">Golang</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/07/02/hello-world-by-docker/">hello world——再出发~</a>
-
-      <a href="/2020/07/02/hello-world-by-docker/" class="index-excerpt">
-        
-        
-          
-        
-        <div>** *新的征程开始喽~ hello world~ **
-今天第一次用docker，很开心：）
-
-</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-07-02
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Life/">Life</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E6%84%9F%E6%83%B3%E9%9A%8F%E7%AC%94/">感想随笔</a>
             
           </div>
         

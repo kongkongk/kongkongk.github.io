@@ -168,6 +168,159 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/28/implement-queue-with-two-stacks/">剑指Offer——（5）用两个栈实现队列</a>
+
+      <a href="/2020/06/28/implement-queue-with-two-stacks/" class="index-excerpt">
+        
+        
+          
+        
+        <div>题目描述：
+
+用两个栈来实现一个队列，完成队列的Push和Pop操作。 队列中的元素为int类型。
+
+实现如下：
+//栈：先进后出 队列：先进先出
+//注意最后一个元素的转移优化
+//两个队列实现一个栈
+//stack1负责入栈，stack2负责出栈
+class Solution
+&#123;
+public:
+	void push(int node) 
+	&#123;
+		stack1.push(</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/28/rebuild-binary-tree/">剑指Offer——（4）重建二叉树</a>
+
+      <a href="/2020/06/28/rebuild-binary-tree/" class="index-excerpt">
+        
+        
+          
+        
+        <div>题目描述：
+
+输入某二叉树的前序遍历和中序遍历的结果，请重建出该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字。例如输入前序遍历序列{1,2,4,7,3,5,6,8}和中序遍历序列{4,7,2,1,5,3,8,6}，则重建二叉树并返回。
+
+实现如下：
+//前序中序、后序中序都可以重建二叉树，但前序后序不可以，因为只有中序可以区分左子树与右子树
+/*
+pre:&#123;1,2,4,7</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/28/print-a-linked-list-from-end-to-end/">剑指Offer——（3）从尾到头打印链表</a>
+
+      <a href="/2020/06/28/print-a-linked-list-from-end-to-end/" class="index-excerpt">
+        
+        
+          
+        
+        <div>题目描述：
+
+输入一个链表，从尾到头打印链表每个节点的值。
+
+实现如下：
+//可以使用stack的先进后出，也可以使用递归，因为已给定函数所以使用递归
+//本题的在线测试用例是无头链表→_→
+/*节点结构体
+struct ListNode 
+&#123;
+	int val;
+    struct ListNode *next;
+    ListNode(int x) : val(x), next(</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
       <a class="index-header" href="/2020/06/27/replace-spaces/">剑指Offer——（2）替换空格</a>
 
       <a href="/2020/06/27/replace-spaces/" class="index-excerpt">
@@ -483,138 +636,6 @@ $gcc hello.c
 $./a.out
 
 一个可执行文件的生成，可以分解成4个步骤：预处理（Prepressing）、编译（Compilation）、汇编（Assembly）和链接</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-27
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Linux/">Linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%93%BE%E6%8E%A5%E3%80%81%E8%A3%85%E8%BD%BD%E4%B8%8E%E5%BA%93/">链接、装载与库</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/27/processes-and-threads/">链接、装载与库——进程与线程</a>
-
-      <a href="/2020/06/27/processes-and-threads/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* 第一章最后一部分，part.3。。。 *
-第一章 温故而知新1.6 众人拾柴火焰高1.6.1 线程基础1.线程（Thread），也称轻量级进程（Lightweight Process，LWP），是程序执行流的最小单元。一个标准线程由线程ID，当前指令指针（PC），寄存器集合和堆栈组成。进程由一个或多个线程组成，各线程之间共享（全局变量）代码段、数据段、堆、打开文件描述符、信号等。
-
-2.线程拥</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-27
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Linux/">Linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%93%BE%E6%8E%A5%E3%80%81%E8%A3%85%E8%BD%BD%E4%B8%8E%E5%BA%93/">链接、装载与库</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/27/virtual-address-space/">链接、装载与库——虚拟地址空间</a>
-
-      <a href="/2020/06/27/virtual-address-space/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* 接着第一章继续，part.2。。。 *
-第一章 温故而知新1.5 内存不够怎么办1.早期的计算机中，程序直接运行在物理内存上，即程序在运行时所访问的地址都是物理地址。计算机将有限的物理内存分配给多个程序使用。这种简单的内存分配策略有很多问题。
-
-地址空间不隔离所有程序直接访问物理地址，程序所使用的内存空间不是相互隔离的。恶意程序可以很容易改写其他程序的内存数据。
-
-内存使用效率低一个程序执行时</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-27
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Linux/">Linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%93%BE%E6%8E%A5%E3%80%81%E8%A3%85%E8%BD%BD%E4%B8%8E%E5%BA%93/">链接、装载与库</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/27/computer-composition/">链接、装载与库——计算机组成</a>
-
-      <a href="/2020/06/27/computer-composition/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* 从这篇开始连续记录我的读书笔记，将书中重要的知识点总结，方便自己以后快速回忆与阅读。那就先从《程序员的自我修养——装载、链接与库》第一章开始喽。 *
-第一章 温故而知新1.1 从Hello World 说起无
-1.2 万变不离其宗1.计算机中有三个最为关键的部件，分别为中央处理器CPU、内存和I/O控制芯片。
-
-早期的CPU的核心频率与内存一样，所以直接连接在同一个总线（Bus）上。但为了协调</div>
       </a>
 
       <div class="index-btm post-metas">

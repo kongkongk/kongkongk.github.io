@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/self.jpeg">
+  <link rel="icon" type="image/png" href="/img/self.jpeg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>Kube-Batch 核心源码剖析 - kongkong</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>kongkong</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-07-06 21:49">
+      2020年7月6日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.9k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      34
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2020年7月6日 晚上
+                
+              </p>
+            
+            <article class="markdown-body">
+              <p><strong>剖析源码版本为 v0.5.0，commit 010ef715</strong></p>
+<p>cmd/kube-batch/main.go:54</p>
+<pre><code class="hljs go"><span class="hljs-keyword">if</span> err := app.Run(s); err != <span class="hljs-literal">nil</span> &#123;
+	fmt.Fprintf(os.Stderr, <span class="hljs-string">"%v\n"</span>, err)
+	os.Exit(<span class="hljs-number">1</span>)
+&#125;</code></pre>
+
+
+
+<p>cmd/kube-batch/app/server.go:133</p>
+<pre><code class="hljs go">leaderelection.RunOrDie(context.TODO(), leaderelection.LeaderElectionConfig&#123;
+	Lock:          rl,
+	LeaseDuration: leaseDuration,
+	RenewDeadline: renewDeadline,
+	RetryPeriod:   retryPeriod,
+	Callbacks: leaderelection.LeaderCallbacks&#123;
+		OnStartedLeading: run,
+		OnStoppedLeading: <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">()</span></span> &#123;
+			glog.Fatalf(<span class="hljs-string">"leaderelection lost"</span>)
+		&#125;,
+	&#125;,
+&#125;)</code></pre>
+
+
+
+<p>pkg/scheduler/scheduler.go:67</p>
+<p>相应的资源 Informer 开始 Iist-Watch 监听事件变化 </p>
+<pre><code class="hljs go"><span class="hljs-comment">// Run  starts the schedulerCache</span>
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(sc *SchedulerCache)</span> <span class="hljs-title">Run</span><span class="hljs-params">(stopCh &lt;-<span class="hljs-keyword">chan</span> <span class="hljs-keyword">struct</span>&#123;&#125;)</span></span> &#123;
+	<span class="hljs-keyword">go</span> sc.pdbInformer.Informer().Run(stopCh)
+	<span class="hljs-keyword">go</span> sc.podInformer.Informer().Run(stopCh)
+	<span class="hljs-keyword">go</span> sc.nodeInformer.Informer().Run(stopCh)
+	<span class="hljs-keyword">go</span> sc.podGroupInformerv1alpha1.Informer().Run(stopCh)
+	<span class="hljs-keyword">go</span> sc.podGroupInformerv1alpha2.Informer().Run(stopCh)
+	<span class="hljs-keyword">go</span> sc.pvInformer.Informer().Run(stopCh)
+	<span class="hljs-keyword">go</span> sc.pvcInformer.Informer().Run(stopCh)
+	<span class="hljs-keyword">go</span> sc.scInformer.Informer().Run(stopCh)
+	<span class="hljs-keyword">go</span> sc.queueInformerv1alpha1.Informer().Run(stopCh)
+	<span class="hljs-keyword">go</span> sc.queueInformerv1alpha2.Informer().Run(stopCh)
+
+	<span class="hljs-keyword">if</span> options.ServerOpts.EnablePriorityClass &#123;
+		<span class="hljs-keyword">go</span> sc.pcInformer.Informer().Run(stopCh)
+	&#125;
+
+	<span class="hljs-comment">// Re-sync error tasks.</span>
+	<span class="hljs-keyword">go</span> wait.Until(sc.processResyncTask, <span class="hljs-number">0</span>, stopCh)
+
+	<span class="hljs-comment">// Cleanup jobs.</span>
+	<span class="hljs-keyword">go</span> wait.Until(sc.processCleanupJob, <span class="hljs-number">0</span>, stopCh)
+&#125;</code></pre>
+
+
+
+<p>pkg/scheduler/scheduler.go:71</p>
+<p><strong>加载调度规则配置，默认为 defaultSchedulerConf</strong></p>
+<pre><code class="hljs go"><span class="hljs-comment">// Run runs the Scheduler</span>
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(pc *Scheduler)</span> <span class="hljs-title">Run</span><span class="hljs-params">(stopCh &lt;-<span class="hljs-keyword">chan</span> <span class="hljs-keyword">struct</span>&#123;&#125;)</span></span> &#123;
+	<span class="hljs-keyword">var</span> err error
+
+	<span class="hljs-comment">// Start cache for policy.</span>
+	<span class="hljs-keyword">go</span> pc.cache.Run(stopCh)
+	pc.cache.WaitForCacheSync(stopCh)
+
+	<span class="hljs-comment">// Load configuration of scheduler</span>
+	schedConf := defaultSchedulerConf
+	<span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(pc.schedulerConf) != <span class="hljs-number">0</span> &#123;
+		<span class="hljs-keyword">if</span> schedConf, err = readSchedulerConf(pc.schedulerConf); err != <span class="hljs-literal">nil</span> &#123;
+			glog.Errorf(<span class="hljs-string">"Failed to read scheduler configuration '%s', using default configuration: %v"</span>,
+				pc.schedulerConf, err)
+			schedConf = defaultSchedulerConf
+		&#125;
+	&#125;
+
+	pc.actions, pc.plugins, err = loadSchedulerConf(schedConf)
+	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;
+		<span class="hljs-built_in">panic</span>(err)
+	&#125;
+
+	<span class="hljs-keyword">go</span> wait.Until(pc.runOnce, pc.schedulePeriod, stopCh)
+&#125;</code></pre>
+
+
+
+<p>pkg/scheduler/util.go:31</p>
+<pre><code class="hljs go"><span class="hljs-keyword">var</span> defaultSchedulerConf = <span class="hljs-string">`</span>
+<span class="hljs-string">actions: "allocate, backfill"</span>
+<span class="hljs-string">tiers:</span>
+<span class="hljs-string">- plugins:</span>
+<span class="hljs-string">  - name: priority</span>
+<span class="hljs-string">  - name: gang</span>
+<span class="hljs-string">- plugins:</span>
+<span class="hljs-string">  - name: drf</span>
+<span class="hljs-string">  - name: predicates</span>
+<span class="hljs-string">  - name: proportion</span>
+<span class="hljs-string">  - name: nodeorder</span>
+<span class="hljs-string">`</span></code></pre>
+
+
+
+<p>pkg/scheduler/util.go:44</p>
+<p>解析调度配置，返回每个 Action 的 Action interface 实例并设置 Tiers 的具体配置参数</p>
+<pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">loadSchedulerConf</span><span class="hljs-params">(confStr <span class="hljs-keyword">string</span>)</span> <span class="hljs-params">([]framework.Action, []conf.Tier, error)</span></span> &#123;
+	<span class="hljs-keyword">var</span> actions []framework.Action
+
+	schedulerConf := &amp;conf.SchedulerConfiguration&#123;&#125;
+
+	buf := <span class="hljs-built_in">make</span>([]<span class="hljs-keyword">byte</span>, <span class="hljs-built_in">len</span>(confStr))
+	<span class="hljs-built_in">copy</span>(buf, confStr)
+
+	<span class="hljs-keyword">if</span> err := yaml.Unmarshal(buf, schedulerConf); err != <span class="hljs-literal">nil</span> &#123;
+		<span class="hljs-keyword">return</span> <span class="hljs-literal">nil</span>, <span class="hljs-literal">nil</span>, err
+	&#125;
+
+	<span class="hljs-comment">// Set default settings for each plugin if not set</span>
+	<span class="hljs-keyword">for</span> i, tier := <span class="hljs-keyword">range</span> schedulerConf.Tiers &#123;
+		<span class="hljs-keyword">for</span> j := <span class="hljs-keyword">range</span> tier.Plugins &#123;
+			plugins.ApplyPluginConfDefaults(&amp;schedulerConf.Tiers[i].Plugins[j])
+		&#125;
+	&#125;
+
+	actionNames := strings.Split(schedulerConf.Actions, <span class="hljs-string">","</span>)
+	<span class="hljs-keyword">for</span> _, actionName := <span class="hljs-keyword">range</span> actionNames &#123;
+		<span class="hljs-keyword">if</span> action, found := framework.GetAction(strings.TrimSpace(actionName)); found &#123;
+			actions = <span class="hljs-built_in">append</span>(actions, action)
+		&#125; <span class="hljs-keyword">else</span> &#123;
+			<span class="hljs-keyword">return</span> <span class="hljs-literal">nil</span>, <span class="hljs-literal">nil</span>, fmt.Errorf(<span class="hljs-string">"failed to found Action %s, ignore it"</span>, actionName)
+		&#125;
+	&#125;
+
+	<span class="hljs-keyword">return</span> actions, schedulerConf.Tiers, <span class="hljs-literal">nil</span>
+&#125;</code></pre>
+
+
+
+<p>pkg/scheduler/plugins/defaults.go:22</p>
+<p>根据配置设置每个 Tier 的具体调度参数</p>
+<pre><code class="hljs go"><span class="hljs-comment">// ApplyPluginConfDefaults sets option's filed to its default value if not set</span>
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">ApplyPluginConfDefaults</span><span class="hljs-params">(option *conf.PluginOption)</span></span> &#123;
+	t := <span class="hljs-literal">true</span>
+
+	<span class="hljs-keyword">if</span> option.EnabledJobOrder == <span class="hljs-literal">nil</span> &#123;
+		option.EnabledJobOrder = &amp;t
+	&#125;
+	<span class="hljs-keyword">if</span> option.EnabledJobReady == <span class="hljs-literal">nil</span> &#123;
+		option.EnabledJobReady = &amp;t
+	&#125;
+	<span class="hljs-keyword">if</span> option.EnabledJobPipelined == <span class="hljs-literal">nil</span> &#123;
+		option.EnabledJobPipelined = &amp;t
+	&#125;
+	<span class="hljs-keyword">if</span> option.EnabledTaskOrder == <span class="hljs-literal">nil</span> &#123;
+		option.EnabledTaskOrder = &amp;t
+	&#125;
+	<span class="hljs-keyword">if</span> option.EnabledPreemptable == <span class="hljs-literal">nil</span> &#123;
+		option.EnabledPreemptable = &amp;t
+	&#125;
+	<span class="hljs-keyword">if</span> option.EnabledReclaimable == <span class="hljs-literal">nil</span> &#123;
+		option.EnabledReclaimable = &amp;t
+	&#125;
+	<span class="hljs-keyword">if</span> option.EnabledQueueOrder == <span class="hljs-literal">nil</span> &#123;
+		option.EnabledQueueOrder = &amp;t
+	&#125;
+	<span class="hljs-keyword">if</span> option.EnabledPredicate == <span class="hljs-literal">nil</span> &#123;
+		option.EnabledPredicate = &amp;t
+	&#125;
+	<span class="hljs-keyword">if</span> option.EnabledNodeOrder == <span class="hljs-literal">nil</span> &#123;
+		option.EnabledNodeOrder = &amp;t
+	&#125;
+&#125;</code></pre>
+
+
+
+<p>pkg/scheduler/actions/factory.go:28</p>
+<p>内置的 4 个 Action 之前已初始化</p>
+<pre><code class="hljs reasonml">func init<span class="hljs-literal">()</span> &#123;
+	framework.<span class="hljs-constructor">RegisterAction(<span class="hljs-params">reclaim</span>.New()</span>)
+	framework.<span class="hljs-constructor">RegisterAction(<span class="hljs-params">allocate</span>.New()</span>)
+	framework.<span class="hljs-constructor">RegisterAction(<span class="hljs-params">backfill</span>.New()</span>)
+	framework.<span class="hljs-constructor">RegisterAction(<span class="hljs-params">preempt</span>.New()</span>)
+&#125;</code></pre>
+
+
+
+<p>pkg/scheduler/scheduler.go:85</p>
+<p><strong>开始调度，默认间隔1s尝试对所有待调度实例，进行一次调度计算</strong></p>
+<pre><code class="hljs go"><span class="hljs-keyword">go</span> wait.Until(pc.runOnce, pc.schedulePeriod, stopCh)</code></pre>
+
+
+
+<p>pkg/scheduler/scheduler.go:94</p>
+<p><strong>初始化贯穿本次调度生命周期的 session，拥有此次调度的 cache snapshot</strong></p>
+<pre><code class="hljs go">ssn := framework.OpenSession(pc.cache, pc.plugins)
+<span class="hljs-keyword">defer</span> framework.CloseSession(ssn)</code></pre>
+
+
+
+<p>pkg/scheduler/framework/framework.go:31</p>
+<pre><code class="hljs go"><span class="hljs-comment">// OpenSession start the session</span>
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">OpenSession</span><span class="hljs-params">(cache cache.Cache, tiers []conf.Tier)</span> *<span class="hljs-title">Session</span></span> &#123;
+	ssn := openSession(cache)
+	ssn.Tiers = tiers
+
+	<span class="hljs-keyword">for</span> _, tier := <span class="hljs-keyword">range</span> tiers &#123;
+		<span class="hljs-keyword">for</span> _, plugin := <span class="hljs-keyword">range</span> tier.Plugins &#123;
+			<span class="hljs-keyword">if</span> pb, found := GetPluginBuilder(plugin.Name); !found &#123;
+				glog.Errorf(<span class="hljs-string">"Failed to get plugin %s."</span>, plugin.Name)
+			&#125; <span class="hljs-keyword">else</span> &#123;
+				plugin := pb(plugin.Arguments)
+				ssn.plugins[plugin.Name()] = plugin
+			&#125;
+		&#125;
+	&#125;
+
+	<span class="hljs-keyword">for</span> _, plugin := <span class="hljs-keyword">range</span> ssn.plugins &#123;
+		onSessionOpenStart := time.Now()
+		plugin.OnSessionOpen(ssn)
+		metrics.UpdatePluginDuration(plugin.Name(), metrics.OnSessionOpen, metrics.Duration(onSessionOpenStart))
+	&#125;
+
+	<span class="hljs-keyword">return</span> ssn
+&#125;</code></pre>
+
+
+
+<p>pkg/scheduler/framework/session.go:86</p>
+<p>初始化 ssn 并保存当前时刻集群某些资源的 Cache SnapShot 快照</p>
+<pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">openSession</span><span class="hljs-params">(cache cache.Cache)</span> *<span class="hljs-title">Session</span></span> &#123;
+	ssn := &amp;Session&#123;
+		UID:   uuid.NewUUID(),
+		cache: cache,
+
+		Jobs:   <span class="hljs-keyword">map</span>[api.JobID]*api.JobInfo&#123;&#125;,
+		Nodes:  <span class="hljs-keyword">map</span>[<span class="hljs-keyword">string</span>]*api.NodeInfo&#123;&#125;,
+		Queues: <span class="hljs-keyword">map</span>[api.QueueID]*api.QueueInfo&#123;&#125;,
+
+		plugins:          <span class="hljs-keyword">map</span>[<span class="hljs-keyword">string</span>]Plugin&#123;&#125;,
+		jobOrderFns:      <span class="hljs-keyword">map</span>[<span class="hljs-keyword">string</span>]api.CompareFn&#123;&#125;,
+		queueOrderFns:    <span class="hljs-keyword">map</span>[<span class="hljs-keyword">string</span>]api.CompareFn&#123;&#125;,
+		taskOrderFns:     <span class="hljs-keyword">map</span>[<span class="hljs-keyword">string</span>]api.CompareFn&#123;&#125;,
+		predicateFns:     <span class="hljs-keyword">map</span>[<span class="hljs-keyword">string</span>]api.PredicateFn&#123;&#125;,
+		preemptableFns:   <span class="hljs-keyword">map</span>[<span class="hljs-keyword">string</span>]api.EvictableFn&#123;&#125;,
+		reclaimableFns:   <span class="hljs-keyword">map</span>[<span class="hljs-keyword">string</span>]api.EvictableFn&#123;&#125;,
+		overusedFns:      <span class="hljs-keyword">map</span>[<span class="hljs-keyword">string</span>]api.ValidateFn&#123;&#125;,
+		jobReadyFns:      <span class="hljs-keyword">map</span>[<span class="hljs-keyword">string</span>]api.ValidateFn&#123;&#125;,
+		jobPipelinedFns:  <span class="hljs-keyword">map</span>[<span class="hljs-keyword">string</span>]api.ValidateFn&#123;&#125;,
+		jobValidFns:      <span class="hljs-keyword">map</span>[<span class="hljs-keyword">string</span>]api.ValidateExFn&#123;&#125;,
+		nodePrioritizers: <span class="hljs-keyword">map</span>[<span class="hljs-keyword">string</span>][]algorithm.PriorityConfig&#123;&#125;,
+	&#125;
+
+	snapshot := cache.Snapshot()
+	...
+&#125;</code></pre>
+
+
+
+<p>pkg/scheduler/cache/cache.go:616</p>
+<p><strong>Cache SnapShot 包含 Ready Node 信息、Queue 信息和指定了 podGroup 和 Queue 的 Job，并为 Job 设置 Priority</strong></p>
+<pre><code class="hljs go">snapshot := &amp;kbapi.ClusterInfo&#123;
+	Nodes:  <span class="hljs-built_in">make</span>(<span class="hljs-keyword">map</span>[<span class="hljs-keyword">string</span>]*kbapi.NodeInfo),
+	Jobs:   <span class="hljs-built_in">make</span>(<span class="hljs-keyword">map</span>[kbapi.JobID]*kbapi.JobInfo),
+	Queues: <span class="hljs-built_in">make</span>(<span class="hljs-keyword">map</span>[kbapi.QueueID]*kbapi.QueueInfo),
+&#125;
+
+<span class="hljs-keyword">for</span> _, value := <span class="hljs-keyword">range</span> sc.Nodes &#123;
+	<span class="hljs-keyword">if</span> !value.Ready() &#123;
+		<span class="hljs-keyword">continue</span>
+	&#125;
+
+	snapshot.Nodes[value.Name] = value.Clone()
+&#125;
+
+<span class="hljs-keyword">for</span> _, value := <span class="hljs-keyword">range</span> sc.Queues &#123;
+	snapshot.Queues[value.UID] = value.Clone()
+&#125;
+
+<span class="hljs-keyword">for</span> _, value := <span class="hljs-keyword">range</span> sc.Jobs &#123;
+	<span class="hljs-comment">// If no scheduling spec, does not handle it.</span>
+	<span class="hljs-keyword">if</span> value.PodGroup == <span class="hljs-literal">nil</span> &amp;&amp; value.PDB == <span class="hljs-literal">nil</span> &#123;
+		glog.V(<span class="hljs-number">4</span>).Infof(<span class="hljs-string">"The scheduling spec of Job &lt;%v:%s/%s&gt; is nil, ignore it."</span>,
+			value.UID, value.Namespace, value.Name)
+
+		<span class="hljs-keyword">continue</span>
+	&#125;
+
+	<span class="hljs-keyword">if</span> _, found := snapshot.Queues[value.Queue]; !found &#123;
+		glog.V(<span class="hljs-number">3</span>).Infof(<span class="hljs-string">"The Queue &lt;%v&gt; of Job &lt;%v/%v&gt; does not exist, ignore it."</span>,
+			value.Queue, value.Namespace, value.Name)
+		<span class="hljs-keyword">continue</span>
+	&#125;
+
+	<span class="hljs-keyword">if</span> value.PodGroup != <span class="hljs-literal">nil</span> &#123;
+		value.Priority = sc.defaultPriority
+
+		priName := value.PodGroup.Spec.PriorityClassName
+		<span class="hljs-keyword">if</span> priorityClass, found := sc.PriorityClasses[priName]; found &#123;
+			value.Priority = priorityClass.Value
+		&#125;
+
+		glog.V(<span class="hljs-number">4</span>).Infof(<span class="hljs-string">"The priority of job &lt;%s/%s&gt; is &lt;%s/%d&gt;"</span>,
+			value.Namespace, value.Name, priName, value.Priority)
+	&#125;
+
+	snapshot.Jobs[value.UID] = value.Clone()
+&#125;</code></pre>
+
+
+
+<p>pkg/scheduler/framework/session.go:89</p>
+<p><strong>过滤无效的，不需要进行调度计算的 Job，无效的 Job 将从 Cache SnapShot 中被删除</strong></p>
+<pre><code class="hljs go">ssn.Jobs = snapshot.Jobs
+<span class="hljs-keyword">for</span> _, job := <span class="hljs-keyword">range</span> ssn.Jobs &#123;
+	<span class="hljs-keyword">if</span> vjr := ssn.JobValid(job); vjr != <span class="hljs-literal">nil</span> &#123;
+		<span class="hljs-keyword">if</span> !vjr.Pass &#123;
+			jc := &amp;api.PodGroupCondition&#123;
+				Type:               api.PodGroupUnschedulableType,
+				Status:             v1.ConditionTrue,
+				LastTransitionTime: metav1.Now(),
+				TransitionID:       <span class="hljs-keyword">string</span>(ssn.UID),
+				Reason:             vjr.Reason,
+				Message:            vjr.Message,
+			&#125;
+
+			<span class="hljs-keyword">if</span> err := ssn.UpdateJobCondition(job, jc); err != <span class="hljs-literal">nil</span> &#123;
+				glog.Errorf(<span class="hljs-string">"Failed to update job condition: %v"</span>, err)
+			&#125;
+		&#125;
+
+		<span class="hljs-built_in">delete</span>(ssn.Jobs, job.UID)
+	&#125;
+&#125;</code></pre>
+
+
+
+<p>pkg/scheduler/framework/session_plugins.go:224</p>
+<p><strong>根据 ssn 中注册的 Tiers Plugin 所提供的 jobVaildFn（此时 ssn 中的 jobVaildFn 还并未注册，后续通过每个 Plugin 的构造函数，将注册 Plugin 所包含的各个维度的调度函数）</strong></p>
+<p><strong>最短路径只要遇到 vaildFn 判断为无效的 Job 即立刻返回</strong></p>
+<pre><code class="hljs go"><span class="hljs-comment">// JobValid invoke jobvalid function of the plugins</span>
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(ssn *Session)</span> <span class="hljs-title">JobValid</span><span class="hljs-params">(obj <span class="hljs-keyword">interface</span>&#123;&#125;)</span> *<span class="hljs-title">api</span>.<span class="hljs-title">ValidateResult</span></span> &#123;
+	<span class="hljs-keyword">for</span> _, tier := <span class="hljs-keyword">range</span> ssn.Tiers &#123;
+		<span class="hljs-keyword">for</span> _, plugin := <span class="hljs-keyword">range</span> tier.Plugins &#123;
+			jrf, found := ssn.jobValidFns[plugin.Name]
+			<span class="hljs-keyword">if</span> !found &#123;
+				<span class="hljs-keyword">continue</span>
+			&#125;
+
+			<span class="hljs-keyword">if</span> vr := jrf(obj); vr != <span class="hljs-literal">nil</span> &amp;&amp; !vr.Pass &#123;
+				<span class="hljs-keyword">return</span> vr
+			&#125;
+
+		&#125;
+	&#125;
+
+	<span class="hljs-keyword">return</span> <span class="hljs-literal">nil</span>
+&#125;</code></pre>
+
+
+
+<p>pkg/scheduler/framework/framework.go:36</p>
+<p><strong>初始化 ssn 后，使用 pluginBuilders 中存储的 Plugin 对应 New 方法实例化 Plugin 对象</strong></p>
+<pre><code class="hljs go"><span class="hljs-comment">// GetPluginBuilder get the pluginbuilder by name</span>
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">GetPluginBuilder</span><span class="hljs-params">(name <span class="hljs-keyword">string</span>)</span> <span class="hljs-params">(PluginBuilder, <span class="hljs-keyword">bool</span>)</span></span> &#123;
+	pluginMutex.Lock()
+	<span class="hljs-keyword">defer</span> pluginMutex.Unlock()
+
+	pb, found := pluginBuilders[name]
+	<span class="hljs-keyword">return</span> pb, found
+&#125;</code></pre>
+
+
+
+<p>pkg/scheduler/plugins/factory.go:31</p>
+<p>Plugin 的 Builder 方法在之前也已注册</p>
+<pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">init</span><span class="hljs-params">()</span></span> &#123;
+	<span class="hljs-comment">// Plugins for Jobs</span>
+	framework.RegisterPluginBuilder(<span class="hljs-string">"drf"</span>, drf.New)
+	framework.RegisterPluginBuilder(<span class="hljs-string">"gang"</span>, gang.New)
+	framework.RegisterPluginBuilder(<span class="hljs-string">"predicates"</span>, predicates.New)
+	framework.RegisterPluginBuilder(<span class="hljs-string">"priority"</span>, priority.New)
+	framework.RegisterPluginBuilder(<span class="hljs-string">"nodeorder"</span>, nodeorder.New)
+	framework.RegisterPluginBuilder(<span class="hljs-string">"conformance"</span>, conformance.New)
+
+	<span class="hljs-comment">// Plugins for Queues</span>
+	framework.RegisterPluginBuilder(<span class="hljs-string">"proportion"</span>, proportion.New)
+&#125;</code></pre>
+
+
+
+<p>pkg/scheduler/framework/framework.go:47</p>
+<p><strong>进行 Plugin 函数注册，此时才将 Plugin 各个调度维度的函数注册</strong></p>
+<pre><code class="hljs go"><span class="hljs-keyword">for</span> _, plugin := <span class="hljs-keyword">range</span> ssn.plugins &#123;
+	onSessionOpenStart := time.Now()
+	plugin.OnSessionOpen(ssn)
+	metrics.UpdatePluginDuration(plugin.Name(), metrics.OnSessionOpen, metrics.Duration(onSessionOpenStart))
+&#125;
+
+<span class="hljs-keyword">return</span> ssn</code></pre>
+
+
+
+<p>pkg/scheduler/plugins/gang/gang.go:69</p>
+<p><strong>举例 Gang Plugin，将会注册 JobVaildFn 方法，在过滤 Cache SnapShot 中无效 Job 时被调用</strong></p>
+<p><strong>判断 Job 中包含的 Vaild Task 数量是否小于 podGroup 中设置的 minMember， 因为 Vaild Task 小于 minMember 的不满足 Gang 批调度条件</strong></p>
+<pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(gp *gangPlugin)</span> <span class="hljs-title">OnSessionOpen</span><span class="hljs-params">(ssn *framework.Session)</span></span> &#123;
+	validJobFn := <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(obj <span class="hljs-keyword">interface</span>&#123;&#125;)</span> *<span class="hljs-title">api</span>.<span class="hljs-title">ValidateResult</span></span> &#123;
+		job, ok := obj.(*api.JobInfo)
+		<span class="hljs-keyword">if</span> !ok &#123;
+			<span class="hljs-keyword">return</span> &amp;api.ValidateResult&#123;
+				Pass:    <span class="hljs-literal">false</span>,
+				Message: fmt.Sprintf(<span class="hljs-string">"Failed to convert &lt;%v&gt; to *JobInfo"</span>, obj),
+			&#125;
+		&#125;
+
+		vtn := job.ValidTaskNum()
+		<span class="hljs-keyword">if</span> vtn &lt; job.MinAvailable &#123;
+			<span class="hljs-keyword">return</span> &amp;api.ValidateResult&#123;
+				Pass:   <span class="hljs-literal">false</span>,
+				Reason: v1alpha1.NotEnoughPodsReason,
+				Message: fmt.Sprintf(<span class="hljs-string">"Not enough valid tasks for gang-scheduling, valid: %d, min: %d"</span>,
+					vtn, job.MinAvailable),
+			&#125;
+		&#125;
+		<span class="hljs-keyword">return</span> <span class="hljs-literal">nil</span>
+	&#125;
+
+	ssn.AddJobValidFn(gp.Name(), validJobFn)
+  ...
+&#125;</code></pre>
+
+
+
+<p>pkg/scheduler/scheduler.go:99</p>
+<p><strong>此时本轮调度的 Session 已初始化完成，包括集群资源的 Cache SnapShot、各个 Plugin 也已注册，开始根据配置的 Action 并按配置的顺序执行</strong></p>
+<pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(pc *Scheduler)</span> <span class="hljs-title">runOnce</span><span class="hljs-params">()</span></span> &#123;
+	glog.V(<span class="hljs-number">4</span>).Infof(<span class="hljs-string">"Start scheduling ..."</span>)
+	scheduleStartTime := time.Now()
+	<span class="hljs-keyword">defer</span> glog.V(<span class="hljs-number">4</span>).Infof(<span class="hljs-string">"End scheduling ..."</span>)
+	<span class="hljs-keyword">defer</span> metrics.UpdateE2eDuration(metrics.Duration(scheduleStartTime))
+
+	ssn := framework.OpenSession(pc.cache, pc.plugins)
+	<span class="hljs-keyword">defer</span> framework.CloseSession(ssn)
+
+	<span class="hljs-keyword">for</span> _, action := <span class="hljs-keyword">range</span> pc.actions &#123;
+		actionStartTime := time.Now()
+		action.Execute(ssn)
+		metrics.UpdateActionDuration(action.Name(), metrics.Duration(actionStartTime))
+	&#125;
+&#125;</code></pre>
+
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Cloud-Native/">Cloud Native</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Kube-Batch/">Kube-Batch</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/07/06/gang-jobVaildFn-source-code-analysis-in-kube-batch/">
+                        <span class="hidden-mobile">Kube-Batch Gang jobVaildFn 源码剖析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "Kube-Batch 核心源码剖析&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

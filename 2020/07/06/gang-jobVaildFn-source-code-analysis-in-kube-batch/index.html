@@ -17,7 +17,7 @@
   <meta name="description" content="">
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
-  <title>我为什么要搬离CSDN Blog？ - kongkong</title>
+  <title>Kube-Batch Gang jobVaildFn 源码剖析 - kongkong</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -152,8 +152,8 @@
               
   <div class="mt-3 post-meta">
     <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-    <time datetime="2020-07-02 22:07">
-      2020年7月2日 晚上
+    <time datetime="2020-07-06 21:21">
+      2020年7月6日 晚上
     </time>
   </div>
 
@@ -163,7 +163,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      480 字
+      892 字
     </span>
   
 
@@ -173,7 +173,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      5
+      16
        分钟
     </span>
   
@@ -213,26 +213,238 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2020年7月2日 晚上
+                  本文最后更新于：2020年7月6日 晚上
                 
               </p>
             
             <article class="markdown-body">
-              <p><strong>* <em>终于要搬家啦 传送门：<a href="https://kongkongk.github.io/" target="_blank" rel="noopener">https://kongkongk.github.io/</a></em> *</strong></p>
-<h3 id="What"><a href="#What" class="headerlink" title="What"></a>What</h3><p>从大学开始，逐渐深入接触计算机相关知识，当时也有产出一些总结（无论是纸质化或本地markdown），俗称个人笔记。后来接触到 CSDN，才有想法将这些沉淀的知识总结迁移到 Blog 中。原因也很简单，不能走哪都抱着一厚沓纸，实时查阅的功能更是没有，所以最终决定将本地文档迁移至CSDN Blog。</p>
-<h3 id="Why"><a href="#Why" class="headerlink" title="Why"></a>Why</h3><p>此时有几个问题浮现脑海，这些问题需要思考清楚</p>
-<ul>
-<li>为什么用的好好的，却要开始搬家迁移 Blog ？<br> CSDN 属于商业应用，变现是理所当然。但计算机技术领域面向的目标人群很窄，扩展目标用户就变得很难，那就要从变现途径入手了，所以越来越多的广告开始出现在 Blog 中，我现在终于受不了了。</li>
-<li>新 Blog 如何维护？<br>新 Blog 将迁移至 Github，基于 Github Pages + Hexo 构建。同时无需维护服务器、域名和证书等资源，这一点和现在 CSDN Blog 相同，否则后续维护成本将大大提高。</li>
-<li>历史文档的迁移成本有多少？<br>当前 CSDN Blog 文档使用 markdown 编辑，markdown 作为文档编辑语法既好用又成熟，后续 Blog 也将继续使用，因此文档迁移成本还在可接受范围内。<h3 id="How"><a href="#How" class="headerlink" title="How"></a>How</h3>目前新  Blog 雏形已经搭建完成，但相关个性化信息还没怎么玩，文档也没有开始迁移。。。</li>
-</ul>
-<p>TODO</p>
-<ul>
-<li>后续将逐步优化新 Blog 个性化，使用开源模版提升交互性、可视化性和可扩展性</li>
-<li>同时有序将 CSDN 原创文档迁移至新 Blog</li>
-<li>后续将只在新 Blog 中继续更新 <a href="https://kongkongk.github.io/" target="_blank" rel="noopener">https://kongkongk.github.io/</a></li>
-</ul>
-<h3 id="End"><a href="#End" class="headerlink" title="End"></a>End</h3><p>再见 <a href="https://blog.csdn.net/kongkongkkk" target="_blank" rel="noopener">https://blog.csdn.net/kongkongkkk</a>，你好 <a href="https://kongkongk.github.io/" target="_blank" rel="noopener">https://kongkongk.github.io/</a> </p>
+              <p>pkg/scheduler/plugins/gang/gang.go:47</p>
+<p><strong>Session 初始化时，Gang Plugin 将注册 validJobFn。validJobFn 会对每一轮调度的 Job 进行过滤</strong></p>
+<pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(gp *gangPlugin)</span> <span class="hljs-title">OnSessionOpen</span><span class="hljs-params">(ssn *framework.Session)</span></span> &#123;
+	validJobFn := <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(obj <span class="hljs-keyword">interface</span>&#123;&#125;)</span> *<span class="hljs-title">api</span>.<span class="hljs-title">ValidateResult</span></span> &#123;
+		job, ok := obj.(*api.JobInfo)
+		<span class="hljs-keyword">if</span> !ok &#123;
+			<span class="hljs-keyword">return</span> &amp;api.ValidateResult&#123;
+				Pass:    <span class="hljs-literal">false</span>,
+				Message: fmt.Sprintf(<span class="hljs-string">"Failed to convert &lt;%v&gt; to *JobInfo"</span>, obj),
+			&#125;
+		&#125;
+
+		vtn := job.ValidTaskNum()
+		<span class="hljs-keyword">if</span> vtn &lt; job.MinAvailable &#123;
+			<span class="hljs-keyword">return</span> &amp;api.ValidateResult&#123;
+				Pass:   <span class="hljs-literal">false</span>,
+				Reason: v1alpha1.NotEnoughPodsReason,
+				Message: fmt.Sprintf(<span class="hljs-string">"Not enough valid tasks for gang-scheduling, valid: %d, min: %d"</span>,
+					vtn, job.MinAvailable),
+			&#125;
+		&#125;
+		<span class="hljs-keyword">return</span> <span class="hljs-literal">nil</span>
+	&#125;
+  ...
+&#125;</code></pre>
+
+
+
+<p>pkg/scheduler/api/job_info.go:400</p>
+<p><strong>Gang jobVaildFn 将判断有效的 Task 个数是否小于 podGroup 中设置的 minMember。若小于为真，则说明此 Job 不能满足 Gang 批调度条件</strong></p>
+<p>有效状态的 Task 状态如下，可是这些 TaskStatusIndex 状态是哪里来的呢？</p>
+<pre><code class="hljs go"><span class="hljs-comment">// ValidTaskNum returns the number of tasks that are valid.</span>
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(ji *JobInfo)</span> <span class="hljs-title">ValidTaskNum</span><span class="hljs-params">()</span> <span class="hljs-title">int32</span></span> &#123;
+	occupied := <span class="hljs-number">0</span>
+	<span class="hljs-keyword">for</span> status, tasks := <span class="hljs-keyword">range</span> ji.TaskStatusIndex &#123;
+		<span class="hljs-keyword">if</span> AllocatedStatus(status) ||
+			status == Succeeded ||
+			status == Pipelined ||
+			status == Pending &#123;
+			occupied = occupied + <span class="hljs-built_in">len</span>(tasks)
+		&#125;
+	&#125;
+
+	<span class="hljs-keyword">return</span> <span class="hljs-keyword">int32</span>(occupied)
+&#125;</code></pre>
+
+
+
+<p>pkg/scheduler/cache/cache.go:282</p>
+<p>Pod Informer 设置 List-Watch 相关的事件回调函数</p>
+<pre><code class="hljs go"><span class="hljs-comment">// create informer for pod information</span>
+sc.podInformer = informerFactory.Core().V1().Pods()
+sc.podInformer.Informer().AddEventHandler(
+	cache.FilteringResourceEventHandler&#123;
+		FilterFunc: <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(obj <span class="hljs-keyword">interface</span>&#123;&#125;)</span> <span class="hljs-title">bool</span></span> &#123;
+			<span class="hljs-keyword">switch</span> obj.(<span class="hljs-keyword">type</span>) &#123;
+			<span class="hljs-keyword">case</span> *v1.Pod:
+				pod := obj.(*v1.Pod)
+				<span class="hljs-keyword">if</span> strings.Compare(pod.Spec.SchedulerName, schedulerName) == <span class="hljs-number">0</span> &amp;&amp; pod.Status.Phase == v1.PodPending &#123;
+					<span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
+				&#125;
+				<span class="hljs-keyword">return</span> pod.Status.Phase != v1.PodPending
+			<span class="hljs-keyword">default</span>:
+				<span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+			&#125;
+		&#125;,
+		Handler: cache.ResourceEventHandlerFuncs&#123;
+			AddFunc:    sc.AddPod,
+			UpdateFunc: sc.UpdatePod,
+			DeleteFunc: sc.DeletePod,
+		&#125;,
+	&#125;)</code></pre>
+
+
+
+<p>pkg/scheduler/cache/event_handlers.go:185</p>
+<p>解析 Pod 变量，调用 addPod</p>
+<pre><code class="hljs go"><span class="hljs-comment">// AddPod add pod to scheduler cache</span>
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(sc *SchedulerCache)</span> <span class="hljs-title">AddPod</span><span class="hljs-params">(obj <span class="hljs-keyword">interface</span>&#123;&#125;)</span></span> &#123;
+	pod, ok := obj.(*v1.Pod)
+	<span class="hljs-keyword">if</span> !ok &#123;
+		glog.Errorf(<span class="hljs-string">"Cannot convert to *v1.Pod: %v"</span>, obj)
+		<span class="hljs-keyword">return</span>
+	&#125;
+
+	sc.Mutex.Lock()
+	<span class="hljs-keyword">defer</span> sc.Mutex.Unlock()
+
+	err := sc.addPod(pod)
+	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;
+		glog.Errorf(<span class="hljs-string">"Failed to add pod &lt;%s/%s&gt; into cache: %v"</span>,
+			pod.Namespace, pod.Name, err)
+		<span class="hljs-keyword">return</span>
+	&#125;
+	glog.V(<span class="hljs-number">3</span>).Infof(<span class="hljs-string">"Added pod &lt;%s/%v&gt; into cache."</span>, pod.Namespace, pod.Name)
+	<span class="hljs-keyword">return</span>
+&#125;</code></pre>
+
+
+
+<p>pkg/scheduler/cache/event_handlers.go:93</p>
+<p>调用 NewTaskInfo，将 Pod 转换为 Task</p>
+<p>调用 addTask，将构造的新 Task 添加到 Cache 中</p>
+<pre><code class="hljs go"><span class="hljs-comment">// Assumes that lock is already acquired.</span>
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(sc *SchedulerCache)</span> <span class="hljs-title">addPod</span><span class="hljs-params">(pod *v1.Pod)</span> <span class="hljs-title">error</span></span> &#123;
+	pi := kbapi.NewTaskInfo(pod)
+
+	<span class="hljs-keyword">return</span> sc.addTask(pi)
+&#125;</code></pre>
+
+
+
+<p>pkg/scheduler/api/job_info.go:69</p>
+<p><strong>构造 Task，调用 getTaskStatus 将 Pod 的状态转换为 task.Status</strong></p>
+<pre><code class="hljs go"><span class="hljs-comment">// NewTaskInfo creates new taskInfo object for a Pod</span>
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">NewTaskInfo</span><span class="hljs-params">(pod *v1.Pod)</span> *<span class="hljs-title">TaskInfo</span></span> &#123;
+	req := GetPodResourceWithoutInitContainers(pod)
+	initResreq := GetPodResourceRequest(pod)
+
+	jobID := getJobID(pod)
+
+	ti := &amp;TaskInfo&#123;
+		UID:        TaskID(pod.UID),
+		Job:        jobID,
+		Name:       pod.Name,
+		Namespace:  pod.Namespace,
+		NodeName:   pod.Spec.NodeName,
+		Status:     getTaskStatus(pod),
+		Priority:   <span class="hljs-number">1</span>,
+		Pod:        pod,
+		Resreq:     req,
+		InitResreq: initResreq,
+	&#125;
+
+	<span class="hljs-keyword">if</span> pod.Spec.Priority != <span class="hljs-literal">nil</span> &#123;
+		ti.Priority = *pod.Spec.Priority
+	&#125;
+
+	<span class="hljs-keyword">return</span> ti
+&#125;</code></pre>
+
+
+
+<p>pkg/scheduler/api/helpers.go:35</p>
+<p>解析 pod.Status.Phase 转换为 Task 的状态</p>
+<pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">getTaskStatus</span><span class="hljs-params">(pod *v1.Pod)</span> <span class="hljs-title">TaskStatus</span></span> &#123;
+	<span class="hljs-keyword">switch</span> pod.Status.Phase &#123;
+	<span class="hljs-keyword">case</span> v1.PodRunning:
+		<span class="hljs-keyword">if</span> pod.DeletionTimestamp != <span class="hljs-literal">nil</span> &#123;
+			<span class="hljs-keyword">return</span> Releasing
+		&#125;
+
+		<span class="hljs-keyword">return</span> Running
+	<span class="hljs-keyword">case</span> v1.PodPending:
+		<span class="hljs-keyword">if</span> pod.DeletionTimestamp != <span class="hljs-literal">nil</span> &#123;
+			<span class="hljs-keyword">return</span> Releasing
+		&#125;
+
+		<span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(pod.Spec.NodeName) == <span class="hljs-number">0</span> &#123;
+			<span class="hljs-keyword">return</span> Pending
+		&#125;
+		<span class="hljs-keyword">return</span> Bound
+	<span class="hljs-keyword">case</span> v1.PodUnknown:
+		<span class="hljs-keyword">return</span> Unknown
+	<span class="hljs-keyword">case</span> v1.PodSucceeded:
+		<span class="hljs-keyword">return</span> Succeeded
+	<span class="hljs-keyword">case</span> v1.PodFailed:
+		<span class="hljs-keyword">return</span> Failed
+	&#125;
+
+	<span class="hljs-keyword">return</span> Unknown
+&#125;</code></pre>
+
+
+
+<p>pkg/scheduler/cache/event_handlers.go:72</p>
+<p>调用 getOrCreateJob 得到 Task 对应的 Job</p>
+<p>调用 AddTaskInfo 将 Task 加入到 Cache Job 中</p>
+<pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(sc *SchedulerCache)</span> <span class="hljs-title">addTask</span><span class="hljs-params">(pi *kbapi.TaskInfo)</span> <span class="hljs-title">error</span></span> &#123;
+	job := sc.getOrCreateJob(pi)
+	<span class="hljs-keyword">if</span> job != <span class="hljs-literal">nil</span> &#123;
+		job.AddTaskInfo(pi)
+	&#125;
+
+	<span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(pi.NodeName) != <span class="hljs-number">0</span> &#123;
+		<span class="hljs-keyword">if</span> _, found := sc.Nodes[pi.NodeName]; !found &#123;
+			sc.Nodes[pi.NodeName] = kbapi.NewNodeInfo(<span class="hljs-literal">nil</span>)
+		&#125;
+
+		node := sc.Nodes[pi.NodeName]
+		<span class="hljs-keyword">if</span> !isTerminated(pi.Status) &#123;
+			<span class="hljs-keyword">return</span> node.AddTask(pi)
+		&#125;
+	&#125;
+
+	<span class="hljs-keyword">return</span> <span class="hljs-literal">nil</span>
+&#125;</code></pre>
+
+
+
+<p>pkg/scheduler/api/job_info.go:233</p>
+<p>将构造好的 Task 添加到相应的 Cache Job 中</p>
+<pre><code class="hljs go"><span class="hljs-comment">// AddTaskInfo is used to add a task to a job</span>
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(ji *JobInfo)</span> <span class="hljs-title">AddTaskInfo</span><span class="hljs-params">(ti *TaskInfo)</span></span> &#123;
+	ji.Tasks[ti.UID] = ti
+	ji.addTaskIndex(ti)
+
+	ji.TotalRequest.Add(ti.Resreq)
+
+	<span class="hljs-keyword">if</span> AllocatedStatus(ti.Status) &#123;
+		ji.Allocated.Add(ti.Resreq)
+	&#125;
+&#125;</code></pre>
+
+
+
+<p>pkg/scheduler/api/job_info.go:224</p>
+<p><strong>现在可以回答一开始提出的问题了，gang jobVaildFn 中 task 的状态是通过pod的status映射到task中的</strong></p>
+<pre><code class="hljs go">
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(ji *JobInfo)</span> <span class="hljs-title">addTaskIndex</span><span class="hljs-params">(ti *TaskInfo)</span></span> &#123;
+	<span class="hljs-keyword">if</span> _, found := ji.TaskStatusIndex[ti.Status]; !found &#123;
+		ji.TaskStatusIndex[ti.Status] = tasksMap&#123;&#125;
+	&#125;
+
+	ji.TaskStatusIndex[ti.Status][ti.UID] = ti
+&#125;</code></pre>
+
 
             </article>
             <hr>
@@ -242,7 +454,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/Life/">Life</a>
+                      <a class="hover-with-bg" href="/categories/Cloud-Native/">Cloud Native</a>
                     
                   </div>
                 
@@ -250,7 +462,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/%E6%84%9F%E6%83%B3%E9%9A%8F%E7%AC%94/">感想随笔</a>
+                      <a class="hover-with-bg" href="/tags/Kube-Batch/">Kube-Batch</a>
                     
                   </div>
                 
@@ -263,9 +475,9 @@
                   <div class="post-prev col-6">
                     
                     
-                      <a href="/2020/07/06/the-relationship-between-job-and-podgroup-in-kube-batch/">
+                      <a href="/2020/07/06/anatomy-of-the-core-source-code-in-kube-batch/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Kube-Batch Job 与 podGroup 映射关系</span>
+                        <span class="hidden-mobile">Kube-Batch 核心源码剖析</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -273,8 +485,8 @@
                   <div class="post-next col-6">
                     
                     
-                      <a href="/2020/07/02/future-learning-direction/">
-                        <span class="hidden-mobile">未来的学习方向</span>
+                      <a href="/2020/07/06/the-relationship-between-job-and-podgroup-in-kube-batch/">
+                        <span class="hidden-mobile">Kube-Batch Job 与 podGroup 映射关系</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -439,7 +651,7 @@
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "我为什么要搬离CSDN Blog？&nbsp;",
+        "Kube-Batch Gang jobVaildFn 源码剖析&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,

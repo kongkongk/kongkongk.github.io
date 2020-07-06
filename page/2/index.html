@@ -168,6 +168,161 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/07/02/github-ssh-key/">Github添加SSH key时的问题</a>
+
+      <a href="/2020/07/02/github-ssh-key/" class="index-excerpt">
+        
+        
+          
+        
+        <div>* 这是一个小细节。。记录下来。。→_→ *
+
+问题现象
+
+在此处Key部分添加SSH key
+
+需要将用户本地的如下所示文件中的内容复制到Key部分
+~/.ssh/id_rsa.pub
+
+这时问题来了，通过vim打开此文件，复制内容到Key部分进行add，但添加失败，出现如下信息
+
+
+问题原因
+
+
+vim 遵循的是 Linux 的定义，结尾没有 \n 的文本文件不是一个合法的文本文件，因此默认加</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-07-02
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Linux/">Linux</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Tools/">Tools</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/07/02/unsafe-sizeof-in-golang/">Golang中unsafe.Sizeof()的问题</a>
+
+      <a href="/2020/07/02/unsafe-sizeof-in-golang/" class="index-excerpt">
+        
+        
+          
+        
+        <div>* 今天看到一段代码感觉很奇怪。。。 *
+代码的如下
+package main
+
+import "unsafe"
+const (
+    a = "abc"
+    b = len(a)
+    c = unsafe.Sizeof(a)
+)
+
+func main()&#123;
+    println(a, b, c)
+&#125;
+
+代码运行结果如下
+
+感觉很奇怪。。为什么unsafe.Size</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-07-02
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Language/">Language</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Golang/">Golang</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/07/02/hello-world-by-docker/">hello world——再出发~</a>
+
+      <a href="/2020/07/02/hello-world-by-docker/" class="index-excerpt">
+        
+        
+          
+        
+        <div>** *新的征程开始喽~ hello world~ **
+今天第一次用docker，很开心：）
+
+</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-07-02
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Life/">Life</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%84%9F%E6%83%B3%E9%9A%8F%E7%AC%94/">感想随笔</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
       <a class="index-header" href="/2020/07/02/number-of-islands/">LeetCode 200. Number of Islands</a>
 
       <a href="/2020/07/02/number-of-islands/" class="index-excerpt">
@@ -487,141 +642,6 @@ POD，是Plain Old Data的缩写，普通旧数据类型，是C+</div>
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/C/">C++</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/07/02/vector-expansion/">vector扩容问题源代码剖析</a>
-
-      <a href="/2020/07/02/vector-expansion/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* 之前只知道理论。。。今天就来深入剖析一下源代码。。。→_→ *
-了解POD数据类型请戳传送门——什么是POD数据类型？
-直接从vector的push_back进。。。
- //stl\Stl_vector.h
- //尾插
- void push_back(const _Tp&amp; __x) &#123;
-//先检查是否还有备用空间
-   if (_M_finish != _M_end_of_s</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-07-02
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Language/">Language</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/C/">C++</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/07/02/poll/">IO复用——poll机制内核源代码剖析</a>
-
-      <a href="/2020/07/02/poll/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* select内核源代码已经剖析了，但是有个问题还没有解决。。。面对每一种文件描述符如何进行查询？这就和poll机制有关了。。。这篇就来看看poll机制内核源代码。。。→_→ *
-了解select底层实现请戳传送门——IO复用——select内核源代码剖析
-每一个进程都会有一个与之对应的files_struct结构，files_struct结构中存储着该进程打开的文件的集合
-struct fil</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-07-02
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Linux/">Linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Kernel/">Kernel</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/07/02/select-function-application-example/">IO复用——select函数应用实例</a>
-
-      <a href="/2020/07/02/select-function-application-example/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* 趁着刚刚总结完select的内核源码。。。现在就来应用一下。。。→_→ *
-深入理解select底层原理请戳传送门——IO复用——select内核源代码剖析
-本次网络通信socket套接字是基于TCP协议的可靠传输，因为只开了一台虚拟机。。。所以服务器IP地址采用回环地址——127.0.0.1，服务器端口号port为6000
-server
-#include &lt;stdio.h&gt;
-#i</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-07-02
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Linux/">Linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Kernel/">Kernel</a>
             
           </div>
         

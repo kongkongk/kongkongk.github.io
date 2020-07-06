@@ -17,7 +17,7 @@
   <meta name="description" content="">
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
-  <title>我为什么要搬离CSDN Blog？ - kongkong</title>
+  <title>Kube-Batch Job 与 podGroup 映射关系 - kongkong</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -152,8 +152,8 @@
               
   <div class="mt-3 post-meta">
     <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-    <time datetime="2020-07-02 22:07">
-      2020年7月2日 晚上
+    <time datetime="2020-07-06 20:38">
+      2020年7月6日 晚上
     </time>
   </div>
 
@@ -163,7 +163,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      480 字
+      410 字
     </span>
   
 
@@ -173,7 +173,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      5
+      7
        分钟
     </span>
   
@@ -213,26 +213,100 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2020年7月2日 晚上
+                  本文最后更新于：2020年7月6日 晚上
                 
               </p>
             
             <article class="markdown-body">
-              <p><strong>* <em>终于要搬家啦 传送门：<a href="https://kongkongk.github.io/" target="_blank" rel="noopener">https://kongkongk.github.io/</a></em> *</strong></p>
-<h3 id="What"><a href="#What" class="headerlink" title="What"></a>What</h3><p>从大学开始，逐渐深入接触计算机相关知识，当时也有产出一些总结（无论是纸质化或本地markdown），俗称个人笔记。后来接触到 CSDN，才有想法将这些沉淀的知识总结迁移到 Blog 中。原因也很简单，不能走哪都抱着一厚沓纸，实时查阅的功能更是没有，所以最终决定将本地文档迁移至CSDN Blog。</p>
-<h3 id="Why"><a href="#Why" class="headerlink" title="Why"></a>Why</h3><p>此时有几个问题浮现脑海，这些问题需要思考清楚</p>
-<ul>
-<li>为什么用的好好的，却要开始搬家迁移 Blog ？<br> CSDN 属于商业应用，变现是理所当然。但计算机技术领域面向的目标人群很窄，扩展目标用户就变得很难，那就要从变现途径入手了，所以越来越多的广告开始出现在 Blog 中，我现在终于受不了了。</li>
-<li>新 Blog 如何维护？<br>新 Blog 将迁移至 Github，基于 Github Pages + Hexo 构建。同时无需维护服务器、域名和证书等资源，这一点和现在 CSDN Blog 相同，否则后续维护成本将大大提高。</li>
-<li>历史文档的迁移成本有多少？<br>当前 CSDN Blog 文档使用 markdown 编辑，markdown 作为文档编辑语法既好用又成熟，后续 Blog 也将继续使用，因此文档迁移成本还在可接受范围内。<h3 id="How"><a href="#How" class="headerlink" title="How"></a>How</h3>目前新  Blog 雏形已经搭建完成，但相关个性化信息还没怎么玩，文档也没有开始迁移。。。</li>
-</ul>
-<p>TODO</p>
-<ul>
-<li>后续将逐步优化新 Blog 个性化，使用开源模版提升交互性、可视化性和可扩展性</li>
-<li>同时有序将 CSDN 原创文档迁移至新 Blog</li>
-<li>后续将只在新 Blog 中继续更新 <a href="https://kongkongk.github.io/" target="_blank" rel="noopener">https://kongkongk.github.io/</a></li>
-</ul>
-<h3 id="End"><a href="#End" class="headerlink" title="End"></a>End</h3><p>再见 <a href="https://blog.csdn.net/kongkongkkk" target="_blank" rel="noopener">https://blog.csdn.net/kongkongkkk</a>，你好 <a href="https://kongkongk.github.io/" target="_blank" rel="noopener">https://kongkongk.github.io/</a> </p>
+              <p>pkg/scheduler/cache/cache.go:318<br>podgroup informer 设置相应的 list-watch 回调处理函数</p>
+<pre><code class="hljs go">kbinformer := kbinfo.NewSharedInformerFactory(sc.kbclient, <span class="hljs-number">0</span>)
+<span class="hljs-comment">// create informer for PodGroup(v1alpha1) information</span>
+sc.podGroupInformerv1alpha1 = kbinformer.Scheduling().V1alpha1().PodGroups()
+sc.podGroupInformerv1alpha1.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs&#123;
+	AddFunc:    sc.AddPodGroupAlpha1,
+	UpdateFunc: sc.UpdatePodGroupAlpha1,
+	DeleteFunc: sc.DeletePodGroupAlpha1,
+&#125;)
+
+<span class="hljs-comment">// create informer for PodGroup(v1alpha2) information</span>
+sc.podGroupInformerv1alpha2 = kbinformer.Scheduling().V1alpha2().PodGroups()
+sc.podGroupInformerv1alpha2.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs&#123;
+	AddFunc:    sc.AddPodGroupAlpha2,
+	UpdateFunc: sc.UpdatePodGroupAlpha2,
+	DeleteFunc: sc.DeletePodGroupAlpha2,
+&#125;)</code></pre>
+
+
+
+<p>pkg/scheduler/cache/event_handlers.go:414<br>解析 podgroup 信息并调用 setPodGroup</p>
+<pre><code class="hljs go"><span class="hljs-comment">// AddPodGroupAlpha1 add podgroup to scheduler cache</span>
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(sc *SchedulerCache)</span> <span class="hljs-title">AddPodGroupAlpha1</span><span class="hljs-params">(obj <span class="hljs-keyword">interface</span>&#123;&#125;)</span></span> &#123;
+	ss, ok := obj.(*kbv1.PodGroup)
+	<span class="hljs-keyword">if</span> !ok &#123;
+		glog.Errorf(<span class="hljs-string">"Cannot convert to *kbv1.PodGroup: %v"</span>, obj)
+		<span class="hljs-keyword">return</span>
+	&#125;
+
+	marshalled, err := json.Marshal(*ss)
+	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;
+		glog.Errorf(<span class="hljs-string">"Failed to Marshal podgroup %s with error: %v"</span>, ss.Name, err)
+	&#125;
+
+	pg := &amp;api.PodGroup&#123;&#125;
+	err = json.Unmarshal(marshalled, pg)
+	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;
+		glog.Errorf(<span class="hljs-string">"Failed to Unmarshal Data into api.PodGroup type with error: %v"</span>, err)
+	&#125;
+	pg.Version = api.PodGroupVersionV1Alpha1
+
+	sc.Mutex.Lock()
+	<span class="hljs-keyword">defer</span> sc.Mutex.Unlock()
+
+	glog.V(<span class="hljs-number">4</span>).Infof(<span class="hljs-string">"Add PodGroup(%s) into cache, spec(%#v)"</span>, ss.Name, ss.Spec)
+
+	err = sc.setPodGroup(pg)
+	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;
+		glog.Errorf(<span class="hljs-string">"Failed to add PodGroup %s into cache: %v"</span>, ss.Name, err)
+		<span class="hljs-keyword">return</span>
+	&#125;
+	<span class="hljs-keyword">return</span>
+&#125;</code></pre>
+
+
+
+<p>pkg/scheduler/cache/event_handlers.go:370<br>通过 getJobID 设置 podGroup 对应的 Job ID，并将此 podGroup对应的 Job 和 Queue 尝试加入 cache 中</p>
+<pre><code class="hljs go"><span class="hljs-comment">// Assumes that lock is already acquired.</span>
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(sc *SchedulerCache)</span> <span class="hljs-title">setPodGroup</span><span class="hljs-params">(ss *api.PodGroup)</span> <span class="hljs-title">error</span></span> &#123;
+	job := getJobID(ss)
+
+	<span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(job) == <span class="hljs-number">0</span> &#123;
+		<span class="hljs-keyword">return</span> fmt.Errorf(<span class="hljs-string">"the identity of PodGroup is empty"</span>)
+	&#125;
+
+	<span class="hljs-keyword">if</span> _, found := sc.Jobs[job]; !found &#123;
+		sc.Jobs[job] = kbapi.NewJobInfo(job)
+	&#125;
+
+	sc.Jobs[job].SetPodGroup(ss)
+
+	<span class="hljs-comment">// TODO(k82cn): set default queue in admission.</span>
+	<span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(ss.Spec.Queue) == <span class="hljs-number">0</span> &#123;
+		sc.Jobs[job].Queue = kbapi.QueueID(sc.defaultQueue)
+	&#125;
+
+	<span class="hljs-keyword">return</span> <span class="hljs-literal">nil</span>
+&#125;</code></pre>
+
+
+
+<p>pkg/scheduler/cache/event_handlers.go:365<br>组合 pg.Namespace/pg.Name 的字符串为 job ID 唯一标识</p>
+<pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">getJobID</span><span class="hljs-params">(pg *api.PodGroup)</span> <span class="hljs-title">kbapi</span>.<span class="hljs-title">JobID</span></span> &#123;
+	<span class="hljs-keyword">return</span> kbapi.JobID(fmt.Sprintf(<span class="hljs-string">"%s/%s"</span>, pg.Namespace, pg.Name))
+&#125;</code></pre>
+
+
+
+<p><strong>综上所述，在 Kube-Batch 中 Job 与 podGroup 将进行一一映射</strong></p>
 
             </article>
             <hr>
@@ -242,7 +316,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/Life/">Life</a>
+                      <a class="hover-with-bg" href="/categories/Cloud-Native/">Cloud Native</a>
                     
                   </div>
                 
@@ -250,7 +324,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/%E6%84%9F%E6%83%B3%E9%9A%8F%E7%AC%94/">感想随笔</a>
+                      <a class="hover-with-bg" href="/tags/Kube-Batch/">Kube-Batch</a>
                     
                   </div>
                 
@@ -263,9 +337,9 @@
                   <div class="post-prev col-6">
                     
                     
-                      <a href="/2020/07/06/the-relationship-between-job-and-podgroup-in-kube-batch/">
+                      <a href="/2020/07/06/gang-jobVaildFn-source-code-analysis-in-kube-batch/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Kube-Batch Job 与 podGroup 映射关系</span>
+                        <span class="hidden-mobile">Kube-Batch Gang jobVaildFn 源码剖析</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -273,8 +347,8 @@
                   <div class="post-next col-6">
                     
                     
-                      <a href="/2020/07/02/future-learning-direction/">
-                        <span class="hidden-mobile">未来的学习方向</span>
+                      <a href="/2020/07/02/why-should-I-move-away-from-CSDN-blog/">
+                        <span class="hidden-mobile">我为什么要搬离CSDN Blog？</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -439,7 +513,7 @@
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "我为什么要搬离CSDN Blog？&nbsp;",
+        "Kube-Batch Job 与 podGroup 映射关系&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,
