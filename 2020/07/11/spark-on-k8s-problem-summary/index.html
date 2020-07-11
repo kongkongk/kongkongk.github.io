@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/self.jpeg">
+  <link rel="icon" type="image/png" href="/img/self.jpeg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>Spark on Kubernetes 问题记录 - kongkong</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>kongkong</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-07-11 15:49">
+      2020年7月11日 下午
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.1k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      16
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2020年7月11日 晚上
+                
+              </p>
+            
+            <article class="markdown-body">
+              <h3 id="executor-pod-残留"><a href="#executor-pod-残留" class="headerlink" title="executor pod 残留"></a>executor pod 残留</h3><ul>
+<li><p><strong>问题描述</strong></p>
+<p>使用 Client 模式启动 Spark 任务，删除 Driver Pod 后，Executor Pods 并没有被删除，而是进入 Error 状态残留在集群中</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggn30m0vz5j312m09843p.jpg" srcset="/img/loading.gif" alt="executor pod 残留"></p>
+</li>
+<li><p><strong>问题原因</strong></p>
+<p>Driver 收到 Delete 指令后，偶现 Executor 与 Driver 通信提前断连，Executor 无人回收。</p>
+</li>
+<li><p><strong>解决方案</strong></p>
+<p>配置 spark.kubernetes.driver.pod.name 参数，参数值为 Driver Pod 的实际名称。Spark Scheduler 将会创建带有 Pod ownerReference 信息的 Executor。<br><a href="https://spark.apache.org/docs/latest/running-on-kubernetes.html#cluster-mode" target="_blank" rel="noopener">https://spark.apache.org/docs/latest/running-on-kubernetes.html#cluster-mode</a></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggn321s2v5j30pp08gq64.jpg" srcset="/img/loading.gif" alt="Pod Garbage Collection"></p>
+<pre><code class="hljs scala"><span class="hljs-comment">// repo: spark-parent_2.12 tag: v2.4.5 commit: cee4ecbb16</span>
+<span class="hljs-comment">// Add a OwnerReference to the given resources making the driver pod an owner of them so when</span>
+  <span class="hljs-comment">// the driver pod is deleted, the resources are garbage collected.</span>
+  <span class="hljs-keyword">private</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">addDriverOwnerReference</span></span>(driverPod: <span class="hljs-type">Pod</span>, resources: <span class="hljs-type">Seq</span>[<span class="hljs-type">HasMetadata</span>]): <span class="hljs-type">Unit</span> = &#123;
+    <span class="hljs-keyword">val</span> driverPodOwnerReference = <span class="hljs-keyword">new</span> <span class="hljs-type">OwnerReferenceBuilder</span>()
+      .withName(driverPod.getMetadata.getName)
+      .withApiVersion(driverPod.getApiVersion)
+      .withUid(driverPod.getMetadata.getUid)
+      .withKind(driverPod.getKind)
+      .withController(<span class="hljs-literal">true</span>)
+      .build()
+    resources.foreach &#123; resource =&gt;
+      <span class="hljs-keyword">val</span> originalMetadata = resource.getMetadata
+      originalMetadata.setOwnerReferences(<span class="hljs-type">Collections</span>.singletonList(driverPodOwnerReference))
+    &#125;
+  &#125;</code></pre>
+
+<p>ownerReference 意味 Driver 与 Executor 建立了级联关系。Driver 为 Executor 的拥有者，反之 Executor 是 Driver 的附属。在默认显式垃圾回收下，当删除 Driver 时，Executor 也会被级联垃圾回收。 </p>
+<p><a href="https://kubernetes.io/zh/docs/concepts/workloads/controllers/garbage-collection/" target="_blank" rel="noopener">https://kubernetes.io/zh/docs/concepts/workloads/controllers/garbage-collection/</a></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggn33awpvxj30pz0b5408.jpg" srcset="/img/loading.gif" alt="ownerReferences"></p>
+<p>Driver 中使用 downWard Api， 将  Pod Name 通过环境变量方式进行暴露。</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggn38i1v1zj3080062jrm.jpg" srcset="/img/loading.gif" alt="downward api"></p>
+</li>
+</ul>
+<h3 id="Executor-Pod-outofcpu"><a href="#Executor-Pod-outofcpu" class="headerlink" title="Executor Pod outofcpu"></a>Executor Pod outofcpu</h3><ul>
+<li><p><strong>问题描述</strong></p>
+<p>Spark 任务启动后，有部分 Executor Pod 进入 outofcpu 状态并不断重复创建销毁</p>
+</li>
+<li><p><strong>问题原因</strong></p>
+<p>开始玩 Spark 任务时，使用的是 default-scheduler，TFJob 使用 Kube-Batch，存在多调度器共存场景，有可能发生 mutil-Scheduler Node Allocated 与实际资源数据不一致情况</p>
+</li>
+<li><p><strong>解决方案</strong></p>
+<p>根本上解决此问题需要两种任务使用同一个调度器，保证数据一致性。目前有两种方案，具体细节如下</p>
+<ul>
+<li><p><strong>Patch Spark 3.0.0 相关逻辑</strong><br>Spark 3.0.0 版本将支持配置 spark.kubernetes.executor.scheduler.name 参数，指定 Executor 使用自定义调度器</p>
+<p><a href="https://github.com/apache/spark/blob/master/resource-managers/kubernetes/core/src/main/scala/org/apache/spark/deploy/k8s/Config.scala#L177" target="_blank" rel="noopener">https://github.com/apache/spark/blob/master/resource-managers/kubernetes/core/src/main/scala/org/apache/spark/deploy/k8s/Config.scala#L177</a></p>
+</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggn39cfsx4j30f803v74n.jpg" srcset="/img/loading.gif" alt="Spark 3.0.0"></p>
+<p>​        目前内部使用 Spark 2.4.4 版本，可 Patch 此特性重新编译 spark-2.4.4-mogu。</p>
+<p>​        <a href="https://github.com/apache/spark/pull/26088" target="_blank" rel="noopener">https://github.com/apache/spark/pull/26088</a></p>
+<ul>
+<li><p><strong>Admission Mutating Webhook</strong><br>平台侧收到 Spark 任务创建请求后，根据 Executor 数量创建对应的 podGroup</p>
+<p>Kubernetes 收到 Driver 发出的 Executor 创建请求后，Admission Mutating Webhook 拦截此类 Pod Create 请求，识别 Pod 是否拥有 Executor Labels，以修改 schedulerName 名称为 Kube-Batch</p>
+<p>并根据 Driver Pod Name 为 Executor 添加 metadata.annotations[scheduling.k8s.io/group-name]，使用 Batch 能力进行调度。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Executor-Pod-cpuSet-Failed"><a href="#Executor-Pod-cpuSet-Failed" class="headerlink" title="Executor Pod cpuSet Failed"></a>Executor Pod cpuSet Failed</h3><ul>
+<li><p>问题描述</p>
+<p>Spark 任务创建后，某些 Executor Pod 创建未成功，显示 Internal PreStartContainer hook failed: not enough cpus available to satisfy request</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggn53x9flzj31hc087gop.jpg" srcset="/img/loading.gif" alt="cpuset"></p>
+</li>
+<li><p>问题原因</p>
+<p>现场日志形如下图</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggn9u47tcmj31ha061te1.jpg" srcset="/img/loading.gif" alt="kubelet"></p>
+<p>Kubelet 在调用 StartContainer 前，将执行 PreStartContainer</p>
+<pre><code class="hljs go"><span class="hljs-comment">// Kubernetes tag: v1.18.3, coomit: 2e7996e3e27 </span>
+<span class="hljs-comment">// pkg/kubelet/kuberuntime/kuberuntime_container.go:176</span>
+containerID, err := m.runtimeService.CreateContainer(podSandboxID, containerConfig, podSandboxConfig)
+	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;
+		s, _ := grpcstatus.FromError(err)
+		m.recordContainerEvent(pod, container, containerID, v1.EventTypeWarning, events.FailedToCreateContainer, <span class="hljs-string">"Error: %v"</span>, s.Message())
+		<span class="hljs-keyword">return</span> s.Message(), ErrCreateContainer
+	&#125;
+	err = m.internalLifecycle.PreStartContainer(pod, container, containerID)
+	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;
+		s, _ := grpcstatus.FromError(err)
+		m.recordContainerEvent(pod, container, containerID, v1.EventTypeWarning, events.FailedToStartContainer, <span class="hljs-string">"Internal PreStartContainer hook failed: %v"</span>, s.Message())
+		<span class="hljs-keyword">return</span> s.Message(), ErrPreStartHook
+	&#125;
+	m.recordContainerEvent(pod, container, containerID, v1.EventTypeNormal, events.CreatedContainer, fmt.Sprintf(<span class="hljs-string">"Created container %s"</span>, container.Name))
+
+	<span class="hljs-keyword">if</span> ref != <span class="hljs-literal">nil</span> &#123;
+		m.containerRefManager.SetRef(kubecontainer.ContainerID&#123;
+			Type: m.runtimeName,
+			ID:   containerID,
+		&#125;, ref)
+	&#125;
+
+	<span class="hljs-comment">// Step 3: start the container.</span>
+	err = m.runtimeService.StartContainer(containerID)
+	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;
+		s, _ := grpcstatus.FromError(err)
+		m.recordContainerEvent(pod, container, containerID, v1.EventTypeWarning, events.FailedToStartContainer, <span class="hljs-string">"Error: %v"</span>, s.Message())
+		<span class="hljs-keyword">return</span> s.Message(), kubecontainer.ErrRunContainer
+	&#125;
+	m.recordContainerEvent(pod, container, containerID, v1.EventTypeNormal, events.StartedContainer, fmt.Sprintf(<span class="hljs-string">"Started container %s"</span>, container.Name))</code></pre>
+
+<p>PreStartContainer 中将调用 cpuManager.AddContainer，依次对所有 containner 的 CPU 拓扑结构进行更新</p>
+<pre><code class="hljs go"><span class="hljs-comment">// Kubernetes tag: v1.18.3, coomit: 2e7996e3e27 </span>
+<span class="hljs-comment">// pkg/kubelet/cm/internal_container_lifecycle.go:40</span>
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(i *internalContainerLifecycleImpl)</span> <span class="hljs-title">PreStartContainer</span><span class="hljs-params">(pod *v1.Pod, container *v1.Container, containerID <span class="hljs-keyword">string</span>)</span> <span class="hljs-title">error</span></span> &#123;
+	<span class="hljs-keyword">if</span> i.cpuManager != <span class="hljs-literal">nil</span> &#123;
+		err := i.cpuManager.AddContainer(pod, container, containerID)
+		<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;
+			<span class="hljs-keyword">return</span> err
+		&#125;
+	&#125;
+	<span class="hljs-keyword">if</span> utilfeature.DefaultFeatureGate.Enabled(kubefeatures.TopologyManager) &#123;
+		err := i.topologyManager.AddContainer(pod, containerID)
+		<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;
+			<span class="hljs-keyword">return</span> err
+		&#125;
+	&#125;
+	<span class="hljs-keyword">return</span> <span class="hljs-literal">nil</span>
+&#125;</code></pre>
+
+<p><strong>cpu_manager_state 拓扑信息因为某些复杂原因没有同步正确更新，导致逻辑上部分 CPU 仍绑在某个container上，导致后续 cpuset container 无法正常创建</strong></p>
+</li>
+<li><p>解决方案</p>
+<p>社区中有一个 PR 解决了cpu_manager 脏数据残留问题，已 Cherry pick release-1.13 和 release-1.12 </p>
+<p>主要逻辑是在 cpuManager reconcile 协程中进行对账操作，兜底清理 cpu_manager_state 脏数据</p>
+<p>升级 Kubelet 版本能彻底解决此问题</p>
+<p> <a href="https://github.com/kubernetes/kubernetes/pull/68619" target="_blank" rel="noopener">https://github.com/kubernetes/kubernetes/pull/68619</a></p>
+</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggn4frgu3rj30r0069t9f.jpg" srcset="/img/loading.gif" alt="cpu_manager_state"></p>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Cloud-Native/">Cloud Native</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Kubernetes/">Kubernetes</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/07/11/anatomy-of-the-core-source-code-in-tf-operator/">
+                        <span class="hidden-mobile">TF-Operator 核心源码剖析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "Spark on Kubernetes 问题记录&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

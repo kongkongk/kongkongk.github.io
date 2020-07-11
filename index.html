@@ -168,6 +168,104 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/07/11/spark-on-k8s-problem-summary/">Spark on Kubernetes 问题记录</a>
+
+      <a href="/2020/07/11/spark-on-k8s-problem-summary/" class="index-excerpt">
+        
+        
+          
+        
+        <div>executor pod 残留
+问题描述
+使用 Client 模式启动 Spark 任务，删除 Driver Pod 后，Executor Pods 并没有被删除，而是进入 Error 状态残留在集群中
+
+
+问题原因
+Driver 收到 Delete 指令后，偶现 Executor 与 Driver 通信提前断连，Executor 无人回收。
+
+解决方案
+配置 spark.kubernetes.d</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-07-11
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Cloud-Native/">Cloud Native</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Kubernetes/">Kubernetes</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/07/11/anatomy-of-the-core-source-code-in-tf-operator/">TF-Operator 核心源码剖析</a>
+
+      <a href="/2020/07/11/anatomy-of-the-core-source-code-in-tf-operator/" class="index-excerpt">
+        
+        
+          
+        
+        <div>剖析源码版本为 v0.5.3，commit d0b973be
+cmd/tf-operator.v1/main.go:62
+func main() &#123;
+	s := options.NewServerOption()
+	s.AddFlags(flag.CommandLine)
+
+	flag.Parse()
+
+	if s.JSONLogFormat &#123;
+		// Output log</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-07-11
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Cloud-Native/">Cloud Native</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/TF-Operator/">TF-Operator</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
       <a class="index-header" href="/2020/07/06/anatomy-of-the-core-source-code-in-kube-batch/">Kube-Batch 核心源码剖析</a>
 
       <a href="/2020/07/06/anatomy-of-the-core-source-code-in-kube-batch/" class="index-excerpt">
@@ -526,112 +624,6 @@ dex 身份认证使用 kubernetes storage，LDAP connector，loginapp static cli
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/Dex/">Dex</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/07/02/golang-grammar-stepping-summary/">Golang语法的踩坑总结（持续更新中）</a>
-
-      <a href="/2020/07/02/golang-grammar-stepping-summary/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* 本来这篇是想写docker的基本操作总结的。。。想想还是写这个吧。。。→_→ *
-
-
-变量声明使用 := 方式时，左值必须是未声明的，否则会出现编译错误
-
-  //.\main.go:8:4: no new variables on left side of :=
-package main
-
-import "fmt"
-
-func main() &#123;
-	var a int = 10
-	v</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-07-02
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Language/">Language</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Golang/">Golang</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/07/02/git-cmd/">Git常用命令</a>
-
-      <a href="/2020/07/02/git-cmd/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* 今天看到了一份常用Git的命令总结，和大家分享一下~ *
-
-git
-
-仓库设计原理
-
-工作区 Working Directory：就是本地建立git仓库的目录
-版本库 Repository：工作区中的一个隐藏目录 .git，其主要存储了
-暂存区 stage
-git自动创建的主分支master
-指向主分支master的指针HEAD
-
-
-暂存区 stage
-git add 的作用是将文件修改添加到</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-07-02
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Linux/">Linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Tools/">Tools</a>
             
           </div>
         

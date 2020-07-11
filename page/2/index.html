@@ -168,6 +168,112 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/07/02/golang-grammar-stepping-summary/">Golang语法的踩坑总结（持续更新中）</a>
+
+      <a href="/2020/07/02/golang-grammar-stepping-summary/" class="index-excerpt">
+        
+        
+          
+        
+        <div>* 本来这篇是想写docker的基本操作总结的。。。想想还是写这个吧。。。→_→ *
+
+
+变量声明使用 := 方式时，左值必须是未声明的，否则会出现编译错误
+
+  //.\main.go:8:4: no new variables on left side of :=
+package main
+
+import "fmt"
+
+func main() &#123;
+	var a int = 10
+	v</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-07-02
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Language/">Language</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Golang/">Golang</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/07/02/git-cmd/">Git常用命令</a>
+
+      <a href="/2020/07/02/git-cmd/" class="index-excerpt">
+        
+        
+          
+        
+        <div>* 今天看到了一份常用Git的命令总结，和大家分享一下~ *
+
+git
+
+仓库设计原理
+
+工作区 Working Directory：就是本地建立git仓库的目录
+版本库 Repository：工作区中的一个隐藏目录 .git，其主要存储了
+暂存区 stage
+git自动创建的主分支master
+指向主分支master的指针HEAD
+
+
+暂存区 stage
+git add 的作用是将文件修改添加到</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-07-02
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Linux/">Linux</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Tools/">Tools</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
       <a class="index-header" href="/2020/07/02/github-ssh-key/">Github添加SSH key时的问题</a>
 
       <a href="/2020/07/02/github-ssh-key/" class="index-excerpt">
@@ -550,98 +656,6 @@ strace的最简</div>
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/Tools/">Tools</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/07/02/epoll/">IO复用——epoll内核源代码剖析</a>
-
-      <a href="/2020/07/02/epoll/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* 最近拖延症又犯了。。。嗯。。。废话不多说。。。直接上硬货。。。→_→ *
-比较select系统调用请戳传送门——select内核源代码剖析
-了解poll机制请戳传送门——poll机制内核源代码剖析
-
-epoll_create
-
-这是Linux_3.0.12内核版本。。。和之前剖析的2.4.0内核版本的系统调用有一些差别。。。所以直接进SYSCALL_DEFINE1。。。
-//为每一个监听的事件</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-07-02
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Linux/">Linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Kernel/">Kernel</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/07/02/POD-data-type/">什么是POD数据类型？</a>
-
-      <a href="/2020/07/02/POD-data-type/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* 在之前的vector扩容问题源代码剖析中，发现源码中对数据类型进行了是否为POD类型的检查，这篇就看看什么是POD。。。→_→ *
-了解vector扩容问题请戳传送门——vector扩容问题源代码剖析
-详细POD定义说明请戳传送门——POD数据类型解释说明
-详细is_pod函数定义说明请戳传送门——is_pod函数定义说明
-
-POD，是Plain Old Data的缩写，普通旧数据类型，是C+</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-07-02
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Language/">Language</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/C/">C++</a>
             
           </div>
         

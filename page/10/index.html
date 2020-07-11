@@ -168,6 +168,107 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/28/tree-substructure/">剑指Offer——（17）树的子结构</a>
+
+      <a href="/2020/06/28/tree-substructure/" class="index-excerpt">
+        
+        
+          
+        
+        <div>题目描述：
+
+输入两棵二叉树A，B，判断B是不是A的子结构。（ps：我们约定空树不是任意一个树的子结构）
+
+实现如下：
+//分两步
+//第一步：寻找与B树根节点val相等的A树节点。如果找到进入第二步，否则继续寻找，直到找完A树
+//第二步：以找的节点作为A树子树的根节点，同时遍历两棵树，判断是否所有节点都相同
+//特殊情况：
+//1.进行第二步时注意有可能存在B树大小等于A的子树、B树大小小于A</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/28/merge-two-sorted-linked-lists/">剑指Offer——（16）合并两个排序的链表</a>
+
+      <a href="/2020/06/28/merge-two-sorted-linked-lists/" class="index-excerpt">
+        
+        
+          
+        
+        <div>题目描述：
+
+输入两个单调递增的链表，输出两个链表合成后的链表，当然我们需要合成后的链表满足单调不减规则。
+
+实现如下：
+//本题在线测试用例怎么还是无头节点链表→_→，啊...
+//比较value谁小谁添加到新链表中
+//新链表的头节点指针为newHead，由s指针负责添加信节点
+//特殊情况：
+//1.传入空指针
+//2.任意一个链表添加完毕
+//3.传入的一个链表为空，另一个不为空
+//节点</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
       <a class="index-header" href="/2020/06/28/reverse-linked-list/">剑指Offer——（15）反转链表</a>
 
       <a href="/2020/06/28/reverse-linked-list/" class="index-excerpt">
@@ -547,104 +648,6 @@ public:
 //n = 2时，2
 class Solution 
 &#1</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/28/fibonacci-sequence/">剑指Offer——（7）斐波那契数列</a>
-
-      <a href="/2020/06/28/fibonacci-sequence/" class="index-excerpt">
-        
-        
-          
-        
-        <div>题目说明：
-
-大家都知道斐波那契数列，现在要求输入一个整数n，请你输出斐波那契数列的第n项。n&lt;=39
-
-实现如下：
-//0 1 1 2 3 5 8 13 21...
-//简洁的递归，但是注意消除重复计算项，采用map存储已计算的n的value
-class Solution 
-&#123;
-public:
-	map&lt;int, long long&gt; m;
-	long long nu</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-28
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/28/rotate-the-smallest-number-of-an-array/">剑指Offer——（6）旋转数组的最小数字</a>
-
-      <a href="/2020/06/28/rotate-the-smallest-number-of-an-array/" class="index-excerpt">
-        
-        
-          
-        
-        <div>题目描述：
-
-把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。   输入一个非递减排序的数组的一个旋转，输出旋转数组的最小元素。   例如数组{3,4,5,1,2}为{1,2,3,4,5}的一个旋转，该数组的最小值为1。   NOTE：给出的所有元素都大于0，若数组大小为0，请返回0。
-
-实现如下：
-//&#123;3,4,5,1,2&#125;
-// l   m   r
-//规</div>
       </a>
 
       <div class="index-btm post-metas">

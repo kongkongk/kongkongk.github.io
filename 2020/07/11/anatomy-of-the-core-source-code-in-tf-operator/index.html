@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/self.jpeg">
+  <link rel="icon" type="image/png" href="/img/self.jpeg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>TF-Operator 核心源码剖析 - kongkong</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>kongkong</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-07-11 15:06">
+      2020年7月11日 下午
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.7k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      49
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2020年7月11日 下午
+                
+              </p>
+            
+            <article class="markdown-body">
+              <p><strong>剖析源码版本为 v0.5.3，commit d0b973be</strong></p>
+<p>cmd/tf-operator.v1/main.go:62</p>
+<pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;
+	s := options.NewServerOption()
+	s.AddFlags(flag.CommandLine)
+
+	flag.Parse()
+
+	<span class="hljs-keyword">if</span> s.JSONLogFormat &#123;
+		<span class="hljs-comment">// Output logs in a json format so that it can be parsed by services like Stackdriver.</span>
+		log.SetFormatter(&amp;log.JSONFormatter&#123;&#125;)
+	&#125;
+
+	startMonitoring(s.MonitoringPort)
+
+	<span class="hljs-keyword">if</span> err := app.Run(s); err != <span class="hljs-literal">nil</span> &#123;
+		log.Fatalf(<span class="hljs-string">"%v\n"</span>, err)
+	&#125;
+
+&#125;</code></pre>
+
+
+
+<p>cmd/tf-operator.v1/app/server.go:98</p>
+<p>通过 BuildConfigFromFlags 配置，创建 kubeClient </p>
+<pre><code class="hljs go"><span class="hljs-comment">// Get kubernetes config.</span>
+kcfg, err := clientcmd.BuildConfigFromFlags(opt.MasterURL, opt.Kubeconfig)
+<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;
+	log.Fatalf(<span class="hljs-string">"Error building kubeconfig: %s"</span>, err.Error())
+&#125;
+
+<span class="hljs-comment">// Create clients.</span>
+kubeClientSet, leaderElectionClientSet, tfJobClientSet, kubeBatchClientSet, err := createClientSets(kcfg)
+<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;
+	<span class="hljs-keyword">return</span> err
+&#125;</code></pre>
+
+
+
+<p>cmd/tf-operator.v1/app/server.go:113</p>
+<p>创建 kubeInformerFactory 作为各个资源的 Informer 工厂</p>
+<p>tfJobInformerFactory 实际上没用到</p>
+<p>创建 unstructuredInformer， 即 TFJobInformer，通过 NewTFController 创建 TFJob 控制器</p>
+<pre><code class="hljs go"><span class="hljs-comment">// Create informer factory.</span>
+kubeInformerFactory := kubeinformers.NewFilteredSharedInformerFactory(kubeClientSet, opt.ResyncPeriod, opt.Namespace, <span class="hljs-literal">nil</span>)
+tfJobInformerFactory := tfjobinformers.NewSharedInformerFactory(tfJobClientSet, opt.ResyncPeriod)
+
+unstructuredInformer := controller.NewUnstructuredTFJobInformer(kcfg, opt.Namespace)
+
+<span class="hljs-comment">// Create tf controller.</span>
+tc := controller.NewTFController(unstructuredInformer, kubeClientSet, kubeBatchClientSet, tfJobClientSet, kubeInformerFactory, tfJobInformerFactory, *opt)
+
+<span class="hljs-comment">// Start informer goroutines.</span>
+<span class="hljs-keyword">go</span> kubeInformerFactory.Start(stopCh)
+
+<span class="hljs-comment">// We do not use the generated informer because of</span>
+<span class="hljs-comment">// https://github.com/kubeflow/tf-operator/issues/561</span>
+<span class="hljs-comment">// go tfJobInformerFactory.Start(stopCh)</span>
+<span class="hljs-keyword">go</span> unstructuredInformer.Informer().Run(stopCh)</code></pre>
+
+
+
+<p>pkg/controller.v1/tensorflow/controller.go:140</p>
+<p><strong>设置 TFJob 事件处理回调函数，callBack Funcs 在 List-Watch 新事件时被 Push 进新的 Item</strong></p>
+<pre><code class="hljs go"><span class="hljs-comment">// Set up an event handler for when tfjob resources change.</span>
+tfJobInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs&#123;
+	AddFunc:    tc.addTFJob,
+	UpdateFunc: tc.updateTFJob,
+	<span class="hljs-comment">// This will enter the sync loop and no-op,</span>
+	<span class="hljs-comment">// because the tfjob has been deleted from the store.</span>
+	DeleteFunc: tc.enqueueTFJob,
+&#125;)
+
+tc.tfJobInformer = tfJobInformer.Informer()
+tc.tfJobLister = tfJobInformer.Lister()
+tc.tfJobInformerSynced = tfJobInformer.Informer().HasSynced</code></pre>
+
+
+
+<p>pkg/controller.v1/tensorflow/controller.go:153</p>
+<p><strong>设置 Pod 事件处理回调函数，保证 ownerReferences.kind: TFJob 的 Pod 与相对应的 TFJob 副本数正常</strong></p>
+<pre><code class="hljs go"><span class="hljs-comment">// Create pod informer.</span>
+podInformer := kubeInformerFactory.Core().V1().Pods()
+
+<span class="hljs-comment">// Set up an event handler for when pod resources change</span>
+podInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs&#123;
+	AddFunc:    jc.AddPod,
+	UpdateFunc: jc.UpdatePod,
+	DeleteFunc: jc.DeletePod,
+&#125;)
+
+tc.PodLister = podInformer.Lister()
+tc.PodInformerSynced = podInformer.Informer().HasSynced</code></pre>
+
+
+
+<p>pkg/controller.v1/tensorflow/controller.go:166</p>
+<p><strong>同 Pod 原理，设置 Service 事件处理函数，TFJob 中各个角色通过读取 TF_CONFIG 环境变量，利用 Headless Service进行通信</strong></p>
+<p><strong>保证 ownerReferences.kind: TFJob 的 Service 与相对应 Pod、TFJob正常</strong></p>
+<pre><code class="hljs go"><span class="hljs-comment">// Create service informer.</span>
+	serviceInformer := kubeInformerFactory.Core().V1().Services()
+
+	<span class="hljs-comment">// Set up an event handler for when service resources change.</span>
+	serviceInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs&#123;
+		AddFunc:    jc.AddService,
+		UpdateFunc: jc.UpdateService,
+		DeleteFunc: jc.DeleteService,
+	&#125;)
+
+	tc.ServiceLister = serviceInformer.Lister()
+	tc.ServiceInformerSynced = serviceInformer.Informer().HasSynced</code></pre>
+
+
+
+<p>pkg/controller.v1/tensorflow/controller.go:185</p>
+<p>等待 tfjobInformer、podInformer 和 serviceInformer 第一次 List 同步后，启动 Goroutine Worker 处理 Work-Queue</p>
+<pre><code class="hljs go"><span class="hljs-comment">// Run will set up the event handlers for types we are interested in, as well</span>
+<span class="hljs-comment">// as syncing informer caches and starting workers. It will block until stopCh</span>
+<span class="hljs-comment">// is closed, at which point it will shutdown the workqueue and wait for</span>
+<span class="hljs-comment">// workers to finish processing their current work items.</span>
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(tc *TFController)</span> <span class="hljs-title">Run</span><span class="hljs-params">(threadiness <span class="hljs-keyword">int</span>, stopCh &lt;-<span class="hljs-keyword">chan</span> <span class="hljs-keyword">struct</span>&#123;&#125;)</span> <span class="hljs-title">error</span></span> &#123;
+	<span class="hljs-keyword">defer</span> utilruntime.HandleCrash()
+	<span class="hljs-keyword">defer</span> tc.WorkQueue.ShutDown()
+
+	<span class="hljs-comment">// Start the informer factories to begin populating the informer caches.</span>
+	log.Info(<span class="hljs-string">"Starting TFJob controller"</span>)
+
+	<span class="hljs-comment">// Wait for the caches to be synced before starting workers.</span>
+	log.Info(<span class="hljs-string">"Waiting for informer caches to sync"</span>)
+
+	<span class="hljs-keyword">if</span> ok := cache.WaitForCacheSync(stopCh, tc.tfJobInformerSynced,
+		tc.PodInformerSynced, tc.ServiceInformerSynced); !ok &#123;
+		<span class="hljs-keyword">return</span> fmt.Errorf(<span class="hljs-string">"failed to wait for caches to sync"</span>)
+	&#125;
+	log.Infof(<span class="hljs-string">"Starting %v workers"</span>, threadiness)
+	<span class="hljs-comment">// Launch workers to process TFJob resources.</span>
+	<span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; threadiness; i++ &#123;
+		<span class="hljs-keyword">go</span> wait.Until(tc.runWorker, time.Second, stopCh)
+	&#125;
+
+	log.Info(<span class="hljs-string">"Started workers"</span>)
+	&lt;-stopCh
+	log.Info(<span class="hljs-string">"Shutting down workers"</span>)
+
+	<span class="hljs-keyword">return</span> <span class="hljs-literal">nil</span>
+&#125;</code></pre>
+
+
+
+<p>pkg/controller.v1/tensorflow/controller.go:289</p>
+<p>WorkQueue.Get() 的 Key 通过 syncTFJob 进行同步处理</p>
+<pre><code class="hljs go"><span class="hljs-comment">// syncTFJob syncs the tfjob with the given key if it has had its expectations fulfilled, meaning</span>
+<span class="hljs-comment">// it did not expect to see any more of its pods/services created or deleted.</span>
+<span class="hljs-comment">// This function is not meant to be invoked concurrently with the same key.</span>
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(tc *TFController)</span> <span class="hljs-title">syncTFJob</span><span class="hljs-params">(key <span class="hljs-keyword">string</span>)</span> <span class="hljs-params">(<span class="hljs-keyword">bool</span>, error)</span></span> &#123;
+	startTime := time.Now()
+	logger := tflogger.LoggerForKey(key)
+	<span class="hljs-keyword">defer</span> <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">()</span></span> &#123;
+		logger.Infof(<span class="hljs-string">"Finished syncing tfjob %q (%v)"</span>, key, time.Since(startTime))
+	&#125;()
+	...
+&#125;</code></pre>
+
+
+
+<p>pkg/controller.v1/tensorflow/controller.go:304</p>
+<p>解析 Key 中的 Namespace 和  Name 进行组合后，使用 tc.tfJobInformer.GetIndexer().GetByKey(key) 获取 TFJob obj</p>
+<pre><code class="hljs go">sharedTFJob, err := tc.getTFJobFromName(namespace, name)
+<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;
+	<span class="hljs-keyword">if</span> err == errNotExists &#123;
+		logger.Infof(<span class="hljs-string">"TFJob has been deleted: %v"</span>, key)
+		tfJobsDeletedCount.Inc()
+		<span class="hljs-comment">// jm.expectations.DeleteExpectations(key)</span>
+		<span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>, <span class="hljs-literal">nil</span>
+	&#125;
+	<span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>, err
+&#125;</code></pre>
+
+
+
+<p>pkg/controller.v1beta2/tensorflow/controller.go:307</p>
+<p><strong>解析 TFJob obj 并组装 Expectation Key 检查 TFJob 所期望的各个角色的、类型的资源数量与 Expectation 中保存的数量现状是否一致</strong></p>
+<p><strong>expectationPodsKey(namespace/name/replicaType/pods)</strong></p>
+<p><strong>expectationServicesKey(namespace/name/replicaType/services)</strong></p>
+<pre><code class="hljs go"><span class="hljs-comment">// satisfiedExpectations returns true if the required adds/dels for the given tfjob have been observed.</span>
+<span class="hljs-comment">// Add/del counts are established by the controller at sync time, and updated as controllees are observed by the controller</span>
+<span class="hljs-comment">// manager.</span>
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(tc *TFController)</span> <span class="hljs-title">satisfiedExpectations</span><span class="hljs-params">(tfjob *tfv1beta2.TFJob)</span> <span class="hljs-title">bool</span></span> &#123;
+   satisfied := <span class="hljs-literal">false</span>
+   tfjobKey, err := KeyFunc(tfjob)
+   <span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;
+      utilruntime.HandleError(fmt.Errorf(<span class="hljs-string">"couldn't get key for tfjob object %#v: %v"</span>, tfjob, err))
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+   &#125;
+
+   <span class="hljs-keyword">for</span> rtype := <span class="hljs-keyword">range</span> tfjob.Spec.TFReplicaSpecs &#123;
+      <span class="hljs-comment">// Check the expectations of the pods.</span>
+      expectationPodsKey := jobcontroller.GenExpectationPodsKey(tfjobKey, <span class="hljs-keyword">string</span>(rtype))
+      satisfied = satisfied || tc.Expectations.SatisfiedExpectations(expectationPodsKey)
+
+      <span class="hljs-comment">// Check the expectations of the services.</span>
+      expectationServicesKey := jobcontroller.GenExpectationServicesKey(tfjobKey, <span class="hljs-keyword">string</span>(rtype))
+      satisfied = satisfied || tc.Expectations.SatisfiedExpectations(expectationServicesKey)
+   &#125;
+
+   <span class="hljs-keyword">return</span> satisfied
+&#125;</code></pre>
+
+<p><strong>在 podInformer 和 serviceInformer 的 ADD/DELETE callBack Func 中对 Expectations 进行操作，针对 expectation key 所对应的值 +/- 1</strong></p>
+<pre><code class="hljs go"><span class="hljs-comment">// A TTLCache of pod/services creates/deletes each job expects to see</span>
+<span class="hljs-comment">// We use Job namespace/name + ReplicaType + pods/services as an expectation key,</span>
+<span class="hljs-comment">// For example, there is a TFJob with namespace "tf-operator" and name "tfjob-abc":</span>
+<span class="hljs-comment">// &#123;</span>
+<span class="hljs-comment">//     "PS": &#123;</span>
+<span class="hljs-comment">//         "Replicas": 2,</span>
+<span class="hljs-comment">//     &#125;,</span>
+<span class="hljs-comment">//     "Worker": &#123;</span>
+<span class="hljs-comment">//         "Replicas": 4,</span>
+<span class="hljs-comment">//     &#125;</span>
+<span class="hljs-comment">// &#125;</span>
+<span class="hljs-comment">// We will create 4 expectations:</span>
+<span class="hljs-comment">// - "tf-operator/tfjob-abc/ps/services", expects 2 adds.</span>
+<span class="hljs-comment">// - "tf-operator/tfjob-abc/ps/pods", expects 2 adds.</span>
+<span class="hljs-comment">// - "tf-operator/tfjob-abc/worker/services", expects 4 adds.</span>
+<span class="hljs-comment">// - "tf-operator/tfjob-abc/worker/pods", expects 4 adds.</span>
+Expectations controller.ControllerExpectationsInterface</code></pre>
+
+
+
+<p>pkg/controller.v1/tensorflow/controller.go:335</p>
+<p>与期望状态不一致的 TFJob 进行调和</p>
+<pre><code class="hljs go"><span class="hljs-comment">// reconcileTFJobs checks and updates replicas for each given TFReplicaSpec.</span>
+<span class="hljs-comment">// It will requeue the tfjob in case of an error while creating/deleting pods/services.</span>
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(tc *TFController)</span> <span class="hljs-title">reconcileTFJobs</span><span class="hljs-params">(tfjob *tfv1.TFJob)</span> <span class="hljs-title">error</span></span> &#123;
+	tfjobKey, err := KeyFunc(tfjob)
+	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;
+		utilruntime.HandleError(fmt.Errorf(<span class="hljs-string">"couldn't get key for tfjob object %#v: %v"</span>, tfjob, err))
+		<span class="hljs-keyword">return</span> err
+	&#125;
+	logger := tflogger.LoggerForJob(tfjob)
+	logger.Infof(<span class="hljs-string">"Reconcile TFJobs %s"</span>, tfjob.Name)
+	...
+&#125;</code></pre>
+
+
+
+<p>pkg/controller.v1/tensorflow/controller.go:399</p>
+<p>判断 TFJob.Status 是否为 isSucceeded、Failed 或 Pod backoff 达到 Limit，若为上述状态将删除 TFJob，否则继续执行后续逻辑</p>
+<pre><code class="hljs go"><span class="hljs-comment">// If the TFJob is terminated, delete all pods and services.</span>
+<span class="hljs-keyword">if</span> isSucceeded(tfjob.Status) || isFailed(tfjob.Status) || tfJobExceedsLimit &#123;
+	<span class="hljs-keyword">if</span> err := tc.deletePodsAndServices(tfjob, pods); err != <span class="hljs-literal">nil</span> &#123;
+		<span class="hljs-keyword">return</span> err
+	&#125;
+
+	<span class="hljs-keyword">if</span> tfJobExceedsLimit &#123;
+		tc.Recorder.Event(tfjob, v1.EventTypeNormal, tfJobFailedReason, failureMessage)
+		<span class="hljs-keyword">if</span> tfjob.Status.CompletionTime == <span class="hljs-literal">nil</span> &#123;
+			now := metav1.Now()
+			tfjob.Status.CompletionTime = &amp;now
+		&#125;
+		err := updateTFJobConditions(tfjob, common.JobFailed, tfJobFailedReason, failureMessage)
+		<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;
+			tflogger.LoggerForJob(tfjob).Infof(<span class="hljs-string">"Append tfjob condition error: %v"</span>, err)
+			<span class="hljs-keyword">return</span> err
+		&#125;
+	&#125;
+
+	<span class="hljs-keyword">if</span> err := tc.cleanupTFJob(tfjob); err != <span class="hljs-literal">nil</span> &#123;
+		<span class="hljs-keyword">return</span> err
+	&#125;
+
+	<span class="hljs-keyword">if</span> tc.Config.EnableGangScheduling &#123;
+		<span class="hljs-keyword">if</span> err := tc.DeletePodGroup(tfjob); err != <span class="hljs-literal">nil</span> &#123;
+			<span class="hljs-keyword">return</span> err
+		&#125;
+	&#125;
+
+	<span class="hljs-comment">// At this point the pods may have been deleted, so if the job succeeded, we need to manually set the replica status.</span>
+	<span class="hljs-comment">// If any replicas are still Active, set their status to succeeded.</span>
+	<span class="hljs-keyword">if</span> isSucceeded(tfjob.Status) &#123;
+		<span class="hljs-keyword">for</span> rtype := <span class="hljs-keyword">range</span> tfjob.Status.ReplicaStatuses &#123;
+			tfjob.Status.ReplicaStatuses[rtype].Succeeded += tfjob.Status.ReplicaStatuses[rtype].Active
+			tfjob.Status.ReplicaStatuses[rtype].Active = <span class="hljs-number">0</span>
+		&#125;
+	&#125;
+	<span class="hljs-keyword">return</span> tc.updateStatusHandler(tfjob)
+&#125;</code></pre>
+
+
+
+<p>pkg/controller.v1/tensorflow/controller.go:438</p>
+<p><strong>判断是否配置了批调度，将会主动创建 podGroup</strong></p>
+<pre><code class="hljs go"><span class="hljs-keyword">if</span> tc.Config.EnableGangScheduling &#123;
+	minAvailableReplicas := getTotalReplicas(tfjob)
+	_, err := tc.SyncPodGroup(tfjob, minAvailableReplicas)
+	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;
+		logger.Warnf(<span class="hljs-string">"Sync PodGroup %v: %v"</span>, tfjob.Name, err)
+	&#125;
+&#125;</code></pre>
+
+
+
+<p>pkg/controller.v1/tensorflow/controller.go:447</p>
+<p><strong>分角色开始一次调和 Pods 和 Services 资源</strong></p>
+<pre><code class="hljs go"><span class="hljs-comment">// Save the current state of the replicas</span>
+replicasStatus := <span class="hljs-built_in">make</span>(<span class="hljs-keyword">map</span>[<span class="hljs-keyword">string</span>]v1.PodPhase)
+
+<span class="hljs-comment">// Diff current active pods/services with replicas.</span>
+<span class="hljs-keyword">for</span> rtype, spec := <span class="hljs-keyword">range</span> tfjob.Spec.TFReplicaSpecs &#123;
+	err = tc.reconcilePods(tfjob, pods, rtype, spec, replicasStatus)
+	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;
+		logger.Warnf(<span class="hljs-string">"reconcilePods error %v"</span>, err)
+		<span class="hljs-keyword">return</span> err
+	&#125;
+
+	err = tc.reconcileServices(tfjob, services, rtype, spec)
+
+	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;
+		logger.Warnf(<span class="hljs-string">"reconcileServices error %v"</span>, err)
+		<span class="hljs-keyword">return</span> err
+	&#125;
+&#125;</code></pre>
+
+
+
+<p>pkg/controller.v1/tensorflow/pod.go:74</p>
+<p>解析某种角色的 Spec，输出根据序号排列的 podSlice[][]</p>
+<pre><code class="hljs go"><span class="hljs-comment">// reconcilePods checks and updates pods for each given TFReplicaSpec.</span>
+<span class="hljs-comment">// It will requeue the tfjob in case of an error while creating/deleting pods.</span>
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(tc *TFController)</span> <span class="hljs-title">reconcilePods</span><span class="hljs-params">(</span></span>
+<span class="hljs-function"><span class="hljs-params">	tfjob *tfv1.TFJob,</span></span>
+<span class="hljs-function"><span class="hljs-params">	pods []*v1.Pod,</span></span>
+<span class="hljs-function"><span class="hljs-params">	rtype tfv1.TFReplicaType,</span></span>
+<span class="hljs-function"><span class="hljs-params">	spec *common.ReplicaSpec, rstatus <span class="hljs-keyword">map</span>[<span class="hljs-keyword">string</span>]v1.PodPhase)</span> <span class="hljs-title">error</span></span> &#123;
+
+	<span class="hljs-comment">// Convert TFReplicaType to lower string.</span>
+	rt := strings.ToLower(<span class="hljs-keyword">string</span>(rtype))
+	logger := tflogger.LoggerForReplica(tfjob, rt)
+	<span class="hljs-comment">// Get all pods for the type rt.</span>
+	pods, err := tc.FilterPodsForReplicaType(pods, rt)
+	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;
+		<span class="hljs-keyword">return</span> err
+	&#125;
+	replicas := <span class="hljs-keyword">int</span>(*spec.Replicas)
+	restart := <span class="hljs-literal">false</span>
+	worker0Completed := <span class="hljs-literal">false</span>
+	masterRole := <span class="hljs-literal">false</span>
+
+	initializeTFReplicaStatuses(tfjob, rtype)
+
+	podSlices := tc.GetPodSlices(pods, replicas, logger)
+	...
+&#125;</code></pre>
+
+
+
+<p>pkg/controller.v1/tensorflow/pod.go:75</p>
+<p><strong>判断角色是否为 Chief/Master 或 Worker，如果此刻 TFJob 中某种角色的某个 Index Pod 数量为0，则开始创建此 Index Pod</strong></p>
+<p><strong>并设置 OwnerReference，将 Pod 与TFJob 进行级联</strong></p>
+<pre><code class="hljs go">	<span class="hljs-keyword">for</span> index, podSlice := <span class="hljs-keyword">range</span> podSlices &#123;
+		masterRole = <span class="hljs-literal">false</span>
+		<span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(podSlice) &gt; <span class="hljs-number">1</span> &#123;
+			logger.Warningf(<span class="hljs-string">"We have too many pods for %s %d"</span>, rt, index)
+			<span class="hljs-comment">// TODO(gaocegege): Kill some pods.</span>
+		&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(podSlice) == <span class="hljs-number">0</span> &#123;
+			logger.Infof(<span class="hljs-string">"Need to create new pod: %s-%d"</span>, rt, index)
+
+			<span class="hljs-comment">// if master pod is present, select the master pod</span>
+			<span class="hljs-comment">// if master is not present, first worker pod is selected as the master.</span>
+			<span class="hljs-keyword">if</span> ContainChieforMasterSpec(tfjob) &#123;
+				<span class="hljs-keyword">if</span> tfv1.IsChieforMaster(rtype) &#123;
+					masterRole = <span class="hljs-literal">true</span>
+				&#125;
+			&#125; <span class="hljs-keyword">else</span> &#123;
+				<span class="hljs-keyword">if</span> tfv1.IsWorker(rtype) &amp;&amp; (index == <span class="hljs-number">0</span>) &#123;
+					masterRole = <span class="hljs-literal">true</span>
+				&#125;
+			&#125;
+			err = tc.createNewPod(tfjob, rt, strconv.Itoa(index), spec, masterRole)
+			<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;
+				<span class="hljs-keyword">return</span> err
+			&#125;
+		&#125; <span class="hljs-keyword">else</span> &#123;
+      ...
+    &#125;
+    ...
+  &#125;
+  ...
+&#125;</code></pre>
+
+
+
+<p>pkg/controller.v1/tensorflow/pod.go:213</p>
+<p><strong>创建 Pod 时设置相关 Containers ENV TF_CONFIG，Tensorflow 任务各个角色之间通过 TF_CONFIG 环境变量进行通信</strong></p>
+<pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">setClusterSpec</span><span class="hljs-params">(podTemplateSpec *v1.PodTemplateSpec, tfjob *tfv1.TFJob, rt, index <span class="hljs-keyword">string</span>)</span> <span class="hljs-title">error</span></span> &#123;
+	<span class="hljs-comment">// Generate TF_CONFIG JSON string.</span>
+	tfConfigStr, err := genTFConfigJSONStr(tfjob, rt, index)
+	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;
+		<span class="hljs-keyword">return</span> err
+	&#125;
+
+	<span class="hljs-keyword">if</span> tfConfigStr == <span class="hljs-string">""</span> &#123;
+		<span class="hljs-keyword">return</span> <span class="hljs-literal">nil</span>
+	&#125;
+	<span class="hljs-comment">// Add TF_CONFIG environment variable.</span>
+	<span class="hljs-keyword">for</span> i := <span class="hljs-keyword">range</span> podTemplateSpec.Spec.Containers &#123;
+		<span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(podTemplateSpec.Spec.Containers[i].Env) == <span class="hljs-number">0</span> &#123;
+			podTemplateSpec.Spec.Containers[i].Env = <span class="hljs-built_in">make</span>([]v1.EnvVar, <span class="hljs-number">0</span>)
+		&#125;
+		podTemplateSpec.Spec.Containers[i].Env = <span class="hljs-built_in">append</span>(podTemplateSpec.Spec.Containers[i].Env, v1.EnvVar&#123;
+			Name:  tfConfig,
+			Value: tfConfigStr,
+		&#125;)
+	&#125;
+	<span class="hljs-keyword">return</span> <span class="hljs-literal">nil</span>
+&#125;</code></pre>
+
+
+
+<p><strong>TF_CONFIG Cluster 字段与各个角色创建的 Headless Service 一一对应</strong></p>
+<pre><code class="hljs go">- name: TF_CONFIG
+      value: <span class="hljs-string">'&#123;"cluster":&#123;"chief":["tplus-mix-tf-158698-qiwu-chief-0:2222"],"ps":["tplus-mix-tf-158698-qiwu-ps-0:2222","tplus-mix-tf-158698-qiwu-ps-1:2222","tplus-mix-tf-158698-qiwu-ps-2:2222","tplus-mix-tf-158698-qiwu-ps-3:2222","tplus-mix-tf-158698-qiwu-ps-4:2222","tplus-mix-tf-158698-qiwu-ps-5:2222","tplus-mix-tf-158698-qiwu-ps-6:2222","tplus-mix-tf-158698-qiwu-ps-7:2222"],"tplusmaster":["tplus-mix-tf-158698-qiwu-tplusmaster-0:2222"],"worker":["tplus-mix-tf-158698-qiwu-worker-0:2222","tplus-mix-tf-158698-qiwu-worker-1:2222","tplus-mix-tf-158698-qiwu-worker-2:2222","tplus-mix-tf-158698-qiwu-worker-3:2222","tplus-mix-tf-158698-qiwu-worker-4:2222"]&#125;,"task":&#123;"type":"chief","index":0&#125;,"environment":"cloud"&#125;'</span></code></pre>
+
+
+
+<p>如果启用了 EnableGangScheduling，则配置调度器为 Kube-Batch</p>
+<pre><code class="hljs go"><span class="hljs-comment">// if gang-scheduling is enabled:</span>
+<span class="hljs-comment">// 1. if user has specified other scheduler, we report a warning without overriding any fields.</span>
+<span class="hljs-comment">// 2. if no SchedulerName is set for pods, then we set the SchedulerName to "kube-batch".</span>
+<span class="hljs-keyword">if</span> tc.Config.EnableGangScheduling &#123;
+	<span class="hljs-keyword">if</span> isNonGangSchedulerSet(tfjob) &#123;
+		errMsg := <span class="hljs-string">"Another scheduler is specified when gang-scheduling is enabled and it will not be overwritten"</span>
+		logger.Warning(errMsg)
+		tc.Recorder.Event(tfjob, v1.EventTypeWarning, podTemplateSchedulerNameReason, errMsg)
+	&#125; <span class="hljs-keyword">else</span> &#123;
+		podTemplate.Spec.SchedulerName = gangSchedulerName
+	&#125;
+&#125;</code></pre>
+
+
+
+<p>pkg/controller.v1/tensorflow/status.go:61</p>
+<p><strong>更新 TFJob 资源状态，当 TFJob 中存在 Chief 或 Master 角色时，以 Chief 或 Master Pod 的副本状态表示整个 TFJob 状态</strong></p>
+<pre><code class="hljs go"><span class="hljs-keyword">if</span> ContainChieforMasterSpec(tfjob) &#123;
+		<span class="hljs-keyword">if</span> tfv1.IsChieforMaster(rtype) &#123;
+			<span class="hljs-keyword">if</span> running &gt; <span class="hljs-number">0</span> &#123;
+				msg := fmt.Sprintf(<span class="hljs-string">"TFJob %s is running."</span>, tfjob.Name)
+				err := updateTFJobConditions(tfjob, common.JobRunning, tfJobRunningReason, msg)
+				<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;
+					tflogger.LoggerForJob(tfjob).Infof(<span class="hljs-string">"Append tfjob condition error: %v"</span>, err)
+					<span class="hljs-keyword">return</span> err
+				&#125;
+			&#125;
+			<span class="hljs-keyword">if</span> expected == <span class="hljs-number">0</span> &#123;
+				msg := fmt.Sprintf(<span class="hljs-string">"TFJob %s successfully completed."</span>, tfjob.Name)
+				tc.Recorder.Event(tfjob, v1.EventTypeNormal, tfJobSucceededReason, msg)
+				<span class="hljs-keyword">if</span> tfjob.Status.CompletionTime == <span class="hljs-literal">nil</span> &#123;
+					now := metav1.Now()
+					tfjob.Status.CompletionTime = &amp;now
+				&#125;
+				err := updateTFJobConditions(tfjob, common.JobSucceeded, tfJobSucceededReason, msg)
+				<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;
+					tflogger.LoggerForJob(tfjob).Infof(<span class="hljs-string">"Append tfjob condition error: %v"</span>, err)
+					<span class="hljs-keyword">return</span> err
+				&#125;
+				tfJobsSuccessCount.Inc()
+			&#125;
+		&#125;
+	&#125;</code></pre>
+
+
+
+<p><strong>当不包含 Chief 或 Master 角色时，以 Worker-0 副本的状态表示整个TFJob 状态</strong></p>
+<pre><code class="hljs go"><span class="hljs-keyword">else</span> &#123;
+		<span class="hljs-keyword">if</span> rtype == tfv1.TFReplicaTypeWorker &#123;
+			<span class="hljs-comment">// All workers are succeeded or worker 0 completed, leave a succeeded condition.</span>
+			<span class="hljs-keyword">if</span> expected == <span class="hljs-number">0</span> || worker0Completed &#123;
+				msg := fmt.Sprintf(<span class="hljs-string">"TFJob %s successfully completed."</span>, tfjob.Name)
+				tc.Recorder.Event(tfjob, v1.EventTypeNormal, tfJobSucceededReason, msg)
+				<span class="hljs-keyword">if</span> tfjob.Status.CompletionTime == <span class="hljs-literal">nil</span> &#123;
+					now := metav1.Now()
+					tfjob.Status.CompletionTime = &amp;now
+				&#125;
+				err := updateTFJobConditions(tfjob, common.JobSucceeded, tfJobSucceededReason, msg)
+				<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;
+					tflogger.LoggerForJob(tfjob).Infof(<span class="hljs-string">"Append tfjob condition error: %v"</span>, err)
+					<span class="hljs-keyword">return</span> err
+				&#125;
+				tfJobsSuccessCount.Inc()
+			&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> running &gt; <span class="hljs-number">0</span> &#123;
+				<span class="hljs-comment">// Some workers are still running, leave a running condition.</span>
+				msg := fmt.Sprintf(<span class="hljs-string">"TFJob %s is running."</span>, tfjob.Name)
+				err := updateTFJobConditions(tfjob, common.JobRunning, tfJobRunningReason, msg)
+				<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;
+					tflogger.LoggerForJob(tfjob).Infof(<span class="hljs-string">"Append tfjob condition error: %v"</span>, err)
+					<span class="hljs-keyword">return</span> err
+				&#125;
+			&#125;
+		&#125;
+	&#125;</code></pre>
+
+
+
+<p> pkg/controller.v1/tensorflow/controller.go:467</p>
+<p>经过调和各个角色 Pod 和 Service 资源后，更新 TFJob 状态</p>
+<pre><code class="hljs go"><span class="hljs-comment">// no need to update the tfjob if the status hasn't changed since last time.</span>
+<span class="hljs-keyword">if</span> !reflect.DeepEqual(*oldStatus, tfjob.Status) &#123;
+	<span class="hljs-keyword">return</span> tc.updateStatusHandler(tfjob)
+&#125;
+<span class="hljs-keyword">return</span> <span class="hljs-literal">nil</span></code></pre>
+
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Cloud-Native/">Cloud Native</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/TF-Operator/">TF-Operator</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/07/11/spark-on-k8s-problem-summary/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Spark on Kubernetes 问题记录</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/07/06/anatomy-of-the-core-source-code-in-kube-batch/">
+                        <span class="hidden-mobile">Kube-Batch 核心源码剖析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "TF-Operator 核心源码剖析&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

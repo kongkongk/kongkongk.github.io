@@ -168,6 +168,108 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/30/sorting-algorithm/">八大排序算法总结</a>
+
+      <a href="/2020/06/30/sorting-algorithm/" class="index-excerpt">
+        
+        
+          
+        
+        <div>* 好久都没看排序算法了。。。今天把以前的代码贴上来。。。方便今后随时复习→_→ *
+
+交换排序
+ void swap_sort(int *arr, int len)
+&#123;
+	for (int i = 0; i &lt; len - 1; ++i)//最后一个不用再向后比较
+	&#123;
+		for (int j = i + 1; j &lt; len; ++j)
+		&#123;
+		</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/">排序算法</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/30/construction-and-destruction/">C++全局构造与析构底层实现</a>
+
+      <a href="/2020/06/30/construction-and-destruction/" class="index-excerpt">
+        
+        
+          
+        
+        <div>* 前一阵儿，被施老师问到C++全局变量是如何构造和析构的。。。？之前看书的时候好像忽略了这个点。。现在补上。。。→_→ *
+理解这个点之前，需要把main函数的前世今生搞清楚。。请戳传送门
+
+Glibc中的文件类型
+
+在Glibc中主要分为头文件和库文件
+
+头文件位于/usr/include
+
+库文件包含动态库和静态库
+
+动态库位于/lib/libc.so.6
+
+静态库位于/usr/lib/li</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Language/">Language</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/C/">C++</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
       <a class="index-header" href="/2020/06/30/singleton-pattern/">设计模式——单例模式</a>
 
       <a href="/2020/06/30/singleton-pattern/" class="index-excerpt">
@@ -511,121 +613,6 @@ A的TCP客户端进程也创建传</div>
 拥塞控制的定义：在某段时间，若对网络中某一资源的需求超过了该资源所能提供的可用部分，网络的性能就会变坏，这种情况就叫做拥塞（Congestion）。拥塞控制是为了防止过多的数据注入到网络，使网络中的路由器或链路不致过载
 
 拥塞控制与流量控</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Linux/">Linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Network/">Network</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/30/flow-control/">TCP可靠传输——流量控制</a>
-
-      <a href="/2020/06/30/flow-control/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* TCP还使用流量控制来保证可靠传输。。→_→ *
-
-流量控制（Flow Control）的含义
-
-
-流量控制就是让发送方的发送速率不要太快，让接收方来得及接收
-
-利用滑动窗口实现流量控制，告诉对方下一次我能接收的最大数据长度
-
-
-
-发送方的发送窗口不能超过接收方给出的接收窗口的数值。TCP的窗口单位是字节，不是报文段
-
-
-
-流量控制中出现的问题
-
-B向A发送零窗口报文段后不久，B的接收缓存有了</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Linux/">Linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Network/">Network</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/30/sliding-window/">TCP可靠传输——滑动窗口</a>
-
-      <a href="/2020/06/30/sliding-window/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* TCP协议保证可靠的数据传输。。使用哪些方法来保证呢。。？来瞧瞧滑动窗口。。→_→ *
-
-滑动窗口的定义
-
-
-TCP滑动窗口以字节为单位
-
-
-
-发送窗口表示，在没有收到接收方的确认时，发送方可以把窗口内的数据都发送出去。发送过的数据在未收到确认之前都必须暂时保留，以便超时重传使用
-
-
-发送窗口的位置由窗口前沿和后沿共同决定。
-
-后沿不动——没有收到新的确认
-
-后沿前移——收到了新的确认
-
-前沿</div>
       </a>
 
       <div class="index-btm post-metas">

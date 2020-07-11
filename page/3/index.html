@@ -168,6 +168,98 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/07/02/epoll/">IO复用——epoll内核源代码剖析</a>
+
+      <a href="/2020/07/02/epoll/" class="index-excerpt">
+        
+        
+          
+        
+        <div>* 最近拖延症又犯了。。。嗯。。。废话不多说。。。直接上硬货。。。→_→ *
+比较select系统调用请戳传送门——select内核源代码剖析
+了解poll机制请戳传送门——poll机制内核源代码剖析
+
+epoll_create
+
+这是Linux_3.0.12内核版本。。。和之前剖析的2.4.0内核版本的系统调用有一些差别。。。所以直接进SYSCALL_DEFINE1。。。
+//为每一个监听的事件</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-07-02
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Linux/">Linux</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Kernel/">Kernel</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/07/02/POD-data-type/">什么是POD数据类型？</a>
+
+      <a href="/2020/07/02/POD-data-type/" class="index-excerpt">
+        
+        
+          
+        
+        <div>* 在之前的vector扩容问题源代码剖析中，发现源码中对数据类型进行了是否为POD类型的检查，这篇就看看什么是POD。。。→_→ *
+了解vector扩容问题请戳传送门——vector扩容问题源代码剖析
+详细POD定义说明请戳传送门——POD数据类型解释说明
+详细is_pod函数定义说明请戳传送门——is_pod函数定义说明
+
+POD，是Plain Old Data的缩写，普通旧数据类型，是C+</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-07-02
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Language/">Language</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/C/">C++</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
       <a class="index-header" href="/2020/07/02/vector-expansion/">vector扩容问题源代码剖析</a>
 
       <a href="/2020/07/02/vector-expansion/" class="index-excerpt">
@@ -503,100 +595,6 @@ typedef struct &#123;
 	volatile unsigned int lock;
 #if SPINLOCK_DEBUG
 	unsigned magi</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-07-01
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Linux/">Linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Kernel/">Kernel</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/07/01/spin-lock/">Linux内核中的互斥操作（2）——自旋锁</a>
-
-      <a href="/2020/07/01/spin-lock/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* 本篇来看看多次在内核中出现的spin_lock——自旋锁，到底是个什么东西。。。→_→ *
-
-内核中的spin_lock()
-
-spin_lock()源代码
-
-static inline void spin_lock(spinlock_t *lock)//自旋锁的类型定义见下方
-	&#123;
-	#if SPINLOCK_DEBUG
-		__label__ here;
-	here:
-		if </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-07-01
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Linux/">Linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Kernel/">Kernel</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/07/01/signal/">Linux内核中的互斥操作（1）——信号量</a>
-
-      <a href="/2020/07/01/signal/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* 看了一段时间Linux内核源代码了，经常会在代码中看到down()、up()、spin_lock()、spin_unlock()、read_lock()、write_lock()、read_unlock()、write_unlock()等函数。本篇就先来看down()、up()是干什么的。。。它们的底层都是如何实现的。。。→_→ *
-
-down()（P操作）
- 内核中通过信号量（semapho</div>
       </a>
 
       <div class="index-btm post-metas">

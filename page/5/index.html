@@ -168,6 +168,105 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/07/01/factory-mode/">设计模式——工厂模式</a>
+
+      <a href="/2020/07/01/factory-mode/" class="index-excerpt">
+        
+        
+          
+        
+        <div>* 除了单例模式和观察者监听者模式，本篇再介绍一下工厂模式。。。→_→ *
+
+面向对象编程中出现的问题
+
+在面向对象编程中，可能会会由一种父类派生出许许多多的子类。而当我们在使用new实例化一个子类对象之前，也可能需要进行很多提前操作，比如调用其他的方法、获取相应的参数列表的值、在数据库中查询相关信息等
+
+当类型越来越多、名字越来越复杂的时候，每次去实例化一个子类对象时，都要进行很多提前操作，这就</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-07-01
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Design-Patterns/">Design Patterns</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/07/01/number-of-times-the-number-appears-in-the-sorted-array/">剑指Offer——（37）数字在排序数组中出现的次数</a>
+
+      <a href="/2020/07/01/number-of-times-the-number-appears-in-the-sorted-array/" class="index-excerpt">
+        
+        
+          
+        
+        <div>题目描述：
+
+统计一个数字在排序数组中出现的次数。
+
+实现如下：
+方法一
+//利用count计数，时间复杂度O(n)
+class Solution 
+&#123;
+public:
+	int GetNumberOfK(vector&lt;int&gt; data, int k) 
+	&#123;
+		return count(data.begin(), data.end(), k);
+	&#125;</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-07-01
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
       <a class="index-header" href="/2020/07/01/the-first-common-node-of-two-linked-lists/">剑指Offer——（36）两个链表的第一个公共结点</a>
 
       <a href="/2020/07/01/the-first-common-node-of-two-linked-lists/" class="index-excerpt">
@@ -533,108 +632,6 @@ class A
 public:
 	shared_ptr&lt;B&gt; _bptr;
 &#125;</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Language/">Language</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/C/">C++</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/30/sorting-algorithm/">八大排序算法总结</a>
-
-      <a href="/2020/06/30/sorting-algorithm/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* 好久都没看排序算法了。。。今天把以前的代码贴上来。。。方便今后随时复习→_→ *
-
-交换排序
- void swap_sort(int *arr, int len)
-&#123;
-	for (int i = 0; i &lt; len - 1; ++i)//最后一个不用再向后比较
-	&#123;
-		for (int j = i + 1; j &lt; len; ++j)
-		&#123;
-		</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/">排序算法</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/30/construction-and-destruction/">C++全局构造与析构底层实现</a>
-
-      <a href="/2020/06/30/construction-and-destruction/" class="index-excerpt">
-        
-        
-          
-        
-        <div>* 前一阵儿，被施老师问到C++全局变量是如何构造和析构的。。。？之前看书的时候好像忽略了这个点。。现在补上。。。→_→ *
-理解这个点之前，需要把main函数的前世今生搞清楚。。请戳传送门
-
-Glibc中的文件类型
-
-在Glibc中主要分为头文件和库文件
-
-头文件位于/usr/include
-
-库文件包含动态库和静态库
-
-动态库位于/lib/libc.so.6
-
-静态库位于/usr/lib/li</div>
       </a>
 
       <div class="index-btm post-metas">

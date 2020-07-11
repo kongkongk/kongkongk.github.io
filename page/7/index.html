@@ -168,6 +168,121 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/30/flow-control/">TCP可靠传输——流量控制</a>
+
+      <a href="/2020/06/30/flow-control/" class="index-excerpt">
+        
+        
+          
+        
+        <div>* TCP还使用流量控制来保证可靠传输。。→_→ *
+
+流量控制（Flow Control）的含义
+
+
+流量控制就是让发送方的发送速率不要太快，让接收方来得及接收
+
+利用滑动窗口实现流量控制，告诉对方下一次我能接收的最大数据长度
+
+
+
+发送方的发送窗口不能超过接收方给出的接收窗口的数值。TCP的窗口单位是字节，不是报文段
+
+
+
+流量控制中出现的问题
+
+B向A发送零窗口报文段后不久，B的接收缓存有了</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Linux/">Linux</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Network/">Network</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/06/30/sliding-window/">TCP可靠传输——滑动窗口</a>
+
+      <a href="/2020/06/30/sliding-window/" class="index-excerpt">
+        
+        
+          
+        
+        <div>* TCP协议保证可靠的数据传输。。使用哪些方法来保证呢。。？来瞧瞧滑动窗口。。→_→ *
+
+滑动窗口的定义
+
+
+TCP滑动窗口以字节为单位
+
+
+
+发送窗口表示，在没有收到接收方的确认时，发送方可以把窗口内的数据都发送出去。发送过的数据在未收到确认之前都必须暂时保留，以便超时重传使用
+
+
+发送窗口的位置由窗口前沿和后沿共同决定。
+
+后沿不动——没有收到新的确认
+
+后沿前移——收到了新的确认
+
+前沿</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-30
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Linux/">Linux</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Network/">Network</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
       <a class="index-header" href="/2020/06/30/transmission-control-protocol/">传输控制协议TCP（Transmission Control Protocol）报文格式</a>
 
       <a href="/2020/06/30/transmission-control-protocol/" class="index-excerpt">
@@ -540,105 +655,6 @@ HZ偶尔会拿些专业问题来忽悠那些非计算机专业的同学。今天
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/29/the-smallest-k-number/">剑指Offer——（29）最小的k个数</a>
-
-      <a href="/2020/06/29/the-smallest-k-number/" class="index-excerpt">
-        
-        
-          
-        
-        <div>题目描述：
-
-输入n个整数，找出其中最小的K个数。例如输入4,5,1,6,2,7,3,8这8个数字，则最小的4个数字是1,2,3,4。
-
-实现如下：
-//测试用例中给出的返回值是有序的。。啧啧。。
-//找到序列中最小的k个数，利用set，对数字进行insert或erase
-//红黑树中查找、插入、删除操作都为 O（logk）
-//最终将set中存储的值返回值vector中
-//方法不改变原vect</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Data-Structures-and-Algorithms/">Data Structures and Algorithms</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%89%91%E6%8C%87Offer/">剑指Offer</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a class="index-header" href="/2020/06/29/process-heap/">链接、装载与库——进程的堆</a>
-
-      <a href="/2020/06/29/process-heap/" class="index-excerpt">
-        
-        
-          
-        
-        <div> * 本次只是简要的总结堆的基本情况，具体的函数分析和堆算法分析今后会继续再学习。。。→_→ *
-
-程序在任意时刻都可能会发出请求，申请或释放一段内存资源，堆由此而生。
-
-
-堆(Heap)
-
-
-堆是一块巨大的内存空间，占据虚拟空间的绝大部分。在这片空间里，程序可以请求一块连续内存并自由使用，这块内存在程序主动释放之前一直保持有效
-
-程序向操作系统申请一块适当大小的堆空间，程序自己管理这块空间。管理</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Linux/">Linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%93%BE%E6%8E%A5%E3%80%81%E8%A3%85%E8%BD%BD%E4%B8%8E%E5%BA%93/">链接、装载与库</a>
             
           </div>
         
