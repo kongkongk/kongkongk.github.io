@@ -213,7 +213,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2020年7月11日 晚上
+                  本文最后更新于：2020年7月12日 下午
                 
               </p>
             
@@ -221,7 +221,7 @@
               <h3 id="executor-pod-残留"><a href="#executor-pod-残留" class="headerlink" title="executor pod 残留"></a>executor pod 残留</h3><ul>
 <li><p><strong>问题描述</strong></p>
 <p>使用 Client 模式启动 Spark 任务，删除 Driver Pod 后，Executor Pods 并没有被删除，而是进入 Error 状态残留在集群中</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggn30m0vz5j312m09843p.jpg" srcset="/img/loading.gif" alt="executor pod 残留"></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggob9ht10lj30r208641f.jpg" srcset="/img/loading.gif" alt="executor pod"></p>
 </li>
 <li><p><strong>问题原因</strong></p>
 <p>Driver 收到 Delete 指令后，偶现 Executor 与 Driver 通信提前断连，Executor 无人回收。</p>
